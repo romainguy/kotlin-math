@@ -12,6 +12,14 @@ val v = Float3(1.0f, 3.0f, 4.0f)
 val n = normalize(v)
 ```
 
+## Building the project
+
+Simply run the following command to generate `build/libs/kotlin-math.jar`:
+
+```
+$ ./gradlew assemble
+```
+
 ## Types
 
 Vector types:
