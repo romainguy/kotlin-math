@@ -36,4 +36,6 @@ inline fun degrees(v: Float) = v * (180.0f * INV_PI)
 
 inline fun radians(v: Float) = v * (PI / 180.0f)
 
+inline fun fract(v: Float) = v % 1
+
 inline fun sqr(v: Float) = v * v
