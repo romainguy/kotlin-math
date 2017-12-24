@@ -7,7 +7,7 @@ The various types offered by this library are only meant to be _value types_.
 Most APIs are therefore exposed as top-level functions and not as methods.
 For instance:
 
-```
+```kotlin
 val v = Float3(1.0f, 3.0f, 4.0f)
 val n = normalize(v)
 ```
@@ -16,7 +16,7 @@ val n = normalize(v)
 
 Simply run the following command to generate `build/libs/kotlin-math.jar`:
 
-```
+```bash
 $ ./gradlew assemble
 ```
 
@@ -40,21 +40,21 @@ Matrix types:
 
 Each vector type exposes its component as properties:
 
-```
+```kotlin
 val x = myVector.x
 val (x, y, z) = myVector
 ```
 
 A vector can also be treated as an array:
 
-```
+```kotlin
 val x = myVector[0]
 val x = myVector[VectorComponents.X]
 ```
 
 The traditional mathematical form with 1-based indexing can be used:
 
-```
+```kotlin
 val x = myVector(1)
 ```
 
@@ -63,7 +63,7 @@ val x = myVector(1)
 To improve code readability, the vector types provide aliases for each property,
 allowing you to choose the most appropriate names:
 
-```
+```kotlin
 val (x, y, z) = myPosition
 val (r, g, b) = myColor
 val (s, t) = myTextureCoordinates
@@ -75,7 +75,7 @@ Vector types also provide different ways to swizzle their components, although
 in a more limited way than in GLSL. The most obvious use for swizzling is to
 extract sub-vectors:
 
-```
+```kotlin
 val position = Float3(…)
 val position2d = position.xy // extract a Float2
 
@@ -86,7 +86,7 @@ val rgbColor = colorWithAlpha.rgb // extract a Float3
 The get operators allows for more complex swizzling by enabling re-ordering and
 duplication of the components:
 
-```
+```kotlin
 val colorWithAlpha = Float4(…)
 val bgrColor = colorWithAlpha[
     VectorComponents.B,
@@ -112,7 +112,7 @@ of boolean with the result of each component-wise comparison:
 
 Example:
 
-```
+```kotlin
 if (all(lessThan(v1, v2))) {
    // …
 }
@@ -123,13 +123,13 @@ if (all(lessThan(v1, v2))) {
 Matrices are represented as a set of column vectors. For instance, a `Mat4` can
 be destructured into the right, up, forward and translation vectors:
 
-```
+```kotlin
 val (right, up, forward, translation) = myMat4
 ```
 
 Each vector can be accessed as a property or by its index:
 
-```
+```kotlin
 forward = myMat4.forward
 forward = myMat4.z
 forward = myMat4[2]
@@ -139,7 +139,7 @@ forward = myMat4[MatrixColumns.Z]
 Matrix types also offer APIs to access each element individually by specifying
 the column then row:
 
-```
+```kotlin
 v = myMat4.z[1]
 v = myMat4[2, 1]
 v = myMat4[MatrixColumns.Z, 1]
@@ -148,7 +148,7 @@ v = myMat4[MatrixColumns.Z, 1]
 You can also use the invoke operator to access elements in row-major mode with
 1-based indices to follow the traditional mathematical notation:
 
-```
+```kotlin
 v = myMat4(2, 3) // equivalent to myMat4[2, 1]
 ```
 
