@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ProjectCodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
-      <value />
+      <value>
+        <option name="RIGHT_MARGIN" value="100" />
+        <codeStyleSettings language="kotlin">
+          <option name="KEEP_BLANK_LINES_IN_DECLARATIONS" value="1" />
+          <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
+          <option name="KEEP_BLANK_LINES_BEFORE_RBRACE" value="1" />
+          <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+        </codeStyleSettings>
+      </value>
     </option>
-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="Kotlin" />
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
 </project>
