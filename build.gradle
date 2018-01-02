@@ -11,8 +11,6 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-}
-
-sourceSets {
-    main.kotlin.srcDirs += 'src/main/kotlin'
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit"
+    testCompile "junit:junit:4.12"
 }
