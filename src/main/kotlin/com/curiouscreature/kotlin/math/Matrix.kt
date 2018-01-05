@@ -105,6 +105,14 @@ data class Mat3(
             x.y, y.y, z.y,
             x.z, y.z, z.z
     )
+
+    override fun toString(): String {
+        return """
+            |${x.x} ${y.x} ${z.x}|
+            |${x.y} ${y.y} ${z.y}|
+            |${x.z} ${y.z} ${z.z}|
+            """.trimIndent()
+    }
 }
 
 data class Mat4(
@@ -241,6 +249,15 @@ data class Mat4(
             x.z, y.z, z.z, w.z,
             x.w, y.w, z.w, w.w
     )
+
+    override fun toString(): String {
+        return """
+            |${x.x} ${y.x} ${z.x} ${w.x}|
+            |${x.y} ${y.y} ${z.y} ${w.y}|
+            |${x.z} ${y.z} ${z.z} ${w.z}|
+            |${x.w} ${y.w} ${z.w} ${w.w}|
+            """.trimIndent()
+    }
 }
 
 fun transpose(m: Mat3) = Mat3(
