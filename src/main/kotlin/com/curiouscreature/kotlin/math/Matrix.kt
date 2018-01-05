@@ -22,6 +22,91 @@ enum class MatrixColumn {
     X, Y, Z, W
 }
 
+data class Mat2(
+        var x: Float2 = Float2(x = 1.0f),
+        var y: Float2 = Float2(y = 1.0f)) {
+    constructor(m: Mat2) : this(m.x.copy(), m.y.copy())
+
+    companion object {
+        fun of(vararg a: Float): Mat2 {
+            require(a.size >= 4)
+            return Mat2(
+                    Float2(a[0], a[2]),
+                    Float2(a[1], a[3])
+            )
+        }
+
+        fun identity() = Mat2()
+    }
+
+    operator fun get(column: Int) = when(column) {
+        0 -> x
+        1 -> y
+        else -> throw IllegalArgumentException("column must be in 0..1")
+    }
+    operator fun get(column: Int, row: Int) = get(column)[row]
+
+    operator fun get(column: MatrixColumn) = when(column) {
+        MatrixColumn.X -> x
+        MatrixColumn.Y -> y
+        else -> throw IllegalArgumentException("column must be X or Y")
+    }
+    operator fun get(column: MatrixColumn, row: Int) = get(column)[row]
+
+    operator fun invoke(row: Int, column: Int) = get(column - 1)[row - 1]
+    operator fun invoke(row: Int, column: Int, v: Float) = set(column - 1, row - 1, v)
+
+    operator fun set(column: Int, v: Float2) {
+        this[column].xy = v
+    }
+    operator fun set(column: Int, row: Int, v: Float) {
+        this[column][row] = v
+    }
+
+    operator fun unaryMinus() = Mat2(-x, -y)
+    operator fun inc(): Mat2 {
+        x++
+        y++
+        return this
+    }
+    operator fun dec(): Mat2 {
+        x--
+        y--
+        return this
+    }
+
+    operator fun plus(v: Float) = Mat2(x + v, y + v)
+    operator fun minus(v: Float) = Mat2(x - v, y - v)
+    operator fun times(v: Float) = Mat2(x * v, y * v)
+    operator fun div(v: Float) = Mat2(x / v, y / v)
+
+    operator fun times(m: Mat2): Mat2 {
+        val t = transpose(this)
+        return Mat2(
+                Float2(dot(t.x, m.x), dot(t.y, m.x)),
+                Float2(dot(t.x, m.y), dot(t.y, m.y))
+        )
+    }
+
+    operator fun times(v: Float2): Float2 {
+        val t = transpose(this)
+        return Float2(dot(t.x, v), dot(t.y, v))
+    }
+
+    fun toFloatArray() = floatArrayOf(
+            x.x, y.x,
+            x.y, y.y
+    )
+
+    override fun toString(): String {
+        return """
+            |${x.x} ${y.x}|
+            |${x.y} ${y.y}|
+            """.trimIndent()
+    }
+
+}
+
 data class Mat3(
         var x: Float3 = Float3(x = 1.0f),
         var y: Float3 = Float3(y = 1.0f),
@@ -105,6 +190,14 @@ data class Mat3(
             x.y, y.y, z.y,
             x.z, y.z, z.z
     )
+
+    override fun toString(): String {
+        return """
+            |${x.x} ${y.x} ${z.x}|
+            |${x.y} ${y.y} ${z.y}|
+            |${x.z} ${y.z} ${z.z}|
+            """.trimIndent()
+    }
 }
 
 data class Mat4(
@@ -241,7 +334,21 @@ data class Mat4(
             x.z, y.z, z.z, w.z,
             x.w, y.w, z.w, w.w
     )
+
+    override fun toString(): String {
+        return """
+            |${x.x} ${y.x} ${z.x} ${w.x}|
+            |${x.y} ${y.y} ${z.y} ${w.y}|
+            |${x.z} ${y.z} ${z.z} ${w.z}|
+            |${x.w} ${y.w} ${z.w} ${w.w}|
+            """.trimIndent()
+    }
 }
+
+fun transpose(m: Mat2) = Mat2(
+        Float2(m.x.x, m.y.x),
+        Float2(m.x.y, m.y.y)
+)
 
 fun transpose(m: Mat3) = Mat3(
         Float3(m.x.x, m.y.x, m.z.x),
