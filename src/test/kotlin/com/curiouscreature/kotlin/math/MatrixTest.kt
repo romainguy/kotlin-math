@@ -162,18 +162,18 @@ class MatrixTest {
     fun `inverse Mat4`() {
         assertEquals(
                 Mat4(
-                        Float4( 1f, 0f, 0f, 0f),
-                        Float4(-1f, 1f, 0f, 0f),
-                        Float4( 4f,-4f, 1f,-2f),
-                        Float4(-2f, 2f, 0f, 1f)
+                        Float4( 1f,  0f, 0f,  0f),
+                        Float4(-1f,  1f, 0f,  0f),
+                        Float4( 4f, -4f, 1f, -2f),
+                        Float4(-2f,  2f, 0f,  1f)
 
                 ),
                 inverse(
                         Mat4(
-                                Float4(1f, 0f, 0f,0f),
-                                Float4(1f, 1f, 0f,0f),
-                                Float4(0f, 0f, 1f,2f),
-                                Float4(0f,-2f, 0f,1f)
+                                Float4(1f,  0f, 0f, 0f),
+                                Float4(1f,  1f, 0f, 0f),
+                                Float4(0f,  0f, 1f, 2f),
+                                Float4(0f, -2f, 0f, 1f)
                 ))
         )
     }
