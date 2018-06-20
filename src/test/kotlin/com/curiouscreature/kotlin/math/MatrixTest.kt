@@ -154,6 +154,31 @@ class MatrixTest {
     }
 
     @Test
+    fun `inverse Mat4 of identity is identity`() {
+        assertEquals(Mat4.identity(), inverse(Mat4.identity()))
+    }
+
+    @Test
+    fun `inverse Mat4`() {
+        assertEquals(
+                Mat4(
+                        Float4( 1f, 0f, 0f, 0f),
+                        Float4(-1f, 1f, 0f, 0f),
+                        Float4( 4f,-4f, 1f,-2f),
+                        Float4(-2f, 2f, 0f, 1f)
+
+                ),
+                inverse(
+                        Mat4(
+                                Float4(1f, 0f, 0f,0f),
+                                Float4(1f, 1f, 0f,0f),
+                                Float4(0f, 0f, 1f,2f),
+                                Float4(0f,-2f, 0f,1f)
+                ))
+        )
+    }
+
+    @Test
     fun `rotation Float3`() {
         assertArrayEquals(
                 Mat4(
