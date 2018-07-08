@@ -190,10 +190,10 @@ class MatrixTest {
                 ),
                 inverse(
                         Mat4(
-                                Float4(1f,1f,0f,0f),
-                                Float4(1f,1f,0f,0f),
-                                Float4(0f,0f,1f,2f),
-                                Float4(0f,0f,0f,1f)
+                                Float4(1f, 1f, 0f, 0f),
+                                Float4(1f, 1f, 0f, 0f),
+                                Float4(0f, 0f, 1f, 2f),
+                                Float4(0f, 0f, 0f, 1f)
                         ))
         )
     }
