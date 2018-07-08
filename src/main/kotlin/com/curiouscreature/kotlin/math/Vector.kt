@@ -561,7 +561,7 @@ data class Float4(
     inline operator fun plus(v: Float) = Float4(x + v, y + v, z + v, w + v)
     inline operator fun minus(v: Float) = Float4(x - v, y - v, z - v, w - v)
     inline operator fun times(v: Float) = Float4(x * v, y * v, z * v, w * v)
-    inline operator fun div(v: Float) = Float4(x / v, y / v, z / v, z / v)
+    inline operator fun div(v: Float) = Float4(x / v, y / v, z / v, w / v)
 
     inline operator fun plus(v: Float2) = Float4(x + v.x, y + v.y, z, w)
     inline operator fun minus(v: Float2) = Float4(x - v.x, y - v.y, z, w)
