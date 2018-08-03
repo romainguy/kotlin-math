@@ -653,6 +653,22 @@ inline fun equal(a: Float2, b: Float2) = Bool2(a.x == b.x, a.y == b.y)
 inline fun notEqual(a: Float2, b: Float) = Bool2(a.x != b, a.y != b)
 inline fun notEqual(a: Float2, b: Float2) = Bool2(a.x != b.x, a.y != b.y)
 
+inline infix fun Float2.lt(b: Float) = Bool2(x < b, y < b)
+inline infix fun Float2.lt(b: Float2) = Bool2(x < b.x, y < b.y)
+inline infix fun Float2.lte(b: Float) = Bool2(x <= b, y <= b)
+inline infix fun Float2.lte(b: Float2) = Bool2(x <= b.x, y <= b.y)
+inline infix fun Float2.gt(b: Float) = Bool2(x > b, y > b)
+inline infix fun Float2.gt(b: Float2) = Bool2(x > b.x, y > b.y)
+inline infix fun Float2.gte(b: Float) = Bool2(x >= b, y >= b)
+inline infix fun Float2.gte(b: Float2) = Bool2(x >= b.x, y >= b.y)
+inline infix fun Float2.eq(b: Float) = Bool2(x == b, y == b)
+inline infix fun Float2.eq(b: Float2) = Bool2(x == b.x, y == b.y)
+inline infix fun Float2.neq(b: Float) = Bool2(x != b, y != b)
+inline infix fun Float2.neq(b: Float2) = Bool2(x != b.x, y != b.y)
+
+inline fun any(v: Bool2) = v.x or v.y
+inline fun all(v: Bool2) = v.x and v.y
+
 inline operator fun Float.plus(v: Float3) = Float3(this + v.x, this + v.y, this + v.z)
 inline operator fun Float.minus(v: Float3) = Float3(this - v.x, this - v.y, this - v.z)
 inline operator fun Float.times(v: Float3) = Float3(this * v.x, this * v.y, this * v.z)
@@ -729,6 +745,22 @@ inline fun equal(a: Float3, b: Float3) = Bool3(a.x == b.x, a.y == b.y, a.z == b.
 inline fun notEqual(a: Float3, b: Float) = Bool3(a.x != b, a.y != b, a.z != b)
 inline fun notEqual(a: Float3, b: Float3) = Bool3(a.x != b.x, a.y != b.y, a.z != b.z)
 
+inline infix fun Float3.lt(b: Float) = Bool3(x < b, y < b, z < b)
+inline infix fun Float3.lt(b: Float3) = Bool3(x < b.x, y < b.y, z < b.z)
+inline infix fun Float3.lte(b: Float) = Bool3(x <= b, y <= b, z <= b)
+inline infix fun Float3.lte(b: Float3) = Bool3(x <= b.x, y <= b.y, z <= b.z)
+inline infix fun Float3.gt(b: Float) = Bool3(x > b, y > b, z > b)
+inline infix fun Float3.gt(b: Float3) = Bool3(x > b.x, y > b.y, z > b.z)
+inline infix fun Float3.gte(b: Float) = Bool3(x >= b, y >= b, z >= b)
+inline infix fun Float3.gte(b: Float3) = Bool3(x >= b.x, y >= b.y, z >= b.z)
+inline infix fun Float3.eq(b: Float) = Bool3(x == b, y == b, z == b)
+inline infix fun Float3.eq(b: Float3) = Bool3(x == b.x, y == b.y, z == b.z)
+inline infix fun Float3.neq(b: Float) = Bool3(x != b, y != b, z != b)
+inline infix fun Float3.neq(b: Float3) = Bool3(x != b.x, y != b.y, z != b.z)
+
+inline fun any(v: Bool3) = v.x or v.y or v.z
+inline fun all(v: Bool3) = v.x and v.y and v.z
+
 inline operator fun Float.plus(v: Float4) = Float4(this + v.x, this + v.y, this + v.z, this + v.w)
 inline operator fun Float.minus(v: Float4) = Float4(this - v.x, this - v.y, this - v.z, this - v.w)
 inline operator fun Float.times(v: Float4) = Float4(this * v.x, this * v.y, this * v.z, this * v.w)
@@ -786,6 +818,35 @@ inline fun max(a: Float4, b: Float4): Float4 {
 }
 
 inline fun transform(v: Float4, block: (Float) -> Float) = v.copy().transform(block)
+
+inline fun lessThan(a: Float4, b: Float) = Bool4(a.x < b, a.y < b, a.z < b, a.w < b)
+inline fun lessThan(a: Float4, b: Float4) = Bool4(a.x < b.x, a.y < b.y, a.z < b.z, a.w < b.w)
+inline fun lessThanEqual(a: Float4, b: Float) = Bool4(a.x <= b, a.y <= b, a.z <= b, a.w <= b)
+inline fun lessThanEqual(a: Float4, b: Float4) = Bool4(a.x <= b.x, a.y <= b.y, a.z <= b.z, a.w <= b.w)
+inline fun greaterThan(a: Float4, b: Float) = Bool4(a.x > b, a.y > b, a.z > b, a.w > b)
+inline fun greaterThan(a: Float4, b: Float4) = Bool4(a.x > b.y, a.y > b.y, a.z > b.z, a.w > b.w)
+inline fun greaterThanEqual(a: Float4, b: Float) = Bool4(a.x >= b, a.y >= b, a.z >= b, a.w >= b)
+inline fun greaterThanEqual(a: Float4, b: Float4) = Bool4(a.x >= b.x, a.y >= b.y, a.z >= b.z, a.w >= b.w)
+inline fun equal(a: Float4, b: Float) = Bool4(a.x == b, a.y == b, a.z == b, a.w == b)
+inline fun equal(a: Float4, b: Float4) = Bool4(a.x == b.x, a.y == b.y, a.z == b.z, a.w == b.w)
+inline fun notEqual(a: Float4, b: Float) = Bool4(a.x != b, a.y != b, a.z != b, a.w != b)
+inline fun notEqual(a: Float4, b: Float4) = Bool4(a.x != b.x, a.y != b.y, a.z != b.z, a.w != b.w)
+
+inline infix fun Float4.lt(b: Float) = Bool4(x < b, y < b, z < b, a < b)
+inline infix fun Float4.lt(b: Float4) = Bool4(x < b.x, y < b.y, z < b.z, w < b.w)
+inline infix fun Float4.lte(b: Float) = Bool4(x <= b, y <= b, z <= b, w <= b)
+inline infix fun Float4.lte(b: Float4) = Bool4(x <= b.x, y <= b.y, z <= b.z, w <= b.w)
+inline infix fun Float4.gt(b: Float) = Bool4(x > b, y > b, z > b, w > b)
+inline infix fun Float4.gt(b: Float4) = Bool4(x > b.x, y > b.y, z > b.z, w > b.w)
+inline infix fun Float4.gte(b: Float) = Bool4(x >= b, y >= b, z >= b, w >= b)
+inline infix fun Float4.gte(b: Float4) = Bool4(x >= b.x, y >= b.y, z >= b.z, w >= b.w)
+inline infix fun Float4.eq(b: Float) = Bool4(x == b, y == b, z == b, w == b)
+inline infix fun Float4.eq(b: Float4) = Bool4(x == b.x, y == b.y, z == b.z, w == b.w)
+inline infix fun Float4.neq(b: Float) = Bool4(x != b, y != b, z != b, w != b)
+inline infix fun Float4.neq(b: Float4) = Bool4(x != b.x, y != b.y, z != b.z, w != b.w)
+
+inline fun any(v: Bool4) = v.x or v.y or v.z or v.w
+inline fun all(v: Bool4) = v.x and v.y and v.z and v.w
 
 data class Bool2(var x: Boolean = false, var y: Boolean = false) {
     constructor(v: Bool2) : this(v.x, v.y)
@@ -1233,12 +1294,3 @@ data class Bool4(
         set(index4, v)
     }
 }
-
-inline fun any(v: Bool2) = v.x or v.y
-inline fun all(v: Bool2) = v.x and v.y
-
-inline fun any(v: Bool3) = v.x or v.y or v.z
-inline fun all(v: Bool3) = v.x and v.y and v.z
-
-inline fun any(v: Bool4) = v.x or v.y or v.z or v.w
-inline fun all(v: Bool4) = v.x and v.y and v.z and v.w
