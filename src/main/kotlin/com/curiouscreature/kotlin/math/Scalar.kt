@@ -39,3 +39,5 @@ inline fun radians(v: Float) = v * (PI / 180.0f)
 inline fun fract(v: Float) = v % 1
 
 inline fun sqr(v: Float) = v * v
+
+inline fun pow(x: Float, y: Float) = StrictMath.pow(x.toDouble(), y.toDouble()).toFloat()
