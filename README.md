@@ -118,6 +118,23 @@ if (all(lessThan(v1, v2))) {
 }
 ```
 
+You can also use the following infix operators if you prefer the operator
+syntax:
+- `lt`
+- `lte`
+- `gt`
+- `gte`
+- `eq`
+- `neq`
+
+Example:
+
+```kotlin
+if (v1 lte v2) {
+   // …
+}
+```
+
 ## Matrix types
 
 Matrices are represented as a set of column vectors. For instance, a `Mat4` can
