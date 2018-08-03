@@ -19,3 +19,4 @@ build/
 .idea/runConfigurations.xml
 .idea/.name
 local.properties
+*.ser

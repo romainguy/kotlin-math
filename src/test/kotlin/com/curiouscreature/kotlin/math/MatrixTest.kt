@@ -238,7 +238,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `normal`() {
+    fun normal() {
         assertArrayEquals(
                 Mat4(
                         Float4(0.0093f, 0.0357f, 0.0502f, 13.0f),
@@ -251,7 +251,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `lookAt`() {
+    fun lookAt() {
         assertArrayEquals(
                 Mat4(
                         Float4(0.53606f, -0.7862f, 0.30734f, 0.0f),
@@ -268,7 +268,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `lookTowards`() {
+    fun lookTowards() {
         assertArrayEquals(
                 Mat4(
                         Float4(-0.6549f, -0.3475f, 0.67100f, 0.0f),
@@ -285,7 +285,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `perspective`() {
+    fun perspective() {
         assertArrayEquals(
                 Mat4(
                         Float4(57.2943f, 0.0f, 0.0f, 0.0f),
@@ -303,7 +303,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `ortho`() {
+    fun ortho() {
         assertArrayEquals(
                 Mat4(
                         Float4(2.0f, 0.0f, 0.0f, 0.0f),
