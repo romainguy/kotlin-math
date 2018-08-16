@@ -130,7 +130,7 @@ syntax:
 Example:
 
 ```kotlin
-if (v1 lte v2) {
+if (any(v1 lte v2)) {
    // …
 }
 ```
