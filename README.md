@@ -64,9 +64,9 @@ To improve code readability, the vector types provide aliases for each property,
 allowing you to choose the most appropriate names:
 
 ```kotlin
-val (x, y, z) = myPosition
-val (r, g, b) = myColor
-val (s, t) = myTextureCoordinates
+val (x, y, z) = myPosition.xyz
+val (r, g, b) = myColor.rgb
+val (s, t) = myTextureCoordinates.st
 ```
 
 ### Swizzling
