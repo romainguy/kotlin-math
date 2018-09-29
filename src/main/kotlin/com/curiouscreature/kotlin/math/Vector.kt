@@ -666,8 +666,8 @@ inline infix fun Float2.eq(b: Float2) = Bool2(x == b.x, y == b.y)
 inline infix fun Float2.neq(b: Float) = Bool2(x != b, y != b)
 inline infix fun Float2.neq(b: Float2) = Bool2(x != b.x, y != b.y)
 
-inline fun any(v: Bool2) = v.x or v.y
-inline fun all(v: Bool2) = v.x and v.y
+inline fun any(v: Bool2) = v.x || v.y
+inline fun all(v: Bool2) = v.x && v.y
 
 inline operator fun Float.plus(v: Float3) = Float3(this + v.x, this + v.y, this + v.z)
 inline operator fun Float.minus(v: Float3) = Float3(this - v.x, this - v.y, this - v.z)
@@ -758,8 +758,8 @@ inline infix fun Float3.eq(b: Float3) = Bool3(x == b.x, y == b.y, z == b.z)
 inline infix fun Float3.neq(b: Float) = Bool3(x != b, y != b, z != b)
 inline infix fun Float3.neq(b: Float3) = Bool3(x != b.x, y != b.y, z != b.z)
 
-inline fun any(v: Bool3) = v.x or v.y or v.z
-inline fun all(v: Bool3) = v.x and v.y and v.z
+inline fun any(v: Bool3) = v.x || v.y || v.z
+inline fun all(v: Bool3) = v.x && v.y && v.z
 
 inline operator fun Float.plus(v: Float4) = Float4(this + v.x, this + v.y, this + v.z, this + v.w)
 inline operator fun Float.minus(v: Float4) = Float4(this - v.x, this - v.y, this - v.z, this - v.w)
@@ -845,8 +845,8 @@ inline infix fun Float4.eq(b: Float4) = Bool4(x == b.x, y == b.y, z == b.z, w ==
 inline infix fun Float4.neq(b: Float) = Bool4(x != b, y != b, z != b, w != b)
 inline infix fun Float4.neq(b: Float4) = Bool4(x != b.x, y != b.y, z != b.z, w != b.w)
 
-inline fun any(v: Bool4) = v.x or v.y or v.z or v.w
-inline fun all(v: Bool4) = v.x and v.y and v.z and v.w
+inline fun any(v: Bool4) = v.x || v.y || v.z || v.w
+inline fun all(v: Bool4) = v.x && v.y && v.z && v.w
 
 data class Bool2(var x: Boolean = false, var y: Boolean = false) {
     constructor(v: Bool2) : this(v.x, v.y)
