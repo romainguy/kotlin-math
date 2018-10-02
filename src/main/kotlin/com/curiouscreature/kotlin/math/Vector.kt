@@ -30,6 +30,7 @@ enum class VectorComponent {
 }
 
 data class Float2(var x: Float = 0.0f, var y: Float = 0.0f) {
+    constructor(v: Float) : this(v, v)
     constructor(v: Float2) : this(v.x, v.y)
 
     inline var r: Float
@@ -146,6 +147,7 @@ data class Float2(var x: Float = 0.0f, var y: Float = 0.0f) {
 }
 
 data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f) {
+    constructor(v: Float) : this(v, v, v)
     constructor(v: Float2, z: Float = 0.0f) : this(v.x, v.y, z)
     constructor(v: Float3) : this(v.x, v.y, v.z)
 
@@ -334,6 +336,7 @@ data class Float4(
         var y: Float = 0.0f,
         var z: Float = 0.0f,
         var w: Float = 0.0f) {
+    constructor(v: Float) : this(v, v, v, v)
     constructor(v: Float2, z: Float = 0.0f, w: Float = 0.0f) : this(v.x, v.y, z, w)
     constructor(v: Float3, w: Float = 0.0f) : this(v.x, v.y, v.z, w)
     constructor(v: Float4) : this(v.x, v.y, v.z, v.w)
