@@ -230,7 +230,7 @@ class MatrixTest {
                 Mat4(
                         Float4(0.9999f, 5f, 1f, 0f),
                         Float4(-1f, 4f, 7f, 0f),
-                        Float4(4f, 5f, 9f, 0f),
+                        Float4(5f, 5f, 9f, 0f),
                         Float4(0f, 0f, 0f, 1f)
                 ).toFloatArray(),
                 rotation(Float3(1f, 2f, 3f), 90f).toFloatArray()
