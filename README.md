@@ -20,6 +20,34 @@ Simply run the following command to generate `build/libs/kotlin-math.jar`:
 $ ./gradlew assemble
 ```
 
+### Adding the project as a gradle github dependency
+
+You can add the following code to gradle to have it automatically pull/build
+the repo and use it as a dependency. This is convenient for Android projects.
+
+Add @alexvasilkov's [GradleGitDependencies](
+https://github.com/alexvasilkov/GradleGitDependenciesPlugin) project. Top of
+settings.gradle:
+
+```gradle
+plugins {
+    id 'com.alexvasilkov.git-dependencies' version '2.0.2'
+}
+```
+
+Add git dependency to this project. End of app/build.gradle:
+
+```gradle
+git {
+    implementation 'https://github.com/romainguy/kotlin-math.git', {
+        branch 'gradle-git'
+    }
+}
+```
+
+You should now be able to use `com.curiouscreature.kotlin.math` inside of the
+'app' module.
+
 ## Types
 
 Vector types:
@@ -98,7 +126,7 @@ val bgrColor = colorWithAlpha[
 ### Comparing vector types
 
 Vector comparisons follow GLSL rules:
-- `==` returns true if all components are equal 
+- `==` returns true if all components are equal
 - `!=` returns true if not all components are equal
 
 In addition you can use component-wise relational operators that return a vector
