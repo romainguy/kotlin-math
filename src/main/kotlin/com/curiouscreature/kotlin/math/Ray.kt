@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.curiouscreature.kotlin.math
 
 data class Ray(var origin: Float3 = Float3(), var direction: Float3)

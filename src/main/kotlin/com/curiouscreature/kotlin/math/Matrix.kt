@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.curiouscreature.kotlin.math
 
 import kotlin.math.*
@@ -355,6 +357,8 @@ fun transpose(m: Mat3) = Mat3(
         Float3(m.x.y, m.y.y, m.z.y),
         Float3(m.x.z, m.y.z, m.z.z)
 )
+
+@Suppress("LocalVariableName")
 fun inverse(m: Mat3): Mat3 {
     val a = m.x.x
     val b = m.x.y
@@ -385,6 +389,7 @@ fun transpose(m: Mat4) = Mat4(
         Float4(m.x.z, m.y.z, m.z.z, m.w.z),
         Float4(m.x.w, m.y.w, m.z.w, m.w.w)
 )
+
 fun inverse(m: Mat4): Mat4 {
     val result = Mat4()
 
@@ -462,8 +467,8 @@ fun translation(m: Mat4) = translation(m.translation)
 fun rotation(m: Mat4) = Mat4(normalize(m.right), normalize(m.up), normalize(m.forward))
 fun rotation(d: Float3): Mat4 {
     val r = transform(d, ::radians)
-    val c = transform(r, { x -> cos(x) })
-    val s = transform(r, { x -> sin(x) })
+    val c = transform(r) { x -> cos(x) }
+    val s = transform(r) { x -> sin(x) }
 
     return Mat4.of(
              c.y * c.z, -c.x * s.z + s.x * s.y * c.z,  s.x * s.z + c.x * s.y * c.z, 0.0f,
