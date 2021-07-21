@@ -19,8 +19,54 @@ package com.curiouscreature.kotlin.math
 import org.junit.Assert
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class MatrixTest {
+    @Test
+    fun `Mat2 multiplication`() {
+        val a = Mat2.of(1.0f, 2.0f, 3.0f, 4.0f)
+        val b = Mat2.of(2.0f, 0.0f, 1.0f, 2.0f)
+        assertEquals(
+                Mat2.of(4.0f, 4.0f, 10.0f, 8.0f),
+                a * b
+        )
+    }
+
+    @Test
+    fun `Mat3 multiplication`() {
+        val a = Mat3.of(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f)
+        val b = Mat3.of(2.0f, 0.0f, 1.0f, 2.0f, 3.0f, 1.0f, 2.0f, 0.0f, 1.0f)
+        assertEquals(
+                Mat3.of(12.0f, 6.0f, 6.0f, 30.0f, 15.0f, 15.0f, 48.0f, 24.0f, 24.0f),
+                a * b
+        )
+    }
+
+    @Test
+    fun `Mat4 multiplication`() {
+        val a = Mat4.of(
+                 1.0f,  2.0f,  3.0f,  4.0f,
+                 5.0f,  6.0f,  7.0f,  8.0f,
+                 9.0f, 10.0f, 11.0f, 12.0f,
+                13.0f, 14.0f, 15.0f, 16.0f,
+        )
+        val b = Mat4.of(
+                2.0f, 0.0f, 1.0f, 2.0f,
+                1.0f, 1.0f, 2.0f, 0.0f,
+                2.0f, 1.0f, 2.0f, 2.0f,
+                0.0f, 1.0f, 1.0f, 2.0f,
+        )
+        assertEquals(
+                Mat4.of(
+                        10.0f,  9.0f, 15.0f, 16.0f,
+                        30.0f, 21.0f, 39.0f, 40.0f,
+                        50.0f, 33.0f, 63.0f, 64.0f,
+                        70.0f, 45.0f, 87.0f, 88.0f
+                ),
+                a * b
+        )
+    }
+
     @Test
     fun `Mat3 identity`() {
         assertEquals(
