@@ -16,7 +16,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 
-package com.curiouscreature.kotlin.math
+package dev.romainguy.kotlin.math
 
 const val PI          = 3.1415926536f
 const val HALF_PI     = PI * 0.5f

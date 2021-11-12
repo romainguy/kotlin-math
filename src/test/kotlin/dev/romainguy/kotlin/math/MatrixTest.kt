@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.curiouscreature.kotlin.math
+package dev.romainguy.kotlin.math
 
 import org.junit.Assert
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 class MatrixTest {
     @Test

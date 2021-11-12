@@ -16,7 +16,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 
-package com.curiouscreature.kotlin.math
+package dev.romainguy.kotlin.math
 
 import kotlin.math.abs
 import kotlin.math.max

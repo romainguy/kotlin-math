@@ -16,7 +16,7 @@
 
 @file:Suppress("unused")
 
-package com.curiouscreature.kotlin.math
+package dev.romainguy.kotlin.math
 
 import kotlin.math.*
 
@@ -410,7 +410,7 @@ fun inverse(m: Mat3): Mat3 {
     val det = a * A + b * B + c * C
 
     return Mat3.of(
-            A / det,               B / det,               C / det,
+            A / det, B / det, C / det,
             (c * h - b * i) / det, (a * i - c * g) / det, (b * g - a * h) / det,
             (b * f - c * e) / det, (c * d - a * f) / det, (a * e - b * d) / det
     )
@@ -504,10 +504,10 @@ fun rotation(d: Float3): Mat4 {
     val s = transform(r) { x -> sin(x) }
 
     return Mat4.of(
-             c.y * c.z, -c.x * s.z + s.x * s.y * c.z,  s.x * s.z + c.x * s.y * c.z, 0.0f,
-             c.y * s.z,  c.x * c.z + s.x * s.y * s.z, -s.x * c.z + c.x * s.y * s.z, 0.0f,
-            -s.y      ,  s.x * c.y                  ,  c.x * c.y                  , 0.0f,
-             0.0f     ,  0.0f                       ,  0.0f                       , 1.0f
+            c.y * c.z, -c.x * s.z + s.x * s.y * c.z, s.x * s.z + c.x * s.y * c.z, 0.0f,
+            c.y * s.z, c.x * c.z + s.x * s.y * s.z, -s.x * c.z + c.x * s.y * s.z, 0.0f,
+            -s.y, s.x * c.y, c.x * c.y, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
     )
 }
 fun rotation(axis: Float3, angle: Float): Mat4 {
@@ -521,10 +521,10 @@ fun rotation(axis: Float3, angle: Float): Mat4 {
     val d = 1.0f - c
 
     return Mat4.of(
-            x * x * d + c    , x * y * d - z * s, x * z * d + y * s, 0.0f,
-            y * x * d + z * s, y * y * d + c    , y * z * d - x * s, 0.0f,
-            z * x * d - y * s, z * y * d + x * s, z * z * d + c    , 0.0f,
-            0.0f             , 0.0f             , 0.0f             , 1.0f
+            x * x * d + c, x * y * d - z * s, x * z * d + y * s, 0.0f,
+            y * x * d + z * s, y * y * d + c, y * z * d - x * s, 0.0f,
+            z * x * d - y * s, z * y * d + x * s, z * z * d + c, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
     )
 }
 

@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.5.21"
+    id "org.jetbrains.kotlin.jvm" version "1.5.31"
 }
 
 apply plugin: 'idea'
@@ -10,10 +10,10 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31"
 
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.31'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 sourceSets {
