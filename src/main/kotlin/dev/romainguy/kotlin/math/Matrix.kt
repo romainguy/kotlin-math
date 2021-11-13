@@ -66,16 +66,8 @@ data class Mat2(
     }
 
     operator fun unaryMinus() = Mat2(-x, -y)
-    operator fun inc(): Mat2 {
-        x++
-        y++
-        return this
-    }
-    operator fun dec(): Mat2 {
-        x--
-        y--
-        return this
-    }
+    operator fun inc() = Mat2(x++, y++)
+    operator fun dec() = Mat2(x--, y--)
 
     operator fun plus(v: Float) = Mat2(x + v, y + v)
     operator fun minus(v: Float) = Mat2(x - v, y - v)
@@ -159,18 +151,8 @@ data class Mat3(
     }
 
     operator fun unaryMinus() = Mat3(-x, -y, -z)
-    operator fun inc(): Mat3 {
-        x++
-        y++
-        z++
-        return this
-    }
-    operator fun dec(): Mat3 {
-        x--
-        y--
-        z--
-        return this
-    }
+    operator fun inc() = Mat3(x++, y++, z++)
+    operator fun dec() = Mat3(x--, y--, z--)
 
     operator fun plus(v: Float) = Mat3(x + v, y + v, z + v)
     operator fun minus(v: Float) = Mat3(x - v, y - v, z - v)
@@ -309,20 +291,8 @@ data class Mat4(
     }
 
     operator fun unaryMinus() = Mat4(-x, -y, -z, -w)
-    operator fun inc(): Mat4 {
-        x++
-        y++
-        z++
-        w++
-        return this
-    }
-    operator fun dec(): Mat4 {
-        x--
-        y--
-        z--
-        w--
-        return this
-    }
+    operator fun inc() = Mat4(x++, y++, z++, w++)
+    operator fun dec() = Mat4(x--, y--, z--, w--)
 
     operator fun plus(v: Float) = Mat4(x + v, y + v, z + v, w + v)
     operator fun minus(v: Float) = Mat4(x - v, y - v, z - v, w - v)

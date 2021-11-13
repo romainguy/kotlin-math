@@ -117,17 +117,8 @@ data class Float2(var x: Float = 0.0f, var y: Float = 0.0f) {
     }
 
     operator fun unaryMinus() = Float2(-x, -y)
-    operator fun inc(): Float2 {
-        x += 1.0f
-        y += 1.0f
-        return this
-    }
-
-    operator fun dec(): Float2 {
-        x -= 1.0f
-        y -= 1.0f
-        return this
-    }
+    operator fun inc() = Float2(x++, y++)
+    operator fun dec() = Float2(x--, y--)
 
     inline operator fun plus(v: Float) = Float2(x + v, y + v)
     inline operator fun minus(v: Float) = Float2(x - v, y - v)
@@ -291,19 +282,8 @@ data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f)
     }
 
     operator fun unaryMinus() = Float3(-x, -y, -z)
-    operator fun inc(): Float3 {
-        x += 1.0f
-        y += 1.0f
-        z += 1.0f
-        return this
-    }
-
-    operator fun dec(): Float3 {
-        x -= 1.0f
-        y -= 1.0f
-        z -= 1.0f
-        return this
-    }
+    operator fun inc() = Float3(x++, y++, z++)
+    operator fun dec() = Float3(x--, y--, z--)
 
     inline operator fun plus(v: Float) = Float3(x + v, y + v, z + v)
     inline operator fun minus(v: Float) = Float3(x - v, y - v, z - v)
@@ -543,21 +523,8 @@ data class Float4(
     }
 
     operator fun unaryMinus() = Float4(-x, -y, -z, -w)
-    operator fun inc(): Float4 {
-        x += 1.0f
-        y += 1.0f
-        z += 1.0f
-        w += 1.0f
-        return this
-    }
-
-    operator fun dec(): Float4 {
-        x -= 1.0f
-        y -= 1.0f
-        z -= 1.0f
-        w -= 1.0f
-        return this
-    }
+    operator fun inc() = Float4(x++, y++, z++, w++)
+    operator fun dec() = Float4(x--, y--, z--, w--)
 
     inline operator fun plus(v: Float) = Float4(x + v, y + v, z + v, w + v)
     inline operator fun minus(v: Float) = Float4(x - v, y - v, z - v, w - v)
