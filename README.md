@@ -1,4 +1,7 @@
 # kotlin-math
+
+[![kotlin-math](https://maven-badges.herokuapp.com/maven-central/dev.romainguy/kotlin-math/badge.svg?subject=kotlin-math)](https://maven-badges.herokuapp.com/maven-central/dev.romainguy/kotlin-math)
+
 Set of Kotlin APIs to make graphics math easier to write. These APIs are mostly
 modeled after GLSL (OpenGL Shading Language) to make porting code to and from
 shaders easier.
@@ -10,6 +13,19 @@ For instance:
 ```kotlin
 val v = Float3(1.0f, 3.0f, 4.0f)
 val n = normalize(v)
+```
+
+## Maven
+
+```gradle
+repositories {
+    // ...
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'dev.romainguy:kotlin-math:1.0.0'
+}
 ```
 
 ## Building the project

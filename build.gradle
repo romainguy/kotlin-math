@@ -1,21 +1,106 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.5.31"
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'maven-publish'
+    id 'signing'
 }
-
-apply plugin: 'idea'
-apply plugin: 'kotlin'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31'
 
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.31'
     testImplementation 'junit:junit:4.13.2'
 }
 
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
 sourceSets {
     main.kotlin.srcDirs += 'src/main/kotlin'
+}
+
+group = GROUP
+version = VERSION_NAME
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+// Publish and release with:
+// ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+// Both tasks must be executed in one pass
+// https://github.com/gradle-nexus/publish-plugin/
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
+}
+
+def configurePom(pom) {
+    pom.name = POM_NAME
+    pom.packaging = POM_PACKAGING
+    pom.description = POM_DESCRIPTION
+    pom.url = POM_URL
+
+    pom.scm {
+        url = POM_SCM_URL
+        connection = POM_SCM_CONNECTION
+        developerConnection = POM_SCM_DEV_CONNECTION
+    }
+
+    pom.licenses {
+        license {
+            name = POM_LICENCE_NAME
+            url = POM_LICENCE_URL
+            distribution = POM_LICENCE_DIST
+        }
+    }
+
+    pom.developers {
+        developer {
+            id = POM_DEVELOPER_ID
+            name = POM_DEVELOPER_NAME
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            url = !VERSION_NAME.contains("SNAPSHOT") ? releasesRepoUrl : snapshotsRepoUrl
+
+            credentials(PasswordCredentials) {
+                username = SONATYPE_NEXUS_USERNAME
+                password = SONATYPE_NEXUS_PASSWORD
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = POM_ARTIFACT_ID
+            groupId = GROUP
+            version = VERSION_NAME
+
+            configurePom(pom)
+
+            from components.java
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
