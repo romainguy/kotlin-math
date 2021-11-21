@@ -20,17 +20,18 @@ import kotlin.math.absoluteValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class MatrixTest {
     @Test
-    fun `Mat2 multiplication`() {
+    fun mat2_multiplication() {
         val a = Mat2.of(1.0f, 2.0f, 3.0f, 4.0f)
         val b = Mat2.of(2.0f, 0.0f, 1.0f, 2.0f)
         assertEquals(Mat2.of(4.0f, 4.0f, 10.0f, 8.0f), a * b)
     }
 
     @Test
-    fun `Mat3 multiplication`() {
+    fun mat3_multiplication() {
         val a = Mat3.of(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f)
         val b = Mat3.of(2.0f, 0.0f, 1.0f, 2.0f, 3.0f, 1.0f, 2.0f, 0.0f, 1.0f)
         assertEquals(
@@ -40,7 +41,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `Mat4 multiplication`() {
+    fun mat4_multiplication() {
         val a = Mat4.of(
              1.0f,  2.0f,  3.0f,  4.0f,
              5.0f,  6.0f,  7.0f,  8.0f,
@@ -65,7 +66,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `Mat3 identity`() {
+    fun mat3_identity() {
         assertEquals(
             Mat3(
                 Float3(1f, 0f, 0f),
@@ -77,19 +78,19 @@ class MatrixTest {
     }
 
     @Test
-    fun `Mat3 of fails if less than 9 arguments`() {
+    fun mat3_of_fails_if_less_than_9_arguments() {
         assertFailsWith<IllegalArgumentException> {
             Mat3.of(*8.floatArray())
         }
     }
 
     @Test
-    fun `Mat3 of`() {
+    fun mat3_of() {
         assertEquals(MAT_3, Mat3.of(*9.floatArray()))
     }
 
     @Test
-    fun `Mat4 identity`() {
+    fun mat4_identity() {
         assertEquals(
             Mat4(
                 Float4(1f, 0f, 0f, 0f),
@@ -102,19 +103,19 @@ class MatrixTest {
     }
 
     @Test
-    fun `Mat4 of fails if less than 16 arguments`() {
+    fun mat4_of_fails_if_less_than_16_arguments() {
         assertFailsWith<IllegalArgumentException> {
             Mat4.of(*15.floatArray())
         }
     }
 
     @Test
-    fun `Mat4 of`() {
+    fun mat4_of() {
         assertEquals(MAT_4, Mat4.of(*16.floatArray()))
     }
 
     @Test
-    fun `transpose Mat3`() {
+    fun transpose_mat3() {
         assertEquals(
             Mat3(
                 Float3(1f, 2f, 3f),
@@ -126,12 +127,12 @@ class MatrixTest {
     }
 
     @Test
-    fun `transpose Mat3 of identity is identity`() {
+    fun transpose_Mat3_of_identity_is_identity() {
         assertEquals(transpose(Mat3.identity()), Mat3.identity())
     }
 
     @Test
-    fun `inverse Mat3`() {
+    fun inverse_mat3() {
         assertEquals(
             Mat3(
                 Float3(0f, 1f, 0f),
@@ -147,17 +148,17 @@ class MatrixTest {
     }
 
     @Test
-    fun `inverse Mat3 of identity is identity`() {
+    fun inverse_mat3_of_identity_is_identity() {
         assertEquals(Mat3.identity(), inverse(Mat3.identity()))
     }
 
     @Test
-    fun `scale Float3`() {
+    fun scale_float3() {
         assertEquals(Mat4.identity(), scale(Float3(1f, 1f, 1f)))
     }
 
     @Test
-    fun `scale Mat4`() {
+    fun scale_mat4() {
         assertEquals(
             Mat4(
                 Float4(2f, 0f, 0f, 0f),
@@ -175,7 +176,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `translation Float3`() {
+    fun translation_float3() {
         assertEquals(
             Mat4(
                 Float4(1f, 0f, 0f, 0f),
@@ -188,7 +189,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `translation Mat4`() {
+    fun translation_mat4() {
         assertEquals(
             Mat4(
                 Float4(1f, 0f, 0f, 0f),
@@ -201,12 +202,12 @@ class MatrixTest {
     }
 
     @Test
-    fun `inverse Mat4 of identity is identity`() {
+    fun inverse_mat4_of_identity_is_identity() {
         assertEquals(Mat4.identity(), inverse(Mat4.identity()))
     }
 
     @Test
-    fun `inverse Mat4`() {
+    fun inverse_mat4() {
         assertEquals(
             Mat4(
                 Float4( 1f,  0f, 0f,  0f),
@@ -225,26 +226,27 @@ class MatrixTest {
     }
 
     @Test
-    fun `inverse non-invertible Mat4`() {
-        assertEquals(
-            Mat4(
-                Float4(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NaN, Float.NaN),
-                Float4(Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, Float.NaN, Float.NaN),
-                Float4(Float.NaN,               Float.NaN,               Float.NaN, Float.NaN),
-                Float4(Float.NaN,               Float.NaN,               Float.NaN, Float.NaN)
-
-            ),
-            inverse(Mat4(
-                Float4(1f, 1f, 0f, 0f),
-                Float4(1f, 1f, 0f, 0f),
-                Float4(0f, 0f, 1f, 2f),
-                Float4(0f, 0f, 0f, 1f)
-            ))
+    fun inverse_non_invertible_mat4() {
+        val expected = Mat4(
+            Float4(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NaN, Float.NaN),
+            Float4(Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, Float.NaN, Float.NaN),
+            Float4(Float.NaN,               Float.NaN,               Float.NaN, Float.NaN),
+            Float4(Float.NaN,               Float.NaN,               Float.NaN, Float.NaN),
         )
+
+        val actual = inverse(Mat4(
+            Float4(1f, 1f, 0f, 0f),
+            Float4(1f, 1f, 0f, 0f),
+            Float4(0f, 0f, 1f, 2f),
+            Float4(0f, 0f, 0f, 1f)
+        ))
+
+        // In Kotlin/Native NaN != NaN, unless checking content equality
+        assertTrue(expected.toFloatArray() contentEquals actual.toFloatArray())
     }
 
     @Test
-    fun `rotation Float3`() {
+    fun rotation_float3() {
         assertArrayEquals(
             Mat4(
                 Float4(0.998f, 0.0523f, -0.0348f, 0f),
@@ -257,7 +259,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `rotation Mat4`() {
+    fun rotation_mat4() {
         assertArrayEquals(
             Mat4(
                 Float4(0.0966f, 0.4833f, 0.87f, 0f),
@@ -270,7 +272,7 @@ class MatrixTest {
     }
 
     @Test
-    fun `rotation axis angle`() {
+    fun rotation_axis_angle() {
         assertArrayEquals(
             Mat4(
                 Float4(0.9999f, 5f, 1f, 0f),
