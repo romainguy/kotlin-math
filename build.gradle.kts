@@ -57,21 +57,16 @@ kotlin {
             }
         }
 
-        val jvmMain by getting
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit5"))
             }
         }
 
-        val jsMain by getting
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
             }
         }
-
-        val nativeMain by getting
-        val nativeTest by getting
     }
 }
