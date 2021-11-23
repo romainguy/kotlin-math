@@ -10,6 +10,7 @@ build/
 !**/src/**/build
 !**/test/**/build
 *.iml
+.idea/artifacts/
 .idea/libraries/
 .idea/modules
 .idea/modules.xml

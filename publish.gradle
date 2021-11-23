@@ -10,49 +10,35 @@ nexusPublishing {
         sonatype {
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username = SONATYPE_NEXUS_USERNAME
+            password = SONATYPE_NEXUS_PASSWORD
         }
     }
 }
 
 publishing {
     publications.all {
-        pom.withXml {
-            def root = asNode()
-
-            root.children().last() + {
-                resolveStrategy = Closure.DELEGATE_FIRST
-
-                description POM_DESCRIPTION
-                name POM_NAME
-                url POM_URL
-                licenses {
-                    license {
-                        name POM_LICENCE_NAME
-                        url POM_LICENCE_URL
-                        distribution POM_LICENCE_DIST
-                    }
-                }
-                scm {
-                    url POM_SCM_URL
-                    connection POM_SCM_CONNECTION
-                    developerConnection POM_SCM_DEV_CONNECTION
-                }
-                developers {
-                    developer {
-                        id POM_DEVELOPER_ID
-                        name POM_DEVELOPER_NAME
-                    }
-                }
+        pom {
+            description = POM_DESCRIPTION
+            name = POM_NAME
+            url = POM_URL
+        }
+        pom.licenses {
+            license {
+                name = POM_LICENCE_NAME
+                url = POM_LICENCE_URL
+                distribution = POM_LICENCE_DIST
             }
         }
-    }
-
-    repositories {
-        maven {
-            url isReleaseBuild() ? getReleaseRepositoryUrl() : getSnapshotRepositoryUrl()
-            credentials(PasswordCredentials) {
-                username = SONATYPE_NEXUS_USERNAME
-                password = SONATYPE_NEXUS_PASSWORD
+        pom.scm {
+            url = POM_SCM_URL
+            connection = POM_SCM_CONNECTION
+            developerConnection = POM_SCM_DEV_CONNECTION
+        }
+        pom.developers {
+            developer {
+                id = POM_DEVELOPER_ID
+                name = POM_DEVELOPER_NAME
             }
         }
     }
