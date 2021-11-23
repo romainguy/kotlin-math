@@ -15,6 +15,8 @@ val v = Float3(1.0f, 3.0f, 4.0f)
 val n = normalize(v)
 ```
 
+This project supports multi-platform thanks to [ekgame](https://github.com/ekgame).
+
 ## Maven
 
 ```gradle
@@ -24,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.romainguy:kotlin-math:1.0.1'
+    implementation 'dev.romainguy:kotlin-math:1.1.0'
 }
 ```
 

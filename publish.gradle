@@ -1,0 +1,98 @@
+group GROUP
+version VERSION_NAME
+
+// Publish and release with:
+// ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+// Both tasks must be executed in one pass
+// https://github.com/gradle-nexus/publish-plugin/
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username = SONATYPE_NEXUS_USERNAME
+            password = SONATYPE_NEXUS_PASSWORD
+        }
+    }
+}
+
+publishing {
+    publications.all {
+        pom {
+            description = POM_DESCRIPTION
+            name = POM_NAME
+            url = POM_URL
+        }
+        pom.licenses {
+            license {
+                name = POM_LICENCE_NAME
+                url = POM_LICENCE_URL
+                distribution = POM_LICENCE_DIST
+            }
+        }
+        pom.scm {
+            url = POM_SCM_URL
+            connection = POM_SCM_CONNECTION
+            developerConnection = POM_SCM_DEV_CONNECTION
+        }
+        pom.developers {
+            developer {
+                id = POM_DEVELOPER_ID
+                name = POM_DEVELOPER_NAME
+            }
+        }
+    }
+}
+
+def isReleaseBuild() {
+    return !VERSION_NAME.contains('SNAPSHOT')
+}
+
+def getReleaseRepositoryUrl() {
+    return hasProperty('RELEASE_REPOSITORY_URL')
+        ? RELEASE_REPOSITORY_URL
+        : 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+}
+
+def getSnapshotRepositoryUrl() {
+    return hasProperty('SNAPSHOT_REPOSITORY_URL')
+        ? SNAPSHOT_REPOSITORY_URL
+        : 'https://oss.sonatype.org/content/repositories/snapshots/'
+}
+
+signing {
+    required { isReleaseBuild() }
+    sign(publishing.publications)
+}
+
+tasks.withType(Sign) {
+    onlyIf { isReleaseBuild() }
+}
+
+tasks.register('publishMac') {
+    dependsOn 'publishIosArm32PublicationToMavenRepository'
+    dependsOn 'publishIosArm64PublicationToMavenRepository'
+    dependsOn 'publishIosSimulatorArm64PublicationToMavenRepository'
+    dependsOn 'publishIosX64PublicationToMavenRepository'
+    dependsOn 'publishTvosArm64PublicationToMavenRepository'
+    dependsOn 'publishTvosSimulatorArm64PublicationToMavenRepository'
+    dependsOn 'publishTvosX64PublicationToMavenRepository'
+    dependsOn 'publishWatchosArm32PublicationToMavenRepository'
+    dependsOn 'publishWatchosArm64PublicationToMavenRepository'
+    dependsOn 'publishWatchosSimulatorArm64PublicationToMavenRepository'
+    dependsOn 'publishWatchosX86PublicationToMavenRepository'
+    dependsOn 'publishMacosArm64PublicationToMavenRepository'
+    dependsOn 'publishMacosX64PublicationToMavenRepository'
+    dependsOn 'publishJvmPublicationToMavenRepository'
+    dependsOn 'publishJsPublicationToMavenRepository'
+    dependsOn 'publishKotlinMultiplatformPublicationToMavenRepository'
+}
+
+tasks.register('publishWindows') {
+    dependsOn 'publishMingwX64PublicationToMavenRepository'
+}
+
+tasks.register('publishLinux') {
+    dependsOn 'publishLinuxX64PublicationToMavenRepository'
+    dependsOn 'publishLinuxArm32HfpPublicationToMavenRepository'
+}
