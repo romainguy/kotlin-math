@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.target.HostManager
+
 plugins {
     kotlin("multiplatform") version "1.6.0"
 }
@@ -13,59 +15,56 @@ repositories {
 }
 
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
-        testRuns["test"].executionTask.configure {
-            useJUnitPlatform()
-        }
-    }
-
-    js(BOTH) {
-        nodejs {
-            testTask {
-                useMocha {
-                    timeout = "30000"
+    targets {
+        jvm()
+        js(BOTH) {
+            compilations.all {
+                kotlinOptions {
+                    sourceMap = true
+                    moduleKind = "umd"
+                    metaInfo = true
                 }
             }
+            browser()
+            nodejs()
         }
-        compilations.all {
-            kotlinOptions {
-                sourceMap = true
-                moduleKind = "umd"
-                metaInfo = true
+        if (HostManager.hostIsMac) {
+            macosX64()
+            macosArm64()
+            iosX64()
+            iosArm64()
+            iosArm32()
+            iosSimulatorArm64()
+            watchosArm32()
+            watchosArm64()
+            watchosX86()
+            watchosSimulatorArm64()
+            tvosArm64()
+            tvosX64()
+            tvosSimulatorArm64()
+        }
+
+        if (HostManager.hostIsMingw || HostManager.hostIsMac) {
+            mingwX64 {
+                binaries.findTest(DEBUG)!!.linkerOpts = mutableListOf("-Wl,--subsystem,windows")
             }
         }
-    }
 
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
+        if (HostManager.hostIsLinux || HostManager.hostIsMac) {
+            linuxX64()
+            linuxArm32Hfp()
+        }
     }
 
     sourceSets {
-        val commonMain by getting
-        val commonTest by getting {
+        commonMain {
             dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(kotlin("stdlib-common"))
             }
         }
-
-        val jvmTest by getting {
+        commonTest {
             dependencies {
-                implementation(kotlin("test-junit5"))
-            }
-        }
-
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
+                implementation(kotlin("test"))
             }
         }
     }
