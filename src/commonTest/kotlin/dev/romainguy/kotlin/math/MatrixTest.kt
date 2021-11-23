@@ -382,7 +382,7 @@ class MatrixTest {
             Float4(4f, 8f, 12f, 16f)
         )
 
-        private fun assertArrayEquals(expected: FloatArray, actual: FloatArray, delta: Float = 0.0001f) {
+        private fun assertArrayEquals(expected: FloatArray, actual: FloatArray, delta: Float = 0.001f) {
             assertEquals(expected.size, actual.size)
             assertTrue(
                 expected.zip(actual).all { (a, b) -> (a - b).absoluteValue < delta },
