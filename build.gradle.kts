@@ -2,6 +2,10 @@ import org.jetbrains.kotlin.konan.target.HostManager
 
 plugins {
     kotlin("multiplatform") version "1.6.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("org.jetbrains.dokka") version "1.6.0"
+    id("maven-publish")
+    id("signing")
 }
 
 val GROUP: String by project
@@ -12,6 +16,10 @@ version = VERSION_NAME
 
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    dokkaGfmPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.6.0")
 }
 
 kotlin {
@@ -69,3 +77,5 @@ kotlin {
         }
     }
 }
+
+apply(from = "publish.gradle")
