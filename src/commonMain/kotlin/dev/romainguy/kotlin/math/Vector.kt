@@ -787,6 +787,14 @@ inline fun mix(a: Float4, b: Float4, x: Float4): Float4 {
             mix(a.w, b.w, x.w))
 }
 
+inline fun combine(a: Float4, b: Float4): Float4 {
+    return Float4(
+            a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+            a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+            a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
+            a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z)
+}
+
 inline fun min(v: Float4) = min(v.x, min(v.y, min(v.z, v.w)))
 inline fun min(a: Float4, b: Float4): Float4 {
     return Float4(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z), min(a.w, b.w))

@@ -18,7 +18,7 @@
 
 package dev.romainguy.kotlin.math
 
-import kotlin.math.pow
+import kotlin.math.*
 
 const val PI          = 3.1415926536f
 const val HALF_PI     = PI * 0.5f
@@ -43,3 +43,22 @@ inline fun fract(v: Float) = v % 1
 inline fun sqr(v: Float) = v * v
 
 inline fun pow(x: Float, y: Float) = (x.toDouble().pow(y.toDouble())).toFloat()
+
+fun eulerAngles(q: Float4): Float3 {
+    val x = atan2(2.0f * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z)
+    val y = asin(-2.0f * (q.x * q.z - q.w * q.y))
+    val z = atan2(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z)
+    return transform(Float3(x, y, z), ::degrees)
+}
+
+fun quaternion(d: Float3): Float4 {
+    val x = quaternion(Float3(x = 1.0f), d.x)
+    val y = quaternion(Float3(y = 1.0f), d.y)
+    val z = quaternion(Float3(z = 1.0f), d.z)
+    return combine(combine(y, x), z)
+}
+
+inline fun quaternion(axis: Float3, angle: Float): Float4 {
+    val r = radians(angle)
+    return normalize(Float4(v = axis * sin(r / 2.0f), w = cos(r / 2.0f)))
+}

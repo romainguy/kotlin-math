@@ -259,6 +259,50 @@ data class Mat4(
                         degrees(-asin(z.y)), degrees(-atan2(z.x, z.z)), degrees(atan2( x.y,  y.y)))
             }
         }
+    val rotationQuaternion: Float4
+        get() {
+            val t = x.x + y.y + z.z
+            return normalize(
+                when {
+                    t > 0 -> {
+                        val s = sqrt(t + 1.0f) * 2.0f
+                        Float4(
+                            (z.y - y.z) / s,
+                            (x.z - z.x) / s,
+                            (y.x - x.y) / s,
+                            0.25f * s
+                        )
+                    }
+                    x.x > y.y && x.x > z.z -> {
+                        val s = sqrt(1.0f + x.x - y.y - z.z) * 2.0f
+                        Float4(
+                            0.25f * s,
+                            (x.y + y.x) / s,
+                            (x.z + z.x) / s,
+                            (z.y - y.z) / s
+                        )
+                    }
+                    y.y > z.z -> {
+                        val s = sqrt(1.0f + y.y - x.x - z.z) * 2.0f
+                        Float4(
+                            (x.y + y.x) / s,
+                            0.25f * s,
+                            (y.z + z.y) / s,
+                            (x.z - z.x) / s
+                        )
+                    }
+                    else -> {
+                        val s = sqrt(1.0f + z.z - x.x - y.y) * 2.0f
+                        Float4(
+                            (y.x - x.y) / s,
+                            (x.z + z.x) / s,
+                            (y.z + z.y) / s,
+                            0.25f * s
+                        )
+                    }
+                }
+            )
+        }
 
     inline val upperLeft: Mat3
         get() = Mat3(x.xyz, y.xyz, z.xyz)
@@ -495,6 +539,27 @@ fun rotation(axis: Float3, angle: Float): Mat4 {
             y * x * d + z * s, y * y * d + c, y * z * d - x * s, 0.0f,
             z * x * d - y * s, z * y * d + x * s, z * z * d + c, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
+    )
+}
+fun rotation(quaternion: Float4): Mat4 {
+    val n = normalize(quaternion)
+    val s = Mat4(n.x * n, n.y * n, n.z * n)
+    return Mat4(
+            Float4(
+                1.0f - 2.0f * (s.y.y + s.z.z),
+                2.0f * (s.x.y - s.z.w),
+                2.0f * (s.x.z + s.y.w)
+            ),
+            Float4(
+                2.0f * (s.x.y + s.z.w),
+                1.0f - 2.0f * (s.x.x + s.z.z),
+                2.0f * (s.y.z - s.x.w)
+            ),
+            Float4(
+                2.0f * (s.x.z - s.y.w),
+                2.0f * (s.y.z + s.x.w),
+                1.0f - 2.0f * (s.x.x + s.y.y)
+            )
     )
 }
 

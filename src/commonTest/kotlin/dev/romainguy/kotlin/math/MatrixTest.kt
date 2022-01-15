@@ -285,6 +285,19 @@ class MatrixTest {
     }
 
     @Test
+    fun rotationQuaternion() {
+        assertArrayEquals(
+            Mat4(
+                Float4(-0.7333f, -0.1333f, 0.6667f, 0f),
+                Float4(0.66667f, -0.3333f, 0.6667f, 0f),
+                Float4(0.1333f, 0.93333f, 0.3333f, 0f),
+                Float4(0f, 0f, 0f, 1f)
+            ).toFloatArray(),
+            rotation(Float4(1f, 2f, 3f, 1f)).toFloatArray()
+        )
+    }
+
+    @Test
     fun normal() {
         assertArrayEquals(
             Mat4(
