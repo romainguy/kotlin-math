@@ -543,22 +543,21 @@ fun rotation(axis: Float3, angle: Float): Mat4 {
 }
 fun rotation(quaternion: Float4): Mat4 {
     val n = normalize(quaternion)
-    val s = Mat4(n.x * n, n.y * n, n.z * n)
     return Mat4(
             Float4(
-                1.0f - 2.0f * (s.y.y + s.z.z),
-                2.0f * (s.x.y - s.z.w),
-                2.0f * (s.x.z + s.y.w)
+                1.0f - 2.0f * (n.y * n.y + n.z * n.z),
+                2.0f * (n.x * n.y - n.z * n.w),
+                2.0f * (n.x * n.z + n.y * n.w)
             ),
             Float4(
-                2.0f * (s.x.y + s.z.w),
-                1.0f - 2.0f * (s.x.x + s.z.z),
-                2.0f * (s.y.z - s.x.w)
+                2.0f * (n.x * n.y + n.z * n.w),
+                1.0f - 2.0f * (n.x * n.x + n.z * n.z),
+                2.0f * (n.y * n.z - n.x * n.w)
             ),
             Float4(
-                2.0f * (s.x.z - s.y.w),
-                2.0f * (s.y.z + s.x.w),
-                1.0f - 2.0f * (s.x.x + s.y.y)
+                2.0f * (n.x * n.z - n.y * n.w),
+                2.0f * (n.y * n.z + n.x * n.w),
+                1.0f - 2.0f * (n.x * n.x + n.y * n.y)
             )
     )
 }
