@@ -468,6 +468,12 @@ fun translation(t: Float3) = Mat4(w = Float4(t, 1.0f))
 fun translation(m: Mat4) = translation(m.translation)
 
 fun rotation(m: Mat4) = Mat4(normalize(m.right), normalize(m.up), normalize(m.forward))
+
+/**
+ * Construct a Euler Angle Rotation Matrix using per axis angles in degrees
+ *
+ * @param d Per axis Euler angles in degrees
+ */
 fun rotation(d: Float3): Mat4 {
     val r = transform(d, ::radians)
     val c = transform(r) { x -> cos(x) }
@@ -480,6 +486,13 @@ fun rotation(d: Float3): Mat4 {
             0.0f, 0.0f, 0.0f, 1.0f
     )
 }
+
+/**
+ * Construct a Euler Angle Rotation Matrix using axis direction and angle in degree
+ *
+ * @param axis Rotation direction
+ * @param angle Angle size in degrees
+ */
 fun rotation(axis: Float3, angle: Float): Mat4 {
     val x = axis.x
     val y = axis.y
@@ -497,6 +510,14 @@ fun rotation(axis: Float3, angle: Float): Mat4 {
             0.0f, 0.0f, 0.0f, 1.0f
     )
 }
+
+/**
+ * Construct a Quaternion Rotation Matrix following the Hamilton convention
+ *
+ * Assume the destination and local coordinate spaces are initially aligned, and the local
+ * coordinate space is then rotated counter-clockwise about a unit-length axis, k, by an angle,
+ * theta.
+ */
 fun rotation(quaternion: Float4): Mat4 {
     val n = normalize(quaternion)
     return Mat4(
@@ -518,6 +539,9 @@ fun rotation(quaternion: Float4): Mat4 {
     )
 }
 
+/**
+ * Extract Quaternion rotation from a Matrix
+ */
 fun quaternion(m: Mat4): Float4 {
     val t = m.x.x + m.y.y + m.z.z
     return normalize(
