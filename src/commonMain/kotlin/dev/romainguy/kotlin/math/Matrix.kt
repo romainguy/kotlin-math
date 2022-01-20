@@ -259,50 +259,6 @@ data class Mat4(
                         degrees(-asin(z.y)), degrees(-atan2(z.x, z.z)), degrees(atan2( x.y,  y.y)))
             }
         }
-    val rotationQuaternion: Float4
-        get() {
-            val t = x.x + y.y + z.z
-            return normalize(
-                when {
-                    t > 0 -> {
-                        val s = sqrt(t + 1.0f) * 2.0f
-                        Float4(
-                            (z.y - y.z) / s,
-                            (x.z - z.x) / s,
-                            (y.x - x.y) / s,
-                            0.25f * s
-                        )
-                    }
-                    x.x > y.y && x.x > z.z -> {
-                        val s = sqrt(1.0f + x.x - y.y - z.z) * 2.0f
-                        Float4(
-                            0.25f * s,
-                            (x.y + y.x) / s,
-                            (x.z + z.x) / s,
-                            (z.y - y.z) / s
-                        )
-                    }
-                    y.y > z.z -> {
-                        val s = sqrt(1.0f + y.y - x.x - z.z) * 2.0f
-                        Float4(
-                            (x.y + y.x) / s,
-                            0.25f * s,
-                            (y.z + z.y) / s,
-                            (x.z - z.x) / s
-                        )
-                    }
-                    else -> {
-                        val s = sqrt(1.0f + z.z - x.x - y.y) * 2.0f
-                        Float4(
-                            (y.x - x.y) / s,
-                            (x.z + z.x) / s,
-                            (y.z + z.y) / s,
-                            0.25f * s
-                        )
-                    }
-                }
-            )
-        }
 
     inline val upperLeft: Mat3
         get() = Mat3(x.xyz, y.xyz, z.xyz)
@@ -559,6 +515,50 @@ fun rotation(quaternion: Float4): Mat4 {
                 2.0f * (n.y * n.z + n.x * n.w),
                 1.0f - 2.0f * (n.x * n.x + n.y * n.y)
             )
+    )
+}
+
+fun quaternion(m: Mat4): Float4 {
+    val t = m.x.x + m.y.y + m.z.z
+    return normalize(
+        when {
+            t > 0 -> {
+                val s = sqrt(t + 1.0f) * 2.0f
+                Float4(
+                    (m.z.y - m.y.z) / s,
+                    (m.x.z - m.z.x) / s,
+                    (m.y.x - m.x.y) / s,
+                    0.25f * s
+                )
+            }
+            m.x.x > m.y.y && m.x.x > m.z.z -> {
+                val s = sqrt(1.0f + m.x.x - m.y.y - m.z.z) * 2.0f
+                Float4(
+                    0.25f * s,
+                    (m.x.y + m.y.x) / s,
+                    (m.x.z + m.z.x) / s,
+                    (m.z.y - m.y.z) / s
+                )
+            }
+            m.y.y > m.z.z -> {
+                val s = sqrt(1.0f + m.y.y - m.x.x - m.z.z) * 2.0f
+                Float4(
+                    (m.x.y + m.y.x) / s,
+                    0.25f * s,
+                    (m.y.z + m.z.y) / s,
+                    (m.x.z - m.z.x) / s
+                )
+            }
+            else -> {
+                val s = sqrt(1.0f + m.z.z - m.x.x - m.y.y) * 2.0f
+                Float4(
+                    (m.y.x - m.x.y) / s,
+                    (m.x.z + m.z.x) / s,
+                    (m.y.z + m.z.y) / s,
+                    0.25f * s
+                )
+            }
+        }
     )
 }
 
