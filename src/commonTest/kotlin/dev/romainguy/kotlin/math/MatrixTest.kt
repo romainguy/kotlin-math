@@ -285,15 +285,28 @@ class MatrixTest {
     }
 
     @Test
-    fun rotationQuaternion() {
+    fun euler() {
         assertArrayEquals(
-            Mat4(
-                Float4(-0.7333f, -0.1333f, 0.6667f, 0f),
-                Float4(0.66667f, -0.3333f, 0.6667f, 0f),
-                Float4(0.1333f, 0.93333f, 0.3333f, 0f),
-                Float4(0f, 0f, 0f, 1f)
-            ).toFloatArray(),
-            rotation(Float4(1f, 2f, 3f, 1f)).toFloatArray()
+                Mat4(
+                        Float4(0.9980f, -0.0517f, 0.0358f, 0f),
+                        Float4(0.0523f, 0.9985f, -0.0156f, 0f),
+                        Float4(-0.0349f, 0.0174f, 0.9992f, 0f),
+                        Float4(0f, 0f, 0f, 1f)
+                ).toFloatArray(),
+                euler(Float3(1f, 2f, 3f)).toFloatArray()
+        )
+    }
+
+    @Test
+    fun quaternion() {
+        assertArrayEquals(
+                Mat4(
+                        Float4(-0.7333f, -0.1333f, 0.6667f, 0f),
+                        Float4(0.66667f, -0.3333f, 0.6667f, 0f),
+                        Float4(0.1333f, 0.93333f, 0.3333f, 0f),
+                        Float4(0f, 0f, 0f, 1f)
+                ).toFloatArray(),
+                quaternion(Quaternion(1f, 2f, 3f, 1f)).toFloatArray()
         )
     }
 
@@ -395,7 +408,7 @@ class MatrixTest {
             Float4(4f, 8f, 12f, 16f)
         )
 
-        private fun assertArrayEquals(expected: FloatArray, actual: FloatArray, delta: Float = 0.001f) {
+        internal fun assertArrayEquals(expected: FloatArray, actual: FloatArray, delta: Float = 0.001f) {
             assertEquals(expected.size, actual.size)
             assertTrue(
                 expected.zip(actual).all { (a, b) -> (a - b).absoluteValue < delta },

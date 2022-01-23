@@ -135,6 +135,8 @@ data class Float2(var x: Float = 0.0f, var y: Float = 0.0f) {
         y = block(y)
         return this
     }
+
+    fun toFloatArray() = floatArrayOf(x, y)
 }
 
 data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f) {
@@ -306,6 +308,8 @@ data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f)
         z = block(z)
         return this
     }
+
+    fun toFloatArray() = floatArrayOf(x, y, z)
 }
 
 data class Float4(
@@ -553,6 +557,8 @@ data class Float4(
         w = block(w)
         return this
     }
+
+    fun toFloatArray() = floatArrayOf(x, y, z, w)
 }
 
 inline operator fun Float.plus(v: Float2) = Float2(this + v.x, this + v.y)
@@ -785,14 +791,6 @@ inline fun mix(a: Float4, b: Float4, x: Float4): Float4 {
             mix(a.y, b.y, x.y),
             mix(a.z, b.z, x.z),
             mix(a.w, b.w, x.w))
-}
-
-inline fun combine(a: Float4, b: Float4): Float4 {
-    return Float4(
-            a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
-            a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
-            a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
-            a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z)
 }
 
 inline fun min(v: Float4) = min(v.x, min(v.y, min(v.z, v.w)))

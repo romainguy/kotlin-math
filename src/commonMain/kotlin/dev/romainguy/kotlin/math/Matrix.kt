@@ -41,14 +41,14 @@ data class Mat2(
         fun identity() = Mat2()
     }
 
-    operator fun get(column: Int) = when(column) {
+    operator fun get(column: Int) = when (column) {
         0 -> x
         1 -> y
         else -> throw IllegalArgumentException("column must be in 0..1")
     }
     operator fun get(column: Int, row: Int) = get(column)[row]
 
-    operator fun get(column: MatrixColumn) = when(column) {
+    operator fun get(column: MatrixColumn) = when (column) {
         MatrixColumn.X -> x
         MatrixColumn.Y -> y
         else -> throw IllegalArgumentException("column must be X or Y")
@@ -124,7 +124,7 @@ data class Mat3(
         fun identity() = Mat3()
     }
 
-    operator fun get(column: Int) = when(column) {
+    operator fun get(column: Int) = when (column) {
         0 -> x
         1 -> y
         2 -> z
@@ -132,7 +132,7 @@ data class Mat3(
     }
     operator fun get(column: Int, row: Int) = get(column)[row]
 
-    operator fun get(column: MatrixColumn) = when(column) {
+    operator fun get(column: MatrixColumn) = when (column) {
         MatrixColumn.X -> x
         MatrixColumn.Y -> y
         MatrixColumn.Z -> z
@@ -263,7 +263,7 @@ data class Mat4(
     inline val upperLeft: Mat3
         get() = Mat3(x.xyz, y.xyz, z.xyz)
 
-    operator fun get(column: Int) = when(column) {
+    operator fun get(column: Int) = when (column) {
         0 -> x
         1 -> y
         2 -> z
@@ -272,7 +272,7 @@ data class Mat4(
     }
     operator fun get(column: Int, row: Int) = get(column)[row]
 
-    operator fun get(column: MatrixColumn) = when(column) {
+    operator fun get(column: MatrixColumn) = when (column) {
         MatrixColumn.X -> x
         MatrixColumn.Y -> y
         MatrixColumn.Z -> z
@@ -332,6 +332,8 @@ data class Mat4(
             x.z * v.x + y.z * v.y + z.z * v.z+ w.z * v.w,
             x.w * v.x + y.w * v.y + z.w * v.z+ w.w * v.w
     )
+
+    fun toQuaternion() = quaternion(this)
 
     fun toFloatArray() = floatArrayOf(
             x.x, y.x, z.x, w.x,
@@ -469,11 +471,6 @@ fun translation(m: Mat4) = translation(m.translation)
 
 fun rotation(m: Mat4) = Mat4(normalize(m.right), normalize(m.up), normalize(m.forward))
 
-/**
- * Construct a Euler Angle Rotation Matrix using per axis angles in degrees
- *
- * @param d Per axis Euler angles in degrees
- */
 fun rotation(d: Float3): Mat4 {
     val r = transform(d, ::radians)
     val c = transform(r) { x -> cos(x) }
@@ -487,12 +484,6 @@ fun rotation(d: Float3): Mat4 {
     )
 }
 
-/**
- * Construct a Euler Angle Rotation Matrix using axis direction and angle in degree
- *
- * @param axis Rotation direction
- * @param angle Angle size in degrees
- */
 fun rotation(axis: Float3, angle: Float): Mat4 {
     val x = axis.x
     val y = axis.y
@@ -512,13 +503,49 @@ fun rotation(axis: Float3, angle: Float): Mat4 {
 }
 
 /**
+ * Construct a matrix from Euler angles using YPR around ZYX respectively
+ *
+ * The Euler angles are applied in ZYX order.
+ * i.e: a vector is first rotated about X (roll) then Y (pitch) and then Z (yaw).
+ *
+ * @param d Per axis Euler angles in degrees
+ */
+fun euler(d: Float3): Mat4 {
+    val r = transform(d, ::radians)
+    return eulerZYX(r.z, r.y, r.x)
+}
+
+/**
+ * Construct a matrix from Euler angles using YPR around ZYX respectively
+ *
+ * The Euler angles are applied in ZYX order.
+ * i.e: a vector is first rotated about X (roll) then Y (pitch) and then Z (yaw).
+ *
+ * @param roll about X axis in radians
+ * @param pitch about Y axis in radians
+ * @param yaw about Z axis in radians
+ */
+fun eulerZYX(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f): Mat4 {
+    val cy = cos(yaw)
+    val sy = sin(yaw)
+    val cp = cos(pitch)
+    val sp = sin(pitch)
+    val cr = cos(roll)
+    val sr = sin(roll)
+    return Mat4.of(cp * cy, cp * sy, -sp, 0.0f,
+            sp * sr * cy - cr * sy, sp * sr * sy + cr * cy, cp * sr, 0.0f,
+            sp * cr * cy + sr * sy, sp * cr * sy - sr * cy, cp * cr, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f)
+}
+
+/**
  * Construct a Quaternion Rotation Matrix following the Hamilton convention
  *
  * Assume the destination and local coordinate spaces are initially aligned, and the local
  * coordinate space is then rotated counter-clockwise about a unit-length axis, k, by an angle,
  * theta.
  */
-fun rotation(quaternion: Float4): Mat4 {
+fun quaternion(quaternion: Quaternion): Mat4 {
     val n = normalize(quaternion)
     return Mat4(
             Float4(
@@ -542,13 +569,13 @@ fun rotation(quaternion: Float4): Mat4 {
 /**
  * Extract Quaternion rotation from a Matrix
  */
-fun quaternion(m: Mat4): Float4 {
-    val t = m.x.x + m.y.y + m.z.z
+fun quaternion(m: Mat4): Quaternion {
+    val trace = m.x.x + m.y.y + m.z.z
     return normalize(
         when {
-            t > 0 -> {
-                val s = sqrt(t + 1.0f) * 2.0f
-                Float4(
+                trace > 0 -> {
+                val s = sqrt(trace + 1.0f) * 2.0f
+                    Quaternion(
                     (m.z.y - m.y.z) / s,
                     (m.x.z - m.z.x) / s,
                     (m.y.x - m.x.y) / s,
@@ -557,7 +584,7 @@ fun quaternion(m: Mat4): Float4 {
             }
             m.x.x > m.y.y && m.x.x > m.z.z -> {
                 val s = sqrt(1.0f + m.x.x - m.y.y - m.z.z) * 2.0f
-                Float4(
+                    Quaternion(
                     0.25f * s,
                     (m.x.y + m.y.x) / s,
                     (m.x.z + m.z.x) / s,
@@ -566,7 +593,7 @@ fun quaternion(m: Mat4): Float4 {
             }
             m.y.y > m.z.z -> {
                 val s = sqrt(1.0f + m.y.y - m.x.x - m.z.z) * 2.0f
-                Float4(
+                    Quaternion(
                     (m.x.y + m.y.x) / s,
                     0.25f * s,
                     (m.y.z + m.z.y) / s,
@@ -575,7 +602,7 @@ fun quaternion(m: Mat4): Float4 {
             }
             else -> {
                 val s = sqrt(1.0f + m.z.z - m.x.x - m.y.y) * 2.0f
-                Float4(
+                    Quaternion(
                     (m.y.x - m.x.y) / s,
                     (m.x.z + m.z.x) / s,
                     (m.y.z + m.z.y) / s,
