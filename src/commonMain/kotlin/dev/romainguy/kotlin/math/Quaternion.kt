@@ -204,8 +204,8 @@ data class Quaternion(
 
     operator fun unaryMinus() = Quaternion(-x, -y, -z, -w)
 
-    inline operator fun plus(v: Float) = Float4(x + v, y + v, z + v, w + v)
-    inline operator fun minus(v: Float) = Float4(x - v, y - v, z - v, w - v)
+    inline operator fun plus(v: Float) = Quaternion(x + v, y + v, z + v, w + v)
+    inline operator fun minus(v: Float) = Quaternion(x - v, y - v, z - v, w - v)
     inline operator fun times(v: Float) = Quaternion(x * v, y * v, z * v, w * v)
     inline operator fun div(v: Float) = Quaternion(x / v, y / v, z / v, w / v)
 
