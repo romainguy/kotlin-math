@@ -99,6 +99,20 @@ data class Quaternion(
             z = value.z
         }
 
+    inline var imaginary: Float3
+        get() = xyz
+        set(value) {
+            x = value.x
+            y = value.y
+            z = value.z
+        }
+
+    inline var real: Float
+        get() = w
+        set(value) {
+            w = value
+        }
+
     inline var xyzw: Float4
         get() = Float4(x, y, z, w)
         set(value) {
@@ -227,7 +241,9 @@ data class Quaternion(
         return this
     }
 
-    fun toEulerAngle() = eulerAngles(this)
+    fun toEulerAngles() = eulerAngles(this)
+
+    fun toMatrix() = rotation(this)
 
     fun toFloatArray() = floatArrayOf(x, y, z, w)
 }
@@ -256,12 +272,6 @@ fun inverse(q: Quaternion): Quaternion {
     val d = 1.0f / dot(q, q)
     return Quaternion(q.w * d, -q.x * d, -q.y * d, -q.w * d)
 }
-
-fun real(q: Quaternion) = q.w
-
-fun imaginary(q: Quaternion) = q.xyz
-
-fun unreal(q: Quaternion) = Quaternion(q.x, q.y, q.z, 0.0f)
 
 fun cross(a: Quaternion, b: Quaternion): Quaternion {
     val m = a * b

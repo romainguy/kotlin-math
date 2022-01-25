@@ -24,6 +24,10 @@ enum class MatrixColumn {
     X, Y, Z, W
 }
 
+enum class RotationsOrder {
+    XYZ, XZY, YXZ, YZX, ZXY, ZYX
+}
+
 data class Mat2(
         var x: Float2 = Float2(x = 1.0f),
         var y: Float2 = Float2(y = 1.0f)) {
@@ -471,17 +475,87 @@ fun translation(m: Mat4) = translation(m.translation)
 
 fun rotation(m: Mat4) = Mat4(normalize(m.right), normalize(m.up), normalize(m.forward))
 
-fun rotation(d: Float3): Mat4 {
+/**
+ * Construct a rotation matrix from Euler angles using YPR around a specified order
+ *
+ * Uses intrinsic Tait-Bryan angles. This means that rotations are performed with respect to the
+ * local coordinate system.
+ * That is, for order 'XYZ', the rotation is first around the X axis (which is the same as the
+ * world-X axis), then around local-Y (which may now be different from the world Y-axis),
+ * then local-Z (which may be different from the world Z-axis)
+ *
+ * @param d Per axis Euler angles in degrees
+ * Yaw, pitch, roll (YPR) are taken accordingly to the rotations order input.
+ * @param order The order in which to apply rotations.
+ * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
+ * axis, then its Y axis and finally its X axis.
+ *
+ * @return The rotation matrix
+ */
+fun rotation(d: Float3, order: RotationsOrder = RotationsOrder.ZYX): Mat4 {
     val r = transform(d, ::radians)
-    val c = transform(r) { x -> cos(x) }
-    val s = transform(r) { x -> sin(x) }
+    return when(order) {
+        RotationsOrder.XZY -> rotation(r.x, r.z, r.y)
+        RotationsOrder.XYZ -> rotation(r.x, r.y, r.z)
+        RotationsOrder.YXZ -> rotation(r.y, r.x, r.z)
+        RotationsOrder.YZX -> rotation(r.y, r.z, r.x)
+        RotationsOrder.ZYX -> rotation(r.z, r.y, r.x)
+        RotationsOrder.ZXY -> rotation(r.z, r.x, r.y)
+    }
+}
 
-    return Mat4.of(
-            c.y * c.z, -c.x * s.z + s.x * s.y * c.z, s.x * s.z + c.x * s.y * c.z, 0.0f,
-            c.y * s.z, c.x * c.z + s.x * s.y * s.z, -s.x * c.z + c.x * s.y * s.z, 0.0f,
-            -s.y, s.x * c.y, c.x * c.y, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-    )
+/**
+ * Construct a rotation matrix from Euler yaw, pitch, roll around a specified order.
+ *
+ * @param roll about 1st rotation axis in radians. Z in case of ZYX order
+ * @param pitch about 2nd rotation axis in radians. Y in case of ZYX order
+ * @param yaw about 3rd rotation axis in radians. X in case of ZYX order
+ * @param order The order in which to apply rotations.
+ * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
+ * axis, then its Y axis and finally its X axis.
+ *
+ * @return The rotation matrix
+ */
+fun rotation(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f, order: RotationsOrder = RotationsOrder.ZYX): Mat4 {
+    val c1 = cos(yaw)
+    val s1 = sin(yaw)
+    val c2 = cos(pitch)
+    val s2 = sin(pitch)
+    val c3 = cos(roll)
+    val s3 = sin(roll)
+
+    return when (order) {
+        RotationsOrder.XZY -> Mat4.of(
+                c2 * c3, -s2, c2 * s3, 0.0f,
+                s1 * s3 + c1 * c3 * s2, c1 * c2, c1 * s2 * s3 - c3 * s1, 0.0f,
+                c3 * s1 * s2 - c1 * s3, c2 * s1, c1 * c3 + s1 * s2 * s3, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f)
+        RotationsOrder.XYZ -> Mat4.of(
+                c2 * c3, -c2 * s3, s2, 0.0f,
+                c1 * s3 + c3 * s1 * s2, c1 * c3 - s1 * s2 * s3, -c2 * s1, 0.0f,
+                s1 * s3 - c1 * c3 * s2, c3 * s1 + c1 * s2 * s3, c1 * c2, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f)
+        RotationsOrder.YXZ -> Mat4.of(
+                c1 * c3 + s1 * s2 * s3, c3 * s1 * s2 - c1 * s3, c2 * s1, 0.0f,
+                c2 * s3, c2 * c3, -s2, 0.0f,
+                c1 * s2 * s3 - c3 * s1, c1 * c3 * s2 + s1 * s3, c1 * c2, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f)
+        RotationsOrder.YZX -> Mat4.of(
+                c1 * c2, s1 * s3 - c1 * c3 * s2, c3 * s1 + c1 * s2 * s3, 0.0f,
+                s2, c2 * c3, -c2 * s3, 0.0f,
+                -c2 * s1, c1 * s3 + c3 * s1 * s2, c1 * c3 - s1 * s2 * s3, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f)
+        RotationsOrder.ZYX -> Mat4.of(
+                c1 * c2, c1 * s2 * s3 - c3 * s1, s1 * s3 + c1 * c3 * s2, 0.0f,
+                c2 * s1, c1 * c3 + s1 * s2 * s3, c3 * s1 * s2 - c1 * s3, 0.0f,
+                -s2, c2 * s3, c2 * c3, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f)
+        RotationsOrder.ZXY -> Mat4.of(
+                c1 * c3 - s1 * s2 * s3, -c2 * s1, c1 * s3 + c3 * s1 * s2, 0.0f,
+                c3 * s1 + c1 * s2 * s3, c1 * c2, s1 * s3 - c1 * c3 * s2, 0.0f,
+                -c2 * s3, s2, c2 * c3, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f)
+    }
 }
 
 fun rotation(axis: Float3, angle: Float): Mat4 {
@@ -503,49 +577,13 @@ fun rotation(axis: Float3, angle: Float): Mat4 {
 }
 
 /**
- * Construct a matrix from Euler angles using YPR around ZYX respectively
- *
- * The Euler angles are applied in ZYX order.
- * i.e: a vector is first rotated about X (roll) then Y (pitch) and then Z (yaw).
- *
- * @param d Per axis Euler angles in degrees
- */
-fun euler(d: Float3): Mat4 {
-    val r = transform(d, ::radians)
-    return eulerZYX(r.z, r.y, r.x)
-}
-
-/**
- * Construct a matrix from Euler angles using YPR around ZYX respectively
- *
- * The Euler angles are applied in ZYX order.
- * i.e: a vector is first rotated about X (roll) then Y (pitch) and then Z (yaw).
- *
- * @param roll about X axis in radians
- * @param pitch about Y axis in radians
- * @param yaw about Z axis in radians
- */
-fun eulerZYX(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f): Mat4 {
-    val cy = cos(yaw)
-    val sy = sin(yaw)
-    val cp = cos(pitch)
-    val sp = sin(pitch)
-    val cr = cos(roll)
-    val sr = sin(roll)
-    return Mat4.of(cp * cy, cp * sy, -sp, 0.0f,
-            sp * sr * cy - cr * sy, sp * sr * sy + cr * cy, cp * sr, 0.0f,
-            sp * cr * cy + sr * sy, sp * cr * sy - sr * cy, cp * cr, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f)
-}
-
-/**
  * Construct a Quaternion Rotation Matrix following the Hamilton convention
  *
  * Assume the destination and local coordinate spaces are initially aligned, and the local
  * coordinate space is then rotated counter-clockwise about a unit-length axis, k, by an angle,
  * theta.
  */
-fun quaternion(quaternion: Quaternion): Mat4 {
+fun rotation(quaternion: Quaternion): Mat4 {
     val n = normalize(quaternion)
     return Mat4(
             Float4(
@@ -573,9 +611,9 @@ fun quaternion(m: Mat4): Quaternion {
     val trace = m.x.x + m.y.y + m.z.z
     return normalize(
         when {
-                trace > 0 -> {
+            trace > 0 -> {
                 val s = sqrt(trace + 1.0f) * 2.0f
-                    Quaternion(
+                Quaternion(
                     (m.z.y - m.y.z) / s,
                     (m.x.z - m.z.x) / s,
                     (m.y.x - m.x.y) / s,
@@ -584,7 +622,7 @@ fun quaternion(m: Mat4): Quaternion {
             }
             m.x.x > m.y.y && m.x.x > m.z.z -> {
                 val s = sqrt(1.0f + m.x.x - m.y.y - m.z.z) * 2.0f
-                    Quaternion(
+                Quaternion(
                     0.25f * s,
                     (m.x.y + m.y.x) / s,
                     (m.x.z + m.z.x) / s,
@@ -593,7 +631,7 @@ fun quaternion(m: Mat4): Quaternion {
             }
             m.y.y > m.z.z -> {
                 val s = sqrt(1.0f + m.y.y - m.x.x - m.z.z) * 2.0f
-                    Quaternion(
+                Quaternion(
                     (m.x.y + m.y.x) / s,
                     0.25f * s,
                     (m.y.z + m.z.y) / s,
@@ -602,7 +640,7 @@ fun quaternion(m: Mat4): Quaternion {
             }
             else -> {
                 val s = sqrt(1.0f + m.z.z - m.x.x - m.y.y) * 2.0f
-                    Quaternion(
+                Quaternion(
                     (m.y.x - m.x.y) / s,
                     (m.x.z + m.z.x) / s,
                     (m.y.z + m.z.y) / s,

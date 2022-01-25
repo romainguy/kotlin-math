@@ -18,7 +18,7 @@
 
 package dev.romainguy.kotlin.math
 
-import kotlin.math.*
+import kotlin.math.pow
 
 const val PI          = 3.1415926536f
 const val HALF_PI     = PI * 0.5f
