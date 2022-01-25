@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Romain Guy
+ * Copyright (C) 2022 Romain Guy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

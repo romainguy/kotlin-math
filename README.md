@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'dev.romainguy:kotlin-math:1.1.0'
+    implementation 'dev.romainguy:kotlin-math:1.2.0'
 }
 ```
 

@@ -18,6 +18,7 @@ nexusPublishing {
 
 publishing {
     publications.all {
+        artifact(javadocJar)
         pom {
             description = POM_DESCRIPTION
             name = POM_NAME
