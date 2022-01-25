@@ -135,6 +135,8 @@ data class Float2(var x: Float = 0.0f, var y: Float = 0.0f) {
         y = block(y)
         return this
     }
+
+    fun toFloatArray() = floatArrayOf(x, y)
 }
 
 data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f) {
@@ -306,6 +308,8 @@ data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f)
         z = block(z)
         return this
     }
+
+    fun toFloatArray() = floatArrayOf(x, y, z)
 }
 
 data class Float4(
@@ -553,6 +557,8 @@ data class Float4(
         w = block(w)
         return this
     }
+
+    fun toFloatArray() = floatArrayOf(x, y, z, w)
 }
 
 inline operator fun Float.plus(v: Float2) = Float2(this + v.x, this + v.y)

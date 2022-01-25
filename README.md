@@ -187,6 +187,29 @@ You can also use the invoke operator to access elements in row-major mode with
 v = myMat4(2, 3) // equivalent to myMat4[2, 1]
 ```
 
+## Rotation types
+
+Construct a Euler Angle Rotation Matrix using per axis angles in degrees
+
+```kotlin
+rotationMatrix = rotation(d = Float3(y = 90.0f)) // rotation of 90° around y axis
+```
+
+Construct a Euler Angle Rotation Matrix using axis direction and angle in degree
+
+```kotlin
+rotationMatrix = rotation(axis = Float3(y = 1.0f), angle = 90.0f) // rotation of 90° around y axis
+```
+
+Construct a Quaternion Rotation Matrix following the Hamilton convention.
+Assume the destination and local coordinate spaces are initially aligned, and the local coordinate
+space is then rotated counter-clockwise about a unit-length axis, k, by an angle, theta.
+
+```kotlin
+rotationMatrix = rotation(quaternion = Float4(y = 1.0f, w = 1.0f)) // rotation of 90° around y axis
+```
+
+
 ## Scalar APIs
 
 The file `Scalar.kt` contains various helper methods to use common math operations
