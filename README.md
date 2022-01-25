@@ -189,26 +189,25 @@ v = myMat4(2, 3) // equivalent to myMat4[2, 1]
 
 ## Rotation types
 
-Construct a Euler Angle Rotation Matrix using per axis angles in degrees
+Construct a Euler angles rotation matrix using per-axis angles in degrees:
 
 ```kotlin
 rotationMatrix = rotation(d = Float3(y = 90.0f)) // rotation of 90° around y axis
 ```
 
-Construct a Euler Angle Rotation Matrix using axis direction and angle in degree
+Construct a Euler angles rotation matrix using an axis direction and an angle in degrees:
 
 ```kotlin
 rotationMatrix = rotation(axis = Float3(y = 1.0f), angle = 90.0f) // rotation of 90° around y axis
 ```
 
-Construct a Quaternion Rotation Matrix following the Hamilton convention.
-Assume the destination and local coordinate spaces are initially aligned, and the local coordinate
-space is then rotated counter-clockwise about a unit-length axis, k, by an angle, theta.
+Construct a quaternion rotation matrix following the Hamilton convention (assumes the
+destination and local coordinate spaces are initially aligned, and the local coordinate
+space is then rotated counter-clockwise about a unit-length axis, k, by an angle, theta):
 
 ```kotlin
 rotationMatrix = rotation(quaternion = Float4(y = 1.0f, w = 1.0f)) // rotation of 90° around y axis
 ```
-
 
 ## Scalar APIs
 
