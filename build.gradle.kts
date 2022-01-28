@@ -40,15 +40,10 @@ kotlin {
             macosArm64()
             iosX64()
             iosArm64()
-            iosArm32()
             iosSimulatorArm64()
-            watchosArm32()
             watchosArm64()
             watchosX86()
             watchosSimulatorArm64()
-            tvosArm64()
-            tvosX64()
-            tvosSimulatorArm64()
         }
 
         if (HostManager.hostIsMingw || HostManager.hostIsMac) {
