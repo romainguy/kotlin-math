@@ -206,7 +206,7 @@ destination and local coordinate spaces are initially aligned, and the local coo
 space is then rotated counter-clockwise about a unit-length axis, k, by an angle, theta):
 
 ```kotlin
-rotationMatrix = rotation(quaternion = Float4(y = 1.0f, w = 1.0f)) // rotation of 90° around y axis
+rotationMatrix = rotation(quaternion = Quaternion(y = 1.0f, w = 1.0f)) // rotation of 90° around y axis
 ```
 
 ## Scalar APIs
