@@ -52,42 +52,79 @@ data class Quaternion(
         }
 
         /**
-         * Construct a Quaternion from Euler angles using YPR around ZYX respectively
+         * Construct a Quaternion from Euler angles using YPR around a specified order
          *
-         * The Euler angles are applied in ZYX order.
-         * i.e: a vector is first rotated about X (roll) then Y (pitch) and then Z (yaw).
+         * Uses intrinsic Tait-Bryan angles. This means that rotations are performed with respect to
+         * the local coordinate system.
+         * That is, for order 'XYZ', the rotation is first around the X axis (which is the same as
+         * the world-X axis), then around local-Y (which may now be different from the world
+         * Y-axis), then local-Z (which may be different from the world Z-axis)
          *
          * @param d Per axis Euler angles in degrees
+         * Yaw, pitch, roll (YPR) are taken accordingly to the rotations order input.
+         * @param order The order in which to apply rotations.
+         * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around
+         * its Z axis, then its Y axis and finally its X axis.
          */
-        fun fromEuler(d: Float3): Quaternion {
+        fun fromEuler(d: Float3, order: RotationsOrder = RotationsOrder.ZYX): Quaternion {
             val r = transform(d, ::radians)
-            return fromEulerZYX(r.z, r.y, r.x)
+            return fromEuler(r[order.yaw], r[order.pitch], r[order.roll], order)
         }
 
         /**
-         * Construct a Quaternion from Euler angles using YPR around ZYX respectively
+         * Construct a Quaternion from Euler yaw, pitch, roll around a specified order.
          *
-         * The Euler angles are applied in ZYX order.
-         * i.e: a vector is first rotated about X (roll) then Y (pitch) and then Z (yaw).
-         *
-         * @param roll about X axis in radians
-         * @param pitch about Y axis in radians
-         * @param yaw about Z axis in radians
+         * @param roll about 1st rotation axis in radians. Z in case of ZYX order
+         * @param pitch about 2nd rotation axis in radians. Y in case of ZYX order
+         * @param yaw about 3rd rotation axis in radians. X in case of ZYX order
+         * @param order The order in which to apply rotations.
+         * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
+         * axis, then its Y axis and finally its X axis.
          */
-        fun fromEulerZYX(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f): Quaternion {
-            val cy = cos(yaw * 0.5f)
-            val sy = sin(yaw * 0.5f)
-            val cp = cos(pitch * 0.5f)
-            val sp = sin(pitch * 0.5f)
-            val cr = cos(roll * 0.5f)
-            val sr = sin(roll * 0.5f)
-
-            return Quaternion(
-                    sr * cp * cy - cr * sp * sy,
-                    cr * sp * cy + sr * cp * sy,
-                    cr * cp * sy - sr * sp * cy,
-                    cr * cp * cy + sr * sp * sy
-            )
+        fun fromEuler(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f, order: RotationsOrder = RotationsOrder.ZYX): Quaternion {
+            val c1 = cos(yaw * 0.5f)
+            val s1 = sin(yaw * 0.5f)
+            val c2 = cos(pitch * 0.5f)
+            val s2 = sin(pitch * 0.5f)
+            val c3 = cos(roll * 0.5f)
+            val s3 = sin(roll * 0.5f)
+            return when (order) {
+                RotationsOrder.XZY -> Quaternion(
+                        s1 * c2 * c3 - c1 * s2 * s3,
+                        c1 * c2 * s3 - s1 * s2 * c3,
+                        s1 * c2 * s3 + c1 * s2 * c3,
+                        s1 * s2 * s3 + c1 * c2 * c3)
+                RotationsOrder.XYZ -> Quaternion(
+                        s1 * c2 * c3 + s2 * s3 * c1,
+                        s2 * c1 * c3 - s1 * s3 * c2,
+                        s1 * s2 * c3 + s3 * c1 * c2,
+                        c1 * c2 * c3 - s1 * s2 * s3
+                )
+                RotationsOrder.YXZ -> Quaternion(
+                        s1 * c2 * s3 + c1 * s2 * c3,
+                        s1 * c2 * c3 - c1 * s2 * s3,
+                        c1 * c2 * s3 - s1 * s2 * c3,
+                        s1 * s2 * s3 + c1 * c2 * c3
+                )
+                RotationsOrder.YZX -> Quaternion(
+                        s1 * s2 * c3 + c1 * c2 * s3,
+                        s1 * c2 * c3 + c1 * s2 * s3,
+                        c1 * s2 * c3 - s1 * c2 * s3,
+                        c1 * c2 * c3 - s1 * s2 * s3
+                )
+                RotationsOrder.ZYX -> Quaternion(
+                        c1 * c2 * s3 - s1 * s2 * c3,
+                        s1 * c2 * s3 + c1 * s2 * c3,
+                        s1 * c2 * c3 - c1 * s2 * s3,
+                        s1 * s2 * s3 + c1 * c2 * c3
+                )
+                RotationsOrder.ZXY -> Quaternion(
+                        c1 * s2 * c3 - s1 * c2 * s3,
+                        s1 * s2 * c3 + c1 * c2 * s3,
+                        s1 * c2 * c3 + c1 * s2 * s3,
+                        c1 * c2 * c3 - s1 * s2 * s3
+                )
+            }
         }
     }
 

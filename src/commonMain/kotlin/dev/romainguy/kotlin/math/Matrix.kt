@@ -24,8 +24,16 @@ enum class MatrixColumn {
     X, Y, Z, W
 }
 
-enum class RotationsOrder {
-    XYZ, XZY, YXZ, YZX, ZXY, ZYX
+enum class RotationsOrder(
+        val yaw: VectorComponent,
+        val pitch: VectorComponent,
+        val roll: VectorComponent) {
+    XYZ(VectorComponent.X, VectorComponent.Y, VectorComponent.Z),
+    XZY(VectorComponent.X, VectorComponent.Z, VectorComponent.Y),
+    YXZ(VectorComponent.Y, VectorComponent.X, VectorComponent.Z),
+    YZX(VectorComponent.Y, VectorComponent.Z, VectorComponent.X),
+    ZXY(VectorComponent.Z, VectorComponent.X, VectorComponent.Y),
+    ZYX(VectorComponent.Z, VectorComponent.Y, VectorComponent.X);
 }
 
 data class Mat2(
@@ -494,14 +502,7 @@ fun rotation(m: Mat4) = Mat4(normalize(m.right), normalize(m.up), normalize(m.fo
  */
 fun rotation(d: Float3, order: RotationsOrder = RotationsOrder.ZYX): Mat4 {
     val r = transform(d, ::radians)
-    return when(order) {
-        RotationsOrder.XZY -> rotation(r.x, r.z, r.y)
-        RotationsOrder.XYZ -> rotation(r.x, r.y, r.z)
-        RotationsOrder.YXZ -> rotation(r.y, r.x, r.z)
-        RotationsOrder.YZX -> rotation(r.y, r.z, r.x)
-        RotationsOrder.ZYX -> rotation(r.z, r.y, r.x)
-        RotationsOrder.ZXY -> rotation(r.z, r.x, r.y)
-    }
+    return rotation(r[order.yaw], r[order.pitch], r[order.roll], order)
 }
 
 /**
