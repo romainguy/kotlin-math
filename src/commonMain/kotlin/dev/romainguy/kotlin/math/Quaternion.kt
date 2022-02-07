@@ -66,7 +66,7 @@ data class Quaternion(
          * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around
          * its Z axis, then its Y axis and finally its X axis.
          */
-        fun fromEuler(d: Float3, order: RotationsOrder = RotationsOrder.ZYX): Quaternion {
+        fun fromEuler(d: Float3, order: RotationsOrder = Mat4.DEFAULT_ROTATIONS_ORDER): Quaternion {
             val r = transform(d, ::radians)
             return fromEuler(r[order.yaw], r[order.pitch], r[order.roll], order)
         }
@@ -81,7 +81,7 @@ data class Quaternion(
          * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
          * axis, then its Y axis and finally its X axis.
          */
-        fun fromEuler(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f, order: RotationsOrder = RotationsOrder.ZYX): Quaternion {
+        fun fromEuler(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f, order: RotationsOrder = Mat4.DEFAULT_ROTATIONS_ORDER): Quaternion {
             val c1 = cos(yaw * 0.5f)
             val s1 = sin(yaw * 0.5f)
             val c2 = cos(pitch * 0.5f)
@@ -373,6 +373,6 @@ fun nlerp(a: Quaternion, b: Quaternion, t: Float): Quaternion {
  * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
  * axis, then its Y axis and finally its X axis.
  */
-fun eulerAngles(q: Quaternion, order: RotationsOrder = RotationsOrder.ZYX): Float3 {
+fun eulerAngles(q: Quaternion, order: RotationsOrder = Mat4.DEFAULT_ROTATIONS_ORDER): Float3 {
     return eulerAngles(rotation(q), order)
 }
