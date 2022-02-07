@@ -220,7 +220,6 @@ data class Mat4(
     constructor(m: Mat4) : this(m.x.copy(), m.y.copy(), m.z.copy(), m.w.copy())
 
     companion object {
-        val DEFAULT_ROTATIONS_ORDER = RotationsOrder.ZYX
 
         fun of(vararg a: Float): Mat4 {
             require(a.size >= 16)
@@ -358,7 +357,7 @@ data class Mat4(
      *
      * @see eulerAngles
      */
-    fun toEulerAngles(order: RotationsOrder = DEFAULT_ROTATIONS_ORDER) = eulerAngles(this, order)
+    fun toEulerAngles(order: RotationsOrder = RotationsOrder.ZYX) = eulerAngles(this, order)
 
     /**
      * Get the [Quaternion] from this rotation Matrix
@@ -522,7 +521,7 @@ fun rotation(m: Mat4) = Mat4(normalize(m.right), normalize(m.up), normalize(m.fo
  *
  * @return The rotation matrix
  */
-fun rotation(d: Float3, order: RotationsOrder = Mat4.DEFAULT_ROTATIONS_ORDER): Mat4 {
+fun rotation(d: Float3, order: RotationsOrder = RotationsOrder.ZYX): Mat4 {
     val r = transform(d, ::radians)
     return rotation(r[order.yaw], r[order.pitch], r[order.roll], order)
 }
@@ -539,7 +538,7 @@ fun rotation(d: Float3, order: RotationsOrder = Mat4.DEFAULT_ROTATIONS_ORDER): M
  *
  * @return The rotation matrix
  */
-fun rotation(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f, order: RotationsOrder = Mat4.DEFAULT_ROTATIONS_ORDER): Mat4 {
+fun rotation(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f, order: RotationsOrder = RotationsOrder.ZYX): Mat4 {
     val c1 = cos(yaw)
     val s1 = sin(yaw)
     val c2 = cos(pitch)
@@ -636,7 +635,7 @@ fun rotation(quaternion: Quaternion): Mat4 {
  * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
  * axis, then its Y axis and finally its X axis.
  */
-fun eulerAngles(m: Mat4, order: RotationsOrder = Mat4.DEFAULT_ROTATIONS_ORDER): Float3 {
+fun eulerAngles(m: Mat4, order: RotationsOrder = RotationsOrder.ZYX): Float3 {
     // We need to more simplify this with RotationsOrder VectorComponents mapped to MatrixColumn
     return transform(Float3().apply {
         when (order) {
