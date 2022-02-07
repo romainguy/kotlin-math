@@ -315,6 +315,10 @@ fun cross(a: Quaternion, b: Quaternion): Quaternion {
     return Quaternion(m.x, m.y, m.z, 0.0f)
 }
 
+fun angle(a: Quaternion, b: Quaternion): Float {
+    return acos(clamp(dot(a, b), -1.0f, 1.0f))
+}
+
 /**
  * Spherical linear interpolation between two given orientations
  *
@@ -324,36 +328,38 @@ fun cross(a: Quaternion, b: Quaternion): Quaternion {
  * @param a The beginning value
  * @param b The ending value
  * @param t The ratio between the two floats
- * @param valueEps Prevent blowing up when slerping between two quaternions that are very near each
- * other. Linear interpolation (lerp) is returned in this case.
+ * @param dotThreshold If the quaternion dot product is greater than this value
+ * (i.e. the quaternions are very close to each other), then the quaternions are
+ * linearly interpolated instead of spherically interpolated.
  *
  * @return Interpolated value between the two floats
  */
-fun slerp(a: Quaternion, b: Quaternion, t: Float, valueEps: Float = 0.0000000001f): Quaternion {
+fun slerp(a: Quaternion, b: Quaternion, t: Float, dotThreshold: Float = 0.9995f): Quaternion {
     // could also be computed as: pow(q * inverse(p), t) * p;
-    val d = dot(a, b)
-    val absd = abs(d)
+    var dot = dot(a, b)
+    var b1 = b
+
+    // If the dot product is negative, then the interpolation won't follow the shortest angular path
+    // between the two quaterions. In this case, invert the end quaternion to produce an equivalent
+    // rotation that will give us the path we want.
+    if (dot < 0.0f) {
+        dot = -dot
+        b1 = -b
+    }
+
     // Prevent blowing up when slerping between two quaternions that are very near each other.
-    if ((1.0f - absd) < valueEps) {
-        return normalize(lerp(if (d < 0.0f) -a else a, b, t))
+    return if (dot < dotThreshold) {
+        val angle = acos(dot)
+        val s = sin(angle)
+        a * sin((1.0f - t) * angle) / s + b1 * sin(t * angle) / s
+    } else {
+        // If the angle is too small, use linear interpolation
+        nlerp(a, b1, t)
     }
-    val npq = sqrt(dot(a, a) * dot(b, b))  // ||p|| * ||q||
-    val acos = acos(clamp(absd / npq, -1.0f, 1.0f))
-    val acos0 = acos * (1.0f - t)
-    val acos1 = acos * t
-    val sina = sin(acos)
-    if (sina < valueEps) {
-        return normalize(lerp(a, b, t))
-    }
-    val isina = 1.0f / sina
-    val s0 = sin(acos0) * isina
-    val s1 = sin(acos1) * isina
-    // ensure we're taking the "short" side
-    return normalize(s0 * a + (if (d < 0.0f) -s1 else (s1)) * b)
 }
 
 fun lerp(a: Quaternion, b: Quaternion, t: Float): Quaternion {
-    return ((1 - t) * a) + (t * b)
+    return ((1.0f - t) * a) + (t * b)
 }
 
 fun nlerp(a: Quaternion, b: Quaternion, t: Float): Quaternion {
@@ -361,19 +367,12 @@ fun nlerp(a: Quaternion, b: Quaternion, t: Float): Quaternion {
 }
 
 /**
- * Convert a Quaternion to Euler angles using YPR around ZYX respectively
+ * Convert a Quaternion to Euler angles
  *
- * The Euler angles are applied in ZYX order
+ * @param order The order in which to apply rotations.
+ * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
+ * axis, then its Y axis and finally its X axis.
  */
-fun eulerAngles(q: Quaternion): Float3 {
-    val nq = normalize(q)
-    return Float3(
-            // roll (x-axis rotation)
-            degrees(atan2(2.0f * (nq.y * nq.z + nq.w * nq.x),
-                    nq.w * nq.w - nq.x * nq.x - nq.y * nq.y + nq.z * nq.z)),
-            // pitch (y-axis rotation)
-            degrees(asin(-2.0f * (nq.x * nq.z - nq.w * nq.y))),
-            // yaw (z-axis rotation)
-            degrees(atan2(2.0f * (nq.x * nq.y + nq.w * nq.z),
-                    nq.w * nq.w + nq.x * nq.x - nq.y * nq.y - nq.z * nq.z)))
+fun eulerAngles(q: Quaternion, order: RotationsOrder = RotationsOrder.ZYX): Float3 {
+    return eulerAngles(rotation(q), order)
 }
