@@ -345,6 +345,26 @@ data class Mat4(
             x.w * v.x + y.w * v.y + z.w * v.z+ w.w * v.w
     )
 
+    /**
+     * Get the Euler angles in degrees from this rotation Matrix
+     *
+     * Don't forget to extract the rotation with [rotation] if this is a transposed matrix
+     *
+     * @param order The order in which to apply rotations.
+     * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
+     * axis, then its Y axis and finally its X axis.
+     *
+     * @see eulerAngles
+     */
+    fun toEulerAngles(order: RotationsOrder = RotationsOrder.ZYX) = eulerAngles(this, order)
+
+    /**
+     * Get the [Quaternion] from this rotation Matrix
+     *
+     * Don't forget to extract the rotation with [rotation] if this is a transposed matrix
+     *
+     * @see quaternion
+     */
     fun toQuaternion() = quaternion(this)
 
     fun toFloatArray() = floatArrayOf(
@@ -589,63 +609,143 @@ fun rotation(quaternion: Quaternion): Mat4 {
     return Mat4(
             Float4(
                 1.0f - 2.0f * (n.y * n.y + n.z * n.z),
-                2.0f * (n.x * n.y - n.z * n.w),
-                2.0f * (n.x * n.z + n.y * n.w)
-            ),
-            Float4(
                 2.0f * (n.x * n.y + n.z * n.w),
-                1.0f - 2.0f * (n.x * n.x + n.z * n.z),
-                2.0f * (n.y * n.z - n.x * n.w)
+                2.0f * (n.x * n.z - n.y * n.w),
             ),
             Float4(
-                2.0f * (n.x * n.z - n.y * n.w),
+                2.0f * (n.x * n.y - n.z * n.w),
+                1.0f - 2.0f * (n.x * n.x + n.z * n.z),
                 2.0f * (n.y * n.z + n.x * n.w),
+            ),
+            Float4(
+                2.0f * (n.x * n.z + n.y * n.w),
+                2.0f * (n.y * n.z - n.x * n.w),
                 1.0f - 2.0f * (n.x * n.x + n.y * n.y)
             )
     )
 }
 
 /**
- * Extract Quaternion rotation from a Matrix
+ * Get the Euler angles in degrees from a rotation Matrix
+ *
+ * @param m The rotation matrix.
+ * Don't forget to extract the rotation with [rotation] if it's transposed
+ * @param order The order in which to apply rotations.
+ * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
+ * axis, then its Y axis and finally its X axis.
+ */
+fun eulerAngles(m: Mat4, order: RotationsOrder = RotationsOrder.ZYX): Float3 {
+    // We need to simplify this with RotationsOrder VectorComponents
+    return transform(Float3().apply {
+        when (order) {
+            RotationsOrder.XYZ -> {
+                y = asin(clamp(m.z.x, -1.0f, 1.0f))
+                if (abs(m.z.x) < 0.9999999f) {
+                    x = atan2(-m.z.y, m.z.z)
+                    z = atan2(-m.y.x, m.x.x)
+                } else {
+                    x = atan2(m.y.z, m.y.y)
+                    z = 0.0f
+                }
+            }
+            RotationsOrder.XZY -> {
+                z = asin(-clamp(m.y.x, -1.0f, 1.0f))
+                if (abs(m.y.x) < 0.9999999f) {
+                    x = atan2(m.y.z, m.y.y)
+                    y = atan2(m.z.x, m.x.x)
+                } else {
+                    x = atan2(-m.z.y, m.z.z)
+                    y = 0.0f
+                }
+            }
+            RotationsOrder.YXZ -> {
+                x = asin(-clamp(m.z.y, -1.0f, 1.0f))
+                if (abs(m.z.y) < 0.9999999f) {
+                    y = atan2(m.z.x, m.z.z)
+                    z = atan2(m.x.y, m.y.y)
+                } else {
+                    y = atan2(-m.x.z, m.x.x)
+                    z = 0.0f
+                }
+            }
+            RotationsOrder.YZX -> {
+                z = asin(clamp(m.x.y, -1.0f, 1.0f))
+                if (abs(m.x.y) < 0.9999999f) {
+                    x = atan2(-m.z.y, m.y.y)
+                    y = atan2(-m.x.z, m.x.x)
+                } else {
+                    x = 0.0f
+                    y = atan2(m.z.x, m.z.z)
+                }
+            }
+            RotationsOrder.ZXY -> {
+                x = asin(clamp(m.y.z, -1.0f, 1.0f))
+                if (abs(m.y.z) < 0.9999999f) {
+                    y = atan2(-m.x.z, m.z.z);
+                    z = atan2(-m.y.x, m.y.y);
+                } else {
+                    y = 0.0f
+                    z = atan2(m.x.y, m.x.x)
+                }
+            }
+            RotationsOrder.ZYX -> {
+                y = asin(-clamp(m.x.z, -1.0f, 1.0f))
+                if (abs(m.x.z) < 0.9999999f) {
+                    x = atan2(m.y.z, m.z.z)
+                    z = atan2(m.x.y, m.x.x)
+                } else {
+                    x = 0.0f
+                    z = atan2(-m.y.x, m.y.y)
+                }
+            }
+        }
+    }, ::degrees)
+}
+
+/**
+ * Get the [Quaternion] from a rotation Matrix
+ *
+ * @param m The rotation matrix.
+ * Don't forget to extract the rotation with [rotation] if it's transposed
  */
 fun quaternion(m: Mat4): Quaternion {
     val trace = m.x.x + m.y.y + m.z.z
     return normalize(
         when {
-            trace > 0 -> {
-                val s = sqrt(trace + 1.0f) * 2.0f
+            trace > 0.0f -> {
+                val s = 2.0f * sqrt(trace + 1.0f)
                 Quaternion(
-                    (m.z.y - m.y.z) / s,
-                    (m.x.z - m.z.x) / s,
-                    (m.y.x - m.x.y) / s,
+                    (m.y.z - m.z.y) / s,
+                    (m.z.x - m.x.z) / s,
+                    (m.x.y - m.y.x) / s,
                     0.25f * s
                 )
             }
             m.x.x > m.y.y && m.x.x > m.z.z -> {
-                val s = sqrt(1.0f + m.x.x - m.y.y - m.z.z) * 2.0f
+                val s = 2.0f * sqrt(1.0f + m.x.x - m.y.y - m.z.z)
                 Quaternion(
                     0.25f * s,
-                    (m.x.y + m.y.x) / s,
-                    (m.x.z + m.z.x) / s,
-                    (m.z.y - m.y.z) / s
+                    (m.y.x + m.x.y) / s,
+                    (m.z.x + m.x.z) / s,
+                    (m.y.z - m.z.y) / s
                 )
             }
             m.y.y > m.z.z -> {
-                val s = sqrt(1.0f + m.y.y - m.x.x - m.z.z) * 2.0f
+                val s = 2.0f * sqrt(1.0f + m.y.y - m.x.x - m.z.z)
                 Quaternion(
-                    (m.x.y + m.y.x) / s,
+                    (m.y.x + m.x.y) / s,
                     0.25f * s,
-                    (m.y.z + m.z.y) / s,
-                    (m.x.z - m.z.x) / s
+                    (m.z.y + m.y.z) / s,
+                    (m.z.x - m.x.z) / s
                 )
             }
             else -> {
-                val s = sqrt(1.0f + m.z.z - m.x.x - m.y.y) * 2.0f
+                val s = 2.0f * sqrt(1.0f + m.z.z - m.x.x - m.y.y)
                 Quaternion(
-                    (m.y.x - m.x.y) / s,
-                    (m.x.z + m.z.x) / s,
-                    (m.y.z + m.z.y) / s,
-                    0.25f * s
+                    (m.z.x + m.x.z) / s,
+                    (m.z.y + m.y.z) / s,
+                    0.25f * s,
+                    (m.x.y - m.y.x) / s
                 )
             }
         }
