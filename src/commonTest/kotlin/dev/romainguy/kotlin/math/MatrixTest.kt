@@ -272,10 +272,36 @@ class MatrixTest {
     }
 
     @Test
+    fun rotationEulerXYZ() {
+        assertArrayEquals(
+                Mat4(
+                    Float4(0.9980f, 0.0529f, -0.0339f, 0f),
+                    Float4(-0.0523f, 0.9984f, 0.0192f, 0f),
+                    Float4(0.0349f, -0.0174f, 0.9992f, 0f),
+                    Float4(0f, 0f, 0f, 1f),
+                ).toFloatArray(),
+                rotation(Float3(1f, 2f, 3f), order = RotationsOrder.XYZ).toFloatArray()
+        )
+    }
+
+    @Test
+    fun rotationEulerZYX() {
+        assertArrayEquals(
+                Mat4(
+                    Float4(0.9980f, 0.0523f, -0.0349f, 0f),
+                    Float4(-0.0518f, 0.9985f, 0.0174f, 0f),
+                    Float4(0.0358f, -0.0156f, 0.9992f, 0f),
+                    Float4(0f, 0f, 0f, 1f),
+                ).toFloatArray(),
+                rotation(Float3(1f, 2f, 3f), order = RotationsOrder.ZYX).toFloatArray()
+        )
+    }
+
+    @Test
     fun rotationAxisAngle() {
         assertArrayEquals(
             Mat4(
-                Float4(0.9999f, 5f, 1f, 0f),
+                Float4(1f, 5f, 1f, 0f),
                 Float4(-1f, 4f, 7f, 0f),
                 Float4(5f, 5f, 9f, 0f),
                 Float4(0f, 0f, 0f, 1f),
@@ -395,11 +421,11 @@ class MatrixTest {
             Float4(4f, 8f, 12f, 16f)
         )
 
-        internal fun assertArrayEquals(expected: FloatArray, actual: FloatArray, delta: Float = 0.001f) {
+        internal fun assertArrayEquals(expected: FloatArray, actual: FloatArray, delta: Float = 0.0001f) {
             assertEquals(expected.size, actual.size)
             assertTrue(
                 expected.zip(actual).all { (a, b) -> (a - b).absoluteValue < delta },
-                "Expected: $expected, but got: $actual"
+                "Expected: ${expected.contentToString()}, but got: ${actual.contentToString()}"
             )
         }
 

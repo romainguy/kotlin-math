@@ -29,10 +29,50 @@ class QuaternionTest {
     }
 
     @Test
-    fun fromEuler() {
+    fun fromEulerXYZ() {
         MatrixTest.assertArrayEquals(
-                Quaternion(0.0083f, 0.0177f, 0.0263f, 0.9995f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f)).toFloatArray()
+                Quaternion(0.009179f, 0.0172174f, 0.0263242f, 0.999463f).toFloatArray(),
+                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.XYZ).toFloatArray()
+        )
+    }
+
+    @Test
+    fun fromEulerXZY() {
+        MatrixTest.assertArrayEquals(
+                Quaternion(0.0082654f, 0.0172174f, 0.0263242f, 0.999471f).toFloatArray(),
+                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.XZY).toFloatArray()
+        )
+    }
+
+    @Test
+    fun fromEulerYXZ() {
+        MatrixTest.assertArrayEquals(
+                Quaternion(0.009179f, 0.0172174f, 0.0260197f, 0.999471f).toFloatArray(),
+                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.YXZ).toFloatArray()
+        )
+    }
+
+    @Test
+    fun fromEulerYZX() {
+        MatrixTest.assertArrayEquals(
+                Quaternion(0.009179f, 0.0176742f, 0.0260197f, 0.999463f).toFloatArray(),
+                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.YZX).toFloatArray()
+        )
+    }
+
+    @Test
+    fun fromEulerZXY() {
+        MatrixTest.assertArrayEquals(
+                Quaternion(0.0082654f, 0.0176742f, 0.0263242f, 0.999463f).toFloatArray(),
+                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.ZXY).toFloatArray()
+        )
+    }
+
+    @Test
+    fun fromEulerZYX() {
+        MatrixTest.assertArrayEquals(
+                Quaternion(0.0082654f, 0.0176742f, 0.0260197f, 0.999471f).toFloatArray(),
+                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.ZYX).toFloatArray()
         )
     }
 
