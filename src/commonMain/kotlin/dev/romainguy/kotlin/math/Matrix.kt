@@ -635,67 +635,67 @@ fun rotation(quaternion: Quaternion): Mat4 {
  * axis, then its Y axis and finally its X axis.
  */
 fun eulerAngles(m: Mat4, order: RotationsOrder = RotationsOrder.ZYX): Float3 {
-    // We need to simplify this with RotationsOrder VectorComponents
+    // We need to more simplify this with RotationsOrder VectorComponents mapped to MatrixColumn
     return transform(Float3().apply {
         when (order) {
             RotationsOrder.XYZ -> {
-                y = asin(clamp(m.z.x, -1.0f, 1.0f))
+                this[order.pitch] = asin(clamp(m.z.x, -1.0f, 1.0f))
                 if (abs(m.z.x) < 0.9999999f) {
-                    x = atan2(-m.z.y, m.z.z)
-                    z = atan2(-m.y.x, m.x.x)
+                    this[order.yaw] = atan2(-m.z.y, m.z.z)
+                    this[order.roll] = atan2(-m.y.x, m.x.x)
                 } else {
-                    x = atan2(m.y.z, m.y.y)
-                    z = 0.0f
+                    this[order.yaw] = atan2(m.y.z, m.y.y)
+                    this[order.roll] = 0.0f
                 }
             }
             RotationsOrder.XZY -> {
-                z = asin(-clamp(m.y.x, -1.0f, 1.0f))
+                this[order.pitch] = asin(-clamp(m.y.x, -1.0f, 1.0f))
                 if (abs(m.y.x) < 0.9999999f) {
-                    x = atan2(m.y.z, m.y.y)
-                    y = atan2(m.z.x, m.x.x)
+                    this[order.yaw] = atan2(m.y.z, m.y.y)
+                    this[order.roll] = atan2(m.z.x, m.x.x)
                 } else {
-                    x = atan2(-m.z.y, m.z.z)
-                    y = 0.0f
+                    this[order.yaw] = atan2(-m.z.y, m.z.z)
+                    this[order.roll] = 0.0f
                 }
             }
             RotationsOrder.YXZ -> {
-                x = asin(-clamp(m.z.y, -1.0f, 1.0f))
+                this[order.pitch] = asin(-clamp(m.z.y, -1.0f, 1.0f))
                 if (abs(m.z.y) < 0.9999999f) {
-                    y = atan2(m.z.x, m.z.z)
-                    z = atan2(m.x.y, m.y.y)
+                    this[order.yaw] = atan2(m.z.x, m.z.z)
+                    this[order.roll] = atan2(m.x.y, m.y.y)
                 } else {
-                    y = atan2(-m.x.z, m.x.x)
-                    z = 0.0f
+                    this[order.yaw] = atan2(-m.x.z, m.x.x)
+                    this[order.roll] = 0.0f
                 }
             }
             RotationsOrder.YZX -> {
-                z = asin(clamp(m.x.y, -1.0f, 1.0f))
+                this[order.pitch] = asin(clamp(m.x.y, -1.0f, 1.0f))
                 if (abs(m.x.y) < 0.9999999f) {
-                    x = atan2(-m.z.y, m.y.y)
-                    y = atan2(-m.x.z, m.x.x)
+                    this[order.roll] = atan2(-m.z.y, m.y.y)
+                    this[order.yaw] = atan2(-m.x.z, m.x.x)
                 } else {
-                    x = 0.0f
-                    y = atan2(m.z.x, m.z.z)
+                    this[order.roll] = 0.0f
+                    this[order.yaw] = atan2(m.z.x, m.z.z)
                 }
             }
             RotationsOrder.ZXY -> {
-                x = asin(clamp(m.y.z, -1.0f, 1.0f))
+                this[order.pitch] = asin(clamp(m.y.z, -1.0f, 1.0f))
                 if (abs(m.y.z) < 0.9999999f) {
-                    y = atan2(-m.x.z, m.z.z);
-                    z = atan2(-m.y.x, m.y.y);
+                    this[order.roll] = atan2(-m.x.z, m.z.z);
+                    this[order.yaw] = atan2(-m.y.x, m.y.y);
                 } else {
-                    y = 0.0f
-                    z = atan2(m.x.y, m.x.x)
+                    this[order.roll] = 0.0f
+                    this[order.yaw] = atan2(m.x.y, m.x.x)
                 }
             }
             RotationsOrder.ZYX -> {
-                y = asin(-clamp(m.x.z, -1.0f, 1.0f))
+                this[order.pitch] = asin(-clamp(m.x.z, -1.0f, 1.0f))
                 if (abs(m.x.z) < 0.9999999f) {
-                    x = atan2(m.y.z, m.z.z)
-                    z = atan2(m.x.y, m.x.x)
+                    this[order.roll] = atan2(m.y.z, m.z.z)
+                    this[order.yaw] = atan2(m.x.y, m.x.x)
                 } else {
-                    x = 0.0f
-                    z = atan2(-m.y.x, m.y.y)
+                    this[order.roll] = 0.0f
+                    this[order.yaw] = atan2(-m.y.x, m.y.y)
                 }
             }
         }
