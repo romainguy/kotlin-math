@@ -265,7 +265,7 @@ class MatrixTest {
                 Float4(0.0966f, 0.4833f, 0.87f, 0f),
                 Float4(0.169f, 0.507f, 0.8451f, 0f),
                 Float4(0.2242f, 0.5232f, 0.8221f, 0f),
-                Float4(0f, 0f, 0f, 1f),
+                Float4(0f, 0f, 0f, 1f)
             ).toFloatArray(),
             rotation(MAT_4).toFloatArray()
         )
@@ -304,22 +304,128 @@ class MatrixTest {
                 Float4(1f, 5f, 1f, 0f),
                 Float4(-1f, 4f, 7f, 0f),
                 Float4(5f, 5f, 9f, 0f),
-                Float4(0f, 0f, 0f, 1f),
+                Float4(0f, 0f, 0f, 1f)
             ).toFloatArray(),
             rotation(Float3(1f, 2f, 3f), 90f).toFloatArray()
         )
     }
 
     @Test
-    fun rotationQuaternion() {
+    fun eulerXYZ() {
+        assertArrayEquals(
+            Float3(10.0f,90.0f,0.0f).toFloatArray(),
+            eulerAngles(
+                rotation(
+                    Float3(10.0f,90.0f,0.0f)
+                    , RotationsOrder.XYZ
+                )
+                , RotationsOrder.XYZ
+            ).toFloatArray()
+        )
+    }
+
+    @Test
+    fun eulerZYX() {
+        assertArrayEquals(
+            // CQFD: That's why Quaternion exist
+            Float3(0.0f, 90.0f, -10.0f).toFloatArray(),
+            eulerAngles(
+                rotation(
+                    Float3(10.0f,90.0f,0.0f)
+                    , RotationsOrder.ZYX
+                )
+                , RotationsOrder.ZYX
+            ).toFloatArray()
+        )
+    }
+
+    @Test
+    fun rotationEulerXYZ() {
         assertArrayEquals(
             Mat4(
-                Float4(-0.7333f, -0.1333f, 0.6667f, 0f),
-                Float4(0.66667f, -0.3333f, 0.6667f, 0f),
-                Float4(0.1333f, 0.93333f, 0.3333f, 0f),
+                Float4(0.9980f, 0.0529f, -0.0339f, 0f),
+                Float4(-0.0523f, 0.9984f, 0.0192f, 0f),
+                Float4(0.0349f, -0.0174f, 0.9992f, 0f),
                 Float4(0f, 0f, 0f, 1f)
             ).toFloatArray(),
-            rotation(Quaternion(1f, 2f, 3f, 1f)).toFloatArray()
+            rotation(Float3(1f, 2f, 3f), RotationsOrder.XYZ).toFloatArray()
+        )
+    }
+
+    @Test
+    fun rotationEulerZYX() {
+        assertArrayEquals(
+            Mat4(
+                Float4(0.9980f, 0.0523f, -0.0349f, 0f),
+                Float4(-0.0518f, 0.9985f, 0.0174f, 0f),
+                Float4(0.0358f, -0.0156f, 0.9992f, 0f),
+                Float4(0f, 0f, 0f, 1f)
+            ).toFloatArray(),
+            rotation(Float3(1f, 2f, 3f), RotationsOrder.ZYX).toFloatArray()
+        )
+    }
+
+    @Test
+    fun eulerXYZRotation() {
+        assertArrayEquals(
+            Float3(1f, 2f, 3f).toFloatArray(),
+            eulerAngles(
+                Mat4(
+                    Float4(0.9980212f, 0.0529362f, -0.0339330f),
+                    Float4(-0.0523041f, 0.9984456f, 0.0192547f),
+                    Float4(0.0348995f, -0.0174418f, 0.9992386f)
+                ),
+                RotationsOrder.XYZ
+            ).toFloatArray()
+        )
+    }
+
+    @Test
+    fun eulerZYXRotation() {
+        assertArrayEquals(
+            Float3(1f, 2f, 3f).toFloatArray(),
+            eulerAngles(
+                Mat4(
+                    Float4(0.9980212f, 0.0523041f, -0.0348995f),
+                    Float4(-0.0517197f, 0.9985093f, 0.0174418f),
+                    Float4(0.0357597f, -0.0156023f, 0.9992386f)
+                ),
+                RotationsOrder.ZYX
+            ).toFloatArray()
+        )
+    }
+
+    @Test
+    fun quaternion() {
+        assertArrayEquals(
+            normalize(Quaternion(1f, 2f, 3f, 1.0f)).toFloatArray(),
+            quaternion(rotation(Quaternion(1f, 2f, 3f, 1.0f))).toFloatArray()
+        )
+    }
+
+    @Test
+    fun rotationQuaternion() {
+        assertMatEquals(
+            Mat4(
+                Float4(-0.7333333f, 0.6666667f, 0.1333333f),
+                Float4(-0.1333333f, -0.3333333f, 0.9333333f),
+                Float4(0.6666667f, 0.6666667f, 0.3333333f)
+            ),
+            rotation(Quaternion(1f, 2f, 3f, 1f))
+        )
+    }
+
+    @Test
+    fun quaternionRotation() {
+        assertArrayEquals(
+            normalize(Quaternion(1f, 2f, 3f, 1.0f)).toFloatArray(),
+            quaternion(
+                Mat4(
+                    Float4(-0.7333333f, 0.6666667f, 0.1333333f),
+                    Float4(-0.1333333f, -0.3333333f, 0.9333333f),
+                    Float4(0.6666667f, 0.6666667f, 0.3333333f)
+                )
+            ).toFloatArray()
         )
     }
 
@@ -429,6 +535,13 @@ class MatrixTest {
             )
         }
 
+        // Use it to display Mat4.toString() instead of FloatArray
+        internal fun assertMatEquals(expected: Mat4, actual: Mat4, delta: Float = 0.0001f) {
+            assertTrue(
+                    expected.toFloatArray().zip(actual.toFloatArray()).all { (a, b) -> (a - b).absoluteValue < delta },
+                    "\nExpected:\n${expected}\nbut got:\n${actual}"
+            )
+        }
 
         /**
          * @return a FloatArray containing n floats 1f,2f,...,n (float) where n
