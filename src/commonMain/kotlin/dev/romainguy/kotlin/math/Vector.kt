@@ -611,6 +611,20 @@ inline fun mix(a: Float2, b: Float2, x: Float2): Float2 {
     )
 }
 
+inline fun lerp(a: Float2, b: Float2, t: Float): Float2 {
+    return Float2(
+            lerp(a.x, b.x, t),
+            lerp(a.y, b.y, t)
+    )
+}
+
+inline fun lerp(a: Float2, b: Float2, t: Float2): Float2 {
+    return Float2(
+            lerp(a.x, b.x, t.x),
+            lerp(a.y, b.y, t.y)
+    )
+}
+
 inline fun min(v: Float2) = min(v.x, v.y)
 inline fun min(a: Float2, b: Float2) = Float2(min(a.x, b.x), min(a.y, b.y))
 inline fun max(v: Float2) = max(v.x, v.y)
@@ -707,6 +721,22 @@ inline fun mix(a: Float3, b: Float3, x: Float3): Float3 {
     )
 }
 
+inline fun lerp(a: Float3, b: Float3, t: Float): Float3 {
+    return Float3(
+            lerp(a.x, b.x, t),
+            lerp(a.y, b.y, t),
+            lerp(a.z, b.z, t)
+    )
+}
+
+inline fun lerp(a: Float3, b: Float3, t: Float3): Float3 {
+    return Float3(
+            lerp(a.x, b.x, t.x),
+            lerp(a.y, b.y, t.y),
+            lerp(a.z, b.z, t.z)
+    )
+}
+
 inline fun min(v: Float3) = min(v.x, min(v.y, v.z))
 inline fun min(a: Float3, b: Float3) = Float3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
 inline fun max(v: Float3) = max(v.x, max(v.y, v.z))
@@ -791,6 +821,24 @@ inline fun mix(a: Float4, b: Float4, x: Float4): Float4 {
             mix(a.y, b.y, x.y),
             mix(a.z, b.z, x.z),
             mix(a.w, b.w, x.w))
+}
+
+inline fun lerp(a: Float4, b: Float4, t: Float): Float4 {
+    return Float4(
+            lerp(a.x, b.x, t),
+            lerp(a.y, b.y, t),
+            lerp(a.z, b.z, t),
+            lerp(a.w, b.w, t)
+    )
+}
+
+inline fun lerp(a: Float4, b: Float4, t: Float4): Float4 {
+    return Float4(
+            lerp(a.x, b.x, t.x),
+            lerp(a.y, b.y, t.y),
+            lerp(a.z, b.z, t.z),
+            lerp(a.w, b.w, t.w)
+    )
 }
 
 inline fun min(v: Float4) = min(v.x, min(v.y, min(v.z, v.w)))

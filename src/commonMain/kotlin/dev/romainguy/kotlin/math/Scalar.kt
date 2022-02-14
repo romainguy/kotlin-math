@@ -43,3 +43,17 @@ inline fun fract(v: Float) = v % 1
 inline fun sqr(v: Float) = v * v
 
 inline fun pow(x: Float, y: Float) = (x.toDouble().pow(y.toDouble())).toFloat()
+
+/**
+ * Linearly interpolate between a start and end float value
+ *
+ * If t is 0 this returns a.
+ * As t approaches 1 [lerp] may approach b
+ * If t is above 1 or below 0 the result will be extrapolated.
+ *
+ * @param a the beginning value
+ * @param b the ending value
+ * @param t ratio between the two floats
+ * @return interpolated value between the two floats
+ */
+inline fun lerp(a: Float, b: Float, t: Float): Float = a + t * (b - a)
