@@ -340,32 +340,6 @@ class MatrixTest {
     }
 
     @Test
-    fun rotationEulerXYZ() {
-        assertArrayEquals(
-            Mat4(
-                Float4(0.9980f, 0.0529f, -0.0339f, 0f),
-                Float4(-0.0523f, 0.9984f, 0.0192f, 0f),
-                Float4(0.0349f, -0.0174f, 0.9992f, 0f),
-                Float4(0f, 0f, 0f, 1f)
-            ).toFloatArray(),
-            rotation(Float3(1f, 2f, 3f), RotationsOrder.XYZ).toFloatArray()
-        )
-    }
-
-    @Test
-    fun rotationEulerZYX() {
-        assertArrayEquals(
-            Mat4(
-                Float4(0.9980f, 0.0523f, -0.0349f, 0f),
-                Float4(-0.0518f, 0.9985f, 0.0174f, 0f),
-                Float4(0.0358f, -0.0156f, 0.9992f, 0f),
-                Float4(0f, 0f, 0f, 1f)
-            ).toFloatArray(),
-            rotation(Float3(1f, 2f, 3f), RotationsOrder.ZYX).toFloatArray()
-        )
-    }
-
-    @Test
     fun eulerXYZRotation() {
         assertArrayEquals(
             Float3(1f, 2f, 3f).toFloatArray(),
