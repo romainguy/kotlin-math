@@ -316,7 +316,7 @@ fun cross(a: Quaternion, b: Quaternion): Quaternion {
 }
 
 fun angle(a: Quaternion, b: Quaternion): Float {
-    return acos(clamp(dot(a, b), -1.0f, 1.0f))
+    return 2.0f * acos(abs(clamp(dot(a, b), -1.0f, 1.0f)))
 }
 
 /**
