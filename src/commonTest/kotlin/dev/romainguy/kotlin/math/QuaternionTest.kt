@@ -23,144 +23,104 @@ class QuaternionTest {
     @Test
     fun fromAxisAngle() {
         MatrixTest.assertArrayEquals(
-                Quaternion(0.0093f, 0.0186f, 0.0280f, 0.9994f).toFloatArray(),
-                Quaternion.fromAxisAngle(Float3(1.0f, 2.0f, 3.0f), 4.0f).toFloatArray()
+            Quaternion(0.0093f, 0.0186f, 0.0280f, 0.9994f).toFloatArray(),
+            Quaternion.fromAxisAngle(Float3(1.0f, 2.0f, 3.0f), 4.0f).toFloatArray()
         )
     }
 
     @Test
     fun fromEulerXYZ() {
         MatrixTest.assertArrayEquals(
-                Quaternion(0.009179f, 0.0172174f, 0.0263242f, 0.999463f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.XYZ).toFloatArray()
+            Quaternion(0.009179f, 0.0172174f, 0.0263242f, 0.999463f).toFloatArray(),
+            Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.XYZ).toFloatArray()
         )
     }
 
     @Test
     fun fromEulerXZY() {
         MatrixTest.assertArrayEquals(
-                Quaternion(0.0082654f, 0.0172174f, 0.0263242f, 0.999471f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.XZY).toFloatArray()
+            Quaternion(0.0082654f, 0.0172174f, 0.0263242f, 0.999471f).toFloatArray(),
+            Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.XZY).toFloatArray()
         )
     }
 
     @Test
     fun fromEulerYXZ() {
         MatrixTest.assertArrayEquals(
-                Quaternion(0.009179f, 0.0172174f, 0.0260197f, 0.999471f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.YXZ).toFloatArray()
+            Quaternion(0.009179f, 0.0172174f, 0.0260197f, 0.999471f).toFloatArray(),
+            Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.YXZ).toFloatArray()
         )
     }
 
     @Test
     fun fromEulerYZX() {
         MatrixTest.assertArrayEquals(
-                Quaternion(0.009179f, 0.0176742f, 0.0260197f, 0.999463f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.YZX).toFloatArray()
+            Quaternion(0.009179f, 0.0176742f, 0.0260197f, 0.999463f).toFloatArray(),
+            Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.YZX).toFloatArray()
         )
     }
 
     @Test
     fun fromEulerZXY() {
         MatrixTest.assertArrayEquals(
-                Quaternion(0.0082654f, 0.0176742f, 0.0263242f, 0.999463f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.ZXY).toFloatArray()
+            Quaternion(0.0082654f, 0.0176742f, 0.0263242f, 0.999463f).toFloatArray(),
+            Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.ZXY).toFloatArray()
         )
     }
 
     @Test
     fun fromEulerZYX() {
         MatrixTest.assertArrayEquals(
-                Quaternion(0.0082654f, 0.0176742f, 0.0260197f, 0.999471f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.ZYX).toFloatArray()
-        )
-    }
-
-    @Test
-    fun fromEulerXZY() {
-        MatrixTest.assertArrayEquals(
-                Quaternion(0.0082654f, 0.0172174f, 0.0263242f, 0.999471f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.XZY).toFloatArray()
-        )
-    }
-
-    @Test
-    fun fromEulerYXZ() {
-        MatrixTest.assertArrayEquals(
-                Quaternion(0.009179f, 0.0172174f, 0.0260197f, 0.999471f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.YXZ).toFloatArray()
-        )
-    }
-
-    @Test
-    fun fromEulerYZX() {
-        MatrixTest.assertArrayEquals(
-                Quaternion(0.009179f, 0.0176742f, 0.0260197f, 0.999463f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.YZX).toFloatArray()
-        )
-    }
-
-    @Test
-    fun fromEulerZXY() {
-        MatrixTest.assertArrayEquals(
-                Quaternion(0.0082654f, 0.0176742f, 0.0263242f, 0.999463f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.ZXY).toFloatArray()
-        )
-    }
-
-    @Test
-    fun fromEulerZYX() {
-        MatrixTest.assertArrayEquals(
-                Quaternion(0.0082654f, 0.0176742f, 0.0260197f, 0.999471f).toFloatArray(),
-                Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.ZYX).toFloatArray()
+            Quaternion(0.0082654f, 0.0176742f, 0.0260197f, 0.999471f).toFloatArray(),
+            Quaternion.fromEuler(Float3(1.0f, 2.0f, 3.0f), RotationsOrder.ZYX).toFloatArray()
         )
     }
 
     @Test
     fun toEulerXYZ() {
         MatrixTest.assertArrayEquals(
-                Float3(-63.4349488f, 41.8103164f, 169.6951532f).toFloatArray(),
-                eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.XYZ).toFloatArray()
+            Float3(-63.4349488f, 41.8103164f, 169.6951532f).toFloatArray(),
+            eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.XYZ).toFloatArray()
         )
     }
 
     @Test
     fun toEulerXZY() {
         MatrixTest.assertArrayEquals(
-                Float3(109.6538245f, 137.7263108f, 7.6622561f).toFloatArray(),
-                eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.XZY).toFloatArray()
+            Float3(109.6538245f, 137.7263108f, 7.6622561f).toFloatArray(),
+            eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.XZY).toFloatArray()
         )
     }
 
     @Test
     fun toEulerYXZ() {
         MatrixTest.assertArrayEquals(
-                Float3(-41.8103164f, 63.4349488f, 116.5650512f).toFloatArray(),
-                eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.YXZ).toFloatArray()
+            Float3(-41.8103164f, 63.4349488f, 116.5650512f).toFloatArray(),
+            eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.YXZ).toFloatArray()
         )
     }
 
     @Test
     fun toEulerYZX() {
         MatrixTest.assertArrayEquals(
-                Float3(-116.5650512f, -169.6951532f, 41.8103164f).toFloatArray(),
-                eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.YZX).toFloatArray()
+            Float3(-116.5650512f, -169.6951532f, 41.8103164f).toFloatArray(),
+            eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.YZX).toFloatArray()
         )
     }
 
     @Test
     fun toEulerZXY() {
         MatrixTest.assertArrayEquals(
-                Float3(68.9605309f, -21.8014099f, 158.1985901f).toFloatArray(),
-                eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.ZXY).toFloatArray()
+            Float3(68.9605309f, -21.8014099f, 158.1985901f).toFloatArray(),
+            eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.ZXY).toFloatArray()
         )
     }
 
     @Test
     fun toEulerZYX() {
         MatrixTest.assertArrayEquals(
-                Float3(70.3461755f, -7.6622561f, 137.7263108f).toFloatArray(),
-                eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.ZYX).toFloatArray()
+            Float3(70.3461755f, -7.6622561f, 137.7263108f).toFloatArray(),
+            eulerAngles(Quaternion(1.0f, 2.0f, 3.0f, 1.0f), RotationsOrder.ZYX).toFloatArray()
         )
     }
 }
