@@ -71,14 +71,9 @@ tasks.withType(Sign) {
 }
 
 tasks.register('publishMac') {
-    dependsOn 'publishIosArm32PublicationToMavenRepository'
     dependsOn 'publishIosArm64PublicationToMavenRepository'
     dependsOn 'publishIosSimulatorArm64PublicationToMavenRepository'
     dependsOn 'publishIosX64PublicationToMavenRepository'
-    dependsOn 'publishTvosArm64PublicationToMavenRepository'
-    dependsOn 'publishTvosSimulatorArm64PublicationToMavenRepository'
-    dependsOn 'publishTvosX64PublicationToMavenRepository'
-    dependsOn 'publishWatchosArm32PublicationToMavenRepository'
     dependsOn 'publishWatchosArm64PublicationToMavenRepository'
     dependsOn 'publishWatchosSimulatorArm64PublicationToMavenRepository'
     dependsOn 'publishWatchosX86PublicationToMavenRepository'
