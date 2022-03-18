@@ -490,23 +490,23 @@ class MatrixTest {
 
     @Test
     fun angleFloat2() {
-        assertEquals(
+        assertFloatEquals(
             angle(
                 Float2(1.0f, 2.0f),
-                Float2(3.0f, 4.0f)
+                Float2(5.0f, 3.0f)
             ),
-            10.304846f
+            32.47119f
         )
     }
 
     @Test
     fun angleFloat3() {
-        assertEquals(
+        assertFloatEquals(
             angle(
                 Float3(1.0f, 2.0f, 3.0f),
-                Float3(4.0f, 5.0f, 6.0f)
+                Float3(6.0f, 4.0f, 5.0f)
             ),
-            12.933169f
+            27.961838f
         )
     }
 
@@ -522,6 +522,12 @@ class MatrixTest {
             Float4(3f, 7f, 11f, 15f),
             Float4(4f, 8f, 12f, 16f)
         )
+
+        internal fun assertFloatEquals(expected: Float, actual: Float, delta: Float = 0.0001f) {
+            assertTrue((expected - actual).absoluteValue < delta,
+                "Expected: $expected, but got: $actual"
+            )
+        }
 
         internal fun assertArrayEquals(expected: FloatArray, actual: FloatArray, delta: Float = 0.0001f) {
             assertEquals(expected.size, actual.size)
