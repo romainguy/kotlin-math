@@ -418,35 +418,35 @@ class MatrixTest {
 
     @Test
     fun lookAt() {
-        assertArrayEquals(
+        assertMatEquals(
             Mat4(
                 Float4(0.53606f, -0.7862f, 0.30734f, 0.0f),
                 Float4(0.28377f, 0.51073f, 0.81155f, 0.0f),
-                Float4(0.79504f, 0.34783f, -0.4969f, 0.0f),
+                Float4(-0.79504f, -0.34783f, 0.4969f, 0.0f),
                 Float4(1.0f, 2.0f, 3.0f, 1.0f),
-            ).toFloatArray(),
+            ),
             lookAt(
                 eye = Float3(1f, 2f, 3f),
                 target = Float3(9f, 5.5f, -2f),
                 up = Float3(3f, 4f, 5f)
-            ).toFloatArray()
+            )
         )
     }
 
     @Test
     fun lookTowards() {
-        assertArrayEquals(
+        assertMatEquals(
             Mat4(
                 Float4(-0.6549f, -0.3475f, 0.67100f, 0.0f),
                 Float4(0.10792f, 0.83584f, 0.53825f, 0.0f),
-                Float4(0.74791f, -0.4249f, 0.50994f, 0.0f),
+                Float4(-0.74791f, 0.4249f, -0.50994f, 0.0f),
                 Float4(1.0f, 2.0f, 3.0f, 1.0f),
-            ).toFloatArray(),
+            ),
             lookTowards(
                 eye = Float3(1f, 2f, 3f),
                 forward = Float3(4.4f, -2.5f, 3f),
                 up = Float3(3f, 4f, 5f),
-            ).toFloatArray()
+            )
         )
     }
 
