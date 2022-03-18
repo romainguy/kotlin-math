@@ -22,6 +22,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
+import kotlin.math.acos
 
 enum class VectorComponent {
     X, Y, Z, W,
@@ -583,6 +584,11 @@ fun refract(i: Float2, n: Float2, eta: Float): Float2 {
     return if (k < 0.0f) Float2(0.0f) else eta * i - (eta * d + sqrt(k)) * n
 }
 
+inline fun angle(a: Float2, b: Float2): Float {
+    val l = length(a) * length(b)
+    return if (l == 0.0f) 0.0f else acos(clamp(dot(a, b) / l, -1.0f, 1.0f))
+}
+
 inline fun clamp(v: Float2, min: Float, max: Float): Float2 {
     return Float2(
             clamp(v.x, min, max),
@@ -673,6 +679,11 @@ fun refract(i: Float3, n: Float3, eta: Float): Float3 {
     val d = dot(n, i)
     val k = 1.0f - eta * eta * (1.0f - sqr(d))
     return if (k < 0.0f) Float3(0.0f) else eta * i - (eta * d + sqrt(k)) * n
+}
+
+inline fun angle(a: Float3, b: Float3): Float {
+    val l = length(a) * length(b)
+    return if (l == 0.0f) 0.0f else acos(clamp(dot(a, b) / l, -1.0f, 1.0f))
 }
 
 inline fun clamp(v: Float3, min: Float, max: Float): Float3 {
