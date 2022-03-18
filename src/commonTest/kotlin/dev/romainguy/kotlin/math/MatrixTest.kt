@@ -488,6 +488,28 @@ class MatrixTest {
         )
     }
 
+    @Test
+    fun angleFloat2() {
+        assertEquals(
+            angle(
+                Float2(1.0f, 2.0f),
+                Float2(3.0f, 4.0f)
+            ),
+            10.304846f
+        )
+    }
+
+    @Test
+    fun angleFloat3() {
+        assertEquals(
+            angle(
+                Float3(1.0f, 2.0f, 3.0f),
+                Float3(4.0f, 5.0f, 6.0f)
+            ),
+            12.933169f
+        )
+    }
+
     companion object {
         private val MAT_3 = Mat3(
             Float3(1f, 4f, 7f),
