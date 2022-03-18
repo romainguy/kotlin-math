@@ -586,7 +586,7 @@ fun refract(i: Float2, n: Float2, eta: Float): Float2 {
 
 inline fun angle(a: Float2, b: Float2): Float {
     val l = length(a) * length(b)
-    return if (l == 0.0f) 0.0f else degrees(acos(clamp(dot(a, b) / l, -1.0f, 1.0f)))
+    return if (l == 0.0f) 0.0f else acos(clamp(dot(a, b) / l, -1.0f, 1.0f))
 }
 
 inline fun clamp(v: Float2, min: Float, max: Float): Float2 {
@@ -683,7 +683,7 @@ fun refract(i: Float3, n: Float3, eta: Float): Float3 {
 
 inline fun angle(a: Float3, b: Float3): Float {
     val l = length(a) * length(b)
-    return if (l == 0.0f) 0.0f else degrees(acos(clamp(dot(a, b) / l, -1.0f, 1.0f)))
+    return if (l == 0.0f) 0.0f else acos(clamp(dot(a, b) / l, -1.0f, 1.0f))
 }
 
 inline fun clamp(v: Float3, min: Float, max: Float): Float3 {
