@@ -20,7 +20,7 @@ package dev.romainguy.kotlin.math
 
 import kotlin.math.pow
 
-const val PI          = 3.1415926536f
+const val PI          = 3.1415927f
 const val HALF_PI     = PI * 0.5f
 const val TWO_PI      = PI * 2.0f
 const val FOUR_PI     = PI * 4.0f

@@ -19,7 +19,6 @@
 package dev.romainguy.kotlin.math
 
 import kotlin.math.*
-
 enum class QuaternionComponent {
     X, Y, Z, W
 }
@@ -81,7 +80,12 @@ data class Quaternion(
          * Default is [RotationsOrder.ZYX] which means that the object will first be rotated around its Z
          * axis, then its Y axis and finally its X axis.
          */
-        fun fromEuler(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f, order: RotationsOrder = RotationsOrder.ZYX): Quaternion {
+        fun fromEuler(
+            yaw: Float = 0.0f,
+            pitch: Float = 0.0f,
+            roll: Float = 0.0f,
+            order: RotationsOrder = RotationsOrder.ZYX
+        ): Quaternion {
             val c1 = cos(yaw * 0.5f)
             val s1 = sin(yaw * 0.5f)
             val c2 = cos(pitch * 0.5f)

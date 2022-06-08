@@ -682,8 +682,8 @@ fun eulerAngles(m: Mat4, order: RotationsOrder = RotationsOrder.ZYX): Float3 {
             RotationsOrder.ZXY -> {
                 this[order.pitch] = asin(clamp(m.y.z, -1.0f, 1.0f))
                 if (abs(m.y.z) < 0.9999999f) {
-                    this[order.roll] = atan2(-m.x.z, m.z.z);
-                    this[order.yaw] = atan2(-m.y.x, m.y.y);
+                    this[order.roll] = atan2(-m.x.z, m.z.z)
+                    this[order.yaw] = atan2(-m.y.x, m.y.y)
                 } else {
                     this[order.roll] = 0.0f
                     this[order.yaw] = atan2(m.x.y, m.x.x)

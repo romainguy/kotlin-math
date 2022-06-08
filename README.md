@@ -214,3 +214,23 @@ rotationMatrix = rotation(quaternion = Quaternion(y = 1.0f, w = 1.0f)) // rotati
 The file `Scalar.kt` contains various helper methods to use common math operations
 with floats. It is intended to be used in combination with Kotlin 1.2's new float
 math methods.
+
+## Rational numbers
+
+This library provides simple support for rational numbers to avoid numerical imprecisions. The
+current implementation is limited to 32 bits of storage for the numerator and the denominator.
+The current implementation is also not written for speed.
+
+```
+val a = Rational(2, 5)   // Representats 2/5
+val b = Rational(127)    // Integers can be represented exactly
+val c = Rational(0.25f)  // Floats and doubles will be converted to a rational representation
+
+// The following operators are supported:
+println(+a)
+println(-a)
+println(a + b)
+println(a - b)
+println(c * d)
+println(c / d)
+```
