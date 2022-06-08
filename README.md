@@ -222,7 +222,7 @@ current implementation is limited to 32 bits of storage for the numerator and th
 The current implementation is also not written for speed.
 
 ```
-val a = Rational(2, 5)   // Representats 2/5
+val a = Rational(2, 5)   // Represents 2/5
 val b = Rational(127)    // Integers can be represented exactly
 val c = Rational(0.25f)  // Floats and doubles will be converted to a rational representation
 
@@ -233,4 +233,8 @@ println(a + b)
 println(a - b)
 println(c * d)
 println(c / d)
+
+// And you can convert back to other types:
+println(a.toFloat())
+println(a.Long())
 ```
