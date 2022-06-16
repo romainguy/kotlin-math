@@ -21,3 +21,4 @@ build/
 .idea/.name
 local.properties
 *.ser
+kotlin-js-store/

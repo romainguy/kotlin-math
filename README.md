@@ -40,17 +40,21 @@ $ ./gradlew assemble
 
 ## Types
 
+Scalar types:
+- `Half`, half-precision floating point values (also called fp16)
+- `Rational`, number expressed as the ratio of two integer
+
 Vector types:
-- Float2, vector of 2 floats
-- Float3, vector of 3 floats
-- Float4, vector of 4 floats
-- Bool2, vector of 2 booleans
-- Bool3, vector of 3 booleans
-- Bool4, vector of 4 booleans
+- `Float2`, vector of 2 floats
+- `Float3`, vector of 3 floats
+- `Float4`, vector of 4 floats
+- `Bool2`, vector of 2 booleans
+- `Bool3`, vector of 3 booleans
+- `Bool4`, vector of 4 booleans
 
 Matrix types:
-- Mat3, 3x3 float matrix
-- Mat4, 4x4 float matrix
+- `Mat3`, 3x3 float matrix
+- `Mat4`, 4x4 float matrix
 
 ## Vector types
 
@@ -217,7 +221,7 @@ math methods.
 
 ## Rational numbers
 
-This library provides simple support for rational numbers to avoid numerical imprecisions. The
+This library provides simple support for rational numbers to avoid numerical imprecision. The
 current implementation is limited to 32 bits of storage for the numerator and the denominator.
 The current implementation is also not written for speed.
 
