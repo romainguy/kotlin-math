@@ -244,5 +244,5 @@ println(c / d)
 
 // And you can convert back to other types:
 println(a.toFloat())
-println(a.Long())
+println(a.toLong())
 ```
