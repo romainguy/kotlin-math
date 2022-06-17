@@ -143,8 +143,10 @@ private const val FP16_EXPONENT_SHIFT   = 10
 private const val FP16_EXPONENT_MASK    = 0x1f
 private const val FP16_SIGNIFICAND_MASK = 0x3ff
 private const val FP16_EXPONENT_BIAS    = 15
-private const val FP16_COMBINED         = 0x7fff
+private const val FP16_ABS              = 0x7fff
 private const val FP16_EXPONENT_MAX     = 0x7c00
+private const val FP16_NAN              = 0x7e00
+private const val FP16_QUIET_NAN        = 0x7fff
 private const val FP32_SIGN_SHIFT       = 31
 private const val FP32_EXPONENT_SHIFT   = 23
 private const val FP32_EXPONENT_MASK    = 0xff
@@ -305,7 +307,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
     val sign: Half
         get() {
             val bits = v.toInt()
-            val abs = bits and FP16_COMBINED
+            val abs = bits and FP16_ABS
             return when {
                 abs > FP16_EXPONENT_MAX -> NaN
                 abs == 0 -> POSITIVE_ZERO
@@ -340,7 +342,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
      * @return The absolute value of the specified half-precision float
      */
     val absoluteValue: Half
-        get() = Half((v.toInt() and FP16_COMBINED).toUShort())
+        get() = Half((v.toInt() and FP16_ABS).toUShort())
 
     /**
      * Returns the ulp of this value.
@@ -357,7 +359,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
             isNaN() -> NaN
             isInfinite() -> POSITIVE_INFINITY
             // 0x7bff == MAX_VALUE
-            v.toInt() and FP16_COMBINED == 0x7bff -> Half(0x4c00.toUShort())
+            v.toInt() and FP16_ABS == 0x7bff -> Half(0x4c00.toUShort())
             else -> {
                 val d = absoluteValue
                 d.nextUp() - d
@@ -435,12 +437,12 @@ value class Half(private val v: UShort) : Comparable<Half> {
     /**
      * Returns true if this half-precision float value represents a Not-a-Number, false otherwise.
      */
-    fun isNaN() = (v.toInt() and FP16_COMBINED) > FP16_EXPONENT_MAX
+    fun isNaN() = (v.toInt() and FP16_ABS) > FP16_EXPONENT_MAX
 
     /**
      * Returns true if this half-precision float value represents infinity, false otherwise.
      */
-    fun isInfinite() = (v.toInt() and FP16_COMBINED) == FP16_EXPONENT_MAX
+    fun isInfinite() = (v.toInt() and FP16_ABS) == FP16_EXPONENT_MAX
 
     /**
      * Returns true if this half-precision float value does not represent infinity nor NaN,
@@ -451,7 +453,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
     /**
      * Returns true if this half-precision float value represents zero, false otherwise.
      */
-    fun isZero() = (v.toInt() and FP16_COMBINED) == 0
+    fun isZero() = (v.toInt() and FP16_ABS) == 0
 
     /**
      * Returns true if this half-precision float value is normalized (does not have a subnormal
@@ -469,7 +471,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
      * If [sign] is NaN the sign of the result is undefined.
      */
     fun withSign(sign: Half) =
-        Half(((sign.v.toInt() and FP16_SIGN_MASK) or (v.toInt() and FP16_COMBINED)).toUShort())
+        Half(((sign.v.toInt() and FP16_SIGN_MASK) or (v.toInt() and FP16_ABS)).toUShort())
 
     /**
      * Returns the [Half] value nearest to this value in direction of positive infinity.
@@ -537,7 +539,50 @@ value class Half(private val v: UShort) : Comparable<Half> {
     operator fun minus(other: Half) = this + (-other)
 
     operator fun times(other: Half): Half {
-        TODO("Not yet implemented")
+        val xbits = toBits()
+        val ybits = other.toBits()
+
+        val s = (xbits xor ybits) and FP16_SIGN_MASK
+        var e = -16
+
+        var ax = xbits and FP16_ABS
+        var ay = ybits and FP16_ABS
+
+        // Handle NaNs and infinities
+        if (ax >= FP16_EXPONENT_MAX || ay >= FP16_EXPONENT_MAX) {
+            return Half((when {
+                ax > FP16_EXPONENT_MAX || ay > FP16_EXPONENT_MAX -> quiet(ax, ay)
+                (ax == FP16_EXPONENT_MAX && ay == 0) || (ay == FP16_EXPONENT_MAX && ax == 0) -> FP16_QUIET_NAN
+                else -> s or FP16_EXPONENT_MAX
+            }).toUShort())
+        }
+
+        // Either operand is 0, return 0 with the appropriate sign
+        if (ax == 0 || ay ==0) return Half(s.toUShort())
+
+        while (ax < 0x400) {
+            ax = ax shl 1
+            e--
+        }
+        while (ay < 0x400) {
+            ay = ay shl 1
+            e--
+        }
+
+        // Add leading 1. and perform the multiplication as uint32
+        val m =
+            ((ax and FP16_SIGNIFICAND_MASK) or 0x400).toUInt() *
+            ((ay and FP16_SIGNIFICAND_MASK) or 0x400).toUInt()
+
+        val i = m shr 21
+        e += (ax shr 10) + (ay shr 10) + i.toInt()
+
+        // Overflow (round-to-nearest)
+        if (e > 29) return Half((s or FP16_EXPONENT_MAX).toUShort())
+        // Underflow (round-to-nearest)
+        else if (e < -11) return Half(s.toUShort())
+
+        return fixedToHalf(s, e, m shr i.toInt(), m and i, 20)
     }
 
     operator fun div(other: Half): Half {
@@ -555,8 +600,8 @@ value class Half(private val v: UShort) : Comparable<Half> {
 
         // Collapse NaNs, but we want to keep (signed) values to preserve the ordering of
         // -0.0 and +0.0
-        if (x and FP16_COMBINED > FP16_EXPONENT_MAX) x = 0x7e00 // NaN
-        if (y and FP16_COMBINED > FP16_EXPONENT_MAX) y = 0x7e00 // NaN
+        if (x and FP16_ABS > FP16_EXPONENT_MAX) x = FP16_NAN // NaN
+        if (y and FP16_ABS > FP16_EXPONENT_MAX) y = FP16_NAN // NaN
 
         if (x == y) return 0
 
@@ -655,12 +700,12 @@ fun abs(x: Half) = x.absoluteValue
  */
 fun min(x: Half, y: Half): Half {
     val a = x.toBits()
-    if (a and FP16_COMBINED > FP16_EXPONENT_MAX) return Half.NaN
+    if (a and FP16_ABS > FP16_EXPONENT_MAX) return Half.NaN
 
     val b = y.toBits()
-    if (b and FP16_COMBINED > FP16_EXPONENT_MAX) return Half.NaN
+    if (b and FP16_ABS > FP16_EXPONENT_MAX) return Half.NaN
 
-    if (a and FP16_COMBINED == 0 && b and FP16_COMBINED == 0) {
+    if (a and FP16_ABS == 0 && b and FP16_ABS == 0) {
         return if (a and FP16_SIGN_MASK != 0) x else y
     }
 
@@ -683,12 +728,12 @@ fun min(x: Half, y: Half): Half {
  */
 fun max(x: Half, y: Half): Half {
     val a = x.toBits()
-    if (a and FP16_COMBINED > FP16_EXPONENT_MAX) return Half.NaN
+    if (a and FP16_ABS > FP16_EXPONENT_MAX) return Half.NaN
 
     val b = y.toBits()
-    if (b and FP16_COMBINED > FP16_EXPONENT_MAX) return Half.NaN
+    if (b and FP16_ABS > FP16_EXPONENT_MAX) return Half.NaN
 
-    if (a and FP16_COMBINED == 0 && b and FP16_COMBINED == 0) {
+    if (a and FP16_ABS == 0 && b and FP16_ABS == 0) {
         return if (a and FP16_SIGN_MASK != 0) y else x
     }
 
@@ -713,18 +758,18 @@ fun max(x: Half, y: Half): Half {
  */
 fun round(x: Half): Half {
     val bits = x.toBits()
-    var e = bits and 0x7fff
+    var a = bits and FP16_ABS
     var result = bits
 
-    if (e < 0x3c00) {
-        result = (result and FP16_SIGN_MASK) or (0x3c00 and (if (e >= 0x3800) 0xffff else 0x0))
-    } else if (e < 0x6400) {
-        e = 25 - (e shr 10)
-        val mask = (1 shl e) - 1
-        result += 1 shl (e - 1)
+    if (a < 0x3c00) { // < 1.0
+        result = (result and FP16_SIGN_MASK) or (0x3c00 and (if (a >= 0x3800) 0xffff else 0x0))
+    } else if (a < 0x6400) { // No fractional values above 1024
+        a = 25 - (a shr 10)
+        val mask = (1 shl a) - 1
+        result += 1 shl (a - 1)
         result = result and mask.inv()
     } else {
-        if (e > 0x7C00) result = result or 0x200
+        if (a > FP16_EXPONENT_MAX) result = quiet(result)
     }
 
     return Half(result.toUShort())
@@ -747,18 +792,18 @@ fun round(x: Half): Half {
  */
 fun floor(x: Half): Half {
     val bits = x.toBits()
-    var e = bits and 0x7fff
+    var a = bits and FP16_ABS
     var result = bits
 
-    if (e < 0x3c00) {
+    if (a < 0x3c00) { // < 1.0
         result = (result and FP16_SIGN_MASK) or (0x3c00 and if (bits > 0x8000) 0xffff else 0x0)
-    } else if (e < 0x6400) {
-        e = 25 - (e shr 10)
-        val mask = (1 shl e) - 1
+    } else if (a < 0x6400) { // No fractional values above 1024
+        a = 25 - (a shr 10)
+        val mask = (1 shl a) - 1
         result += mask and -(bits shr 15)
         result = result and mask.inv()
     } else {
-        if (e > 0x7C00) result = result or 0x200
+        if (a > FP16_EXPONENT_MAX) result = quiet(result)
     }
 
     return Half(result.toUShort())
@@ -781,19 +826,19 @@ fun floor(x: Half): Half {
  */
 fun ceil(x: Half): Half {
     val bits = x.toBits()
-    var e = bits and 0x7fff
+    var a = bits and FP16_ABS
     var result = bits
 
-    if (e < 0x3c00) {
+    if (a < 0x3c00) { // < 1.0
         result = result and FP16_SIGN_MASK
-        result = result or (0x3c00 and -((bits shr 15).inv() and if (e != 0) 1 else 0))
-    } else if (e < 0x6400) {
-        e = 25 - (e shr 10)
-        val mask = (1 shl e) - 1
+        result = result or (0x3c00 and -((bits shr 15).inv() and if (a != 0) 1 else 0))
+    } else if (a < 0x6400) { // No fractional values above 1024
+        a = 25 - (a shr 10)
+        val mask = (1 shl a) - 1
         result += mask and (bits shr 15) - 1
         result = result and mask.inv()
     } else {
-        if (e > 0x7C00) result = result or 0x200
+        if (a > FP16_EXPONENT_MAX) result = quiet(result)
     }
 
     return Half(result.toUShort())
@@ -815,15 +860,17 @@ fun ceil(x: Half): Half {
  */
 fun truncate(x: Half): Half {
     val bits = x.toBits()
-    var e = bits and 0x7fff
+    var a = bits and FP16_ABS
     var result = bits
 
-    if (e < 0x3c00) {
+    if (a < 0x3c00) { // < 1.0
         result = result and FP16_SIGN_MASK
-    } else if (e < 0x6400) {
-        e = 25 - (e shr 10)
-        val mask = (1 shl e) - 1
+    } else if (a < 0x6400) { // No fractional values above 1024
+        a = 25 - (a shr 10)
+        val mask = (1 shl a) - 1
         result = result and mask.inv()
+    } else {
+        if (a > FP16_EXPONENT_MAX) result = quiet(result)
     }
 
     return Half(result.toUShort())
@@ -894,4 +941,28 @@ private fun halfToShort(h: UShort): Float {
     }
     val out = s shl 16 or (outE shl FP32_EXPONENT_SHIFT) or outM
     return Float.fromBits(out)
+}
+
+private inline fun quiet(x: Int) = x or 0x200
+
+private inline fun quiet(x: Int, y: Int) =
+    (if (x and FP16_ABS > FP16_EXPONENT_MAX) x else y) or 0x200
+
+private fun fixedToHalf(sign: Int, e: Int, m: UInt, s: UInt, fraction: Int): Half {
+    // Compute guard and sticky bits
+    val v: UInt
+    val S: UInt
+    val G: UInt
+
+    if (e < 0) {
+        v = sign.toUInt() + (m shr (fraction - 10 - e))
+        G = (m shr (fraction - 11 - e)) and 1U
+        S = s or (if ((m and ((1U shl (fraction - 11 - e)) - 1.toUInt())) != 0U) 1 else 0).toUInt()
+    } else {
+        v = sign.toUInt() + (e.toUInt() shl (fraction - 10)) + (m shr (fraction - 10))
+        G = (m shr (fraction - 11)) and 1U
+        S = s or (if ((m and ((1U shl (fraction - 11)) - 1.toUInt())) != 0U) 1 else 0).toUInt()
+    }
+
+    return Half((v + (G and (S or v))).toUShort())
 }

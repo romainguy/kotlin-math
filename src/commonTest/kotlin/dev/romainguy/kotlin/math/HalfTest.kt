@@ -522,4 +522,52 @@ class HalfTest {
             assertEquals(v2.significand, v1.significand)
         }
     }
+
+    @Test
+    fun multiplication() {
+        assertTrue((Half(2.0f) * Half.NaN).isNaN())
+        assertTrue((Half.NaN * Half(2.0f)).isNaN())
+        assertTrue((Half.POSITIVE_INFINITY * Half.NaN).isNaN())
+        assertTrue((Half.NaN * Half.POSITIVE_INFINITY).isNaN())
+        assertTrue((Half.NEGATIVE_INFINITY * Half.NaN).isNaN())
+        assertTrue((Half.NaN * Half.NEGATIVE_INFINITY).isNaN())
+        assertTrue((Half.POSITIVE_ZERO * Half.NaN).isNaN())
+        assertTrue((Half.NaN * Half.POSITIVE_ZERO).isNaN())
+        assertTrue((Half.NEGATIVE_ZERO * Half.NaN).isNaN())
+        assertTrue((Half.NaN * Half.NEGATIVE_ZERO).isNaN())
+
+        assertTrue((Half(2.0f) * Half.POSITIVE_INFINITY).isInfinite())
+        assertTrue((Half.POSITIVE_INFINITY * Half(2.0f)).isInfinite())
+
+        assertTrue((Half(2.0f) * Half.NEGATIVE_INFINITY).isInfinite())
+        assertTrue((Half.NEGATIVE_INFINITY * Half(2.0f)).isInfinite())
+
+        assertTrue((Half(2.0f) * Half.POSITIVE_ZERO).isZero())
+        assertTrue((Half.POSITIVE_ZERO * Half(2.0f)).isZero())
+
+        assertTrue((Half(2.0f) * Half.NEGATIVE_ZERO).isZero())
+        assertTrue((Half.NEGATIVE_ZERO * Half(2.0f)).isZero())
+
+        // Overflow
+        assertEquals(Half.POSITIVE_INFINITY, Half(2.0f) * Half.MAX_VALUE)
+        assertEquals(Half.POSITIVE_INFINITY, Half.MAX_VALUE * Half(2.0f))
+        assertEquals(Half.NEGATIVE_INFINITY, Half(-2.0f) * Half.MAX_VALUE)
+        assertEquals(Half.NEGATIVE_INFINITY, Half.MAX_VALUE * Half(-2.0f))
+
+        //Underflow
+        assertEquals(Half.POSITIVE_ZERO, Half.MIN_VALUE * Half.MIN_NORMAL)
+        assertEquals(Half.NEGATIVE_ZERO, Half.MIN_VALUE * -Half.MIN_NORMAL)
+
+        assertEquals(Half(8.0f), Half(2.0f) * Half(4.0f))
+        assertEquals(Half(2.88f), Half(1.2f) * Half(2.4f))
+        assertEquals(Half(-2.88f), Half(1.2f) * Half(-2.4f))
+        assertEquals(Half(-2.88f), Half(-1.2f) * Half(2.4f))
+        assertEquals(Half(2.88f), Half(-1.2f) * Half(-2.4f))
+
+        assertEquals(Half(48_000.0f), Half(3.0f) * Half(16_000.0f))
+        assertEquals(Half(-48_000.0f), Half(3.0f) * Half(-16_000.0f))
+
+        assertEquals(Half(0.000012f), Half(0.03f) * Half(0.0004f))
+        assertEquals(Half(-0.000012f), Half(0.03f) * Half(-0.0004f))
+    }
 }
