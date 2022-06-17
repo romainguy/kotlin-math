@@ -28,8 +28,8 @@ const val INV_PI      = 1.0f / PI
 const val INV_TWO_PI  = INV_PI * 0.5f
 const val INV_FOUR_PI = INV_PI * 0.25f
 
-val HALF_ONE = Half(1.0f)
-val HALF_TWO = Half(2.0f)
+val HALF_ONE = Half(0x3c00.toUShort())
+val HALF_TWO = Half(0x4000.toUShort())
 
 inline fun clamp(x: Float, min: Float, max: Float) = if (x < min) min else (if (x > max) max else x)
 

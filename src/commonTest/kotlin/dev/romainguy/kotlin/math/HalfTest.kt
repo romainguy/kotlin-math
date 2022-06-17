@@ -525,6 +525,17 @@ class HalfTest {
 
         assertEquals(Half.MIN_VALUE, Half.NEGATIVE_ZERO.nextUp())
         assertEquals(-Half.MIN_VALUE, Half.NEGATIVE_ZERO.nextDown())
+
+        assertTrue(Half.NaN.nextTowards(HALF_TWO).isNaN())
+        assertTrue(HALF_TWO.nextTowards(Half.NaN).isNaN())
+        assertEquals(HALF_ONE, HALF_ONE.nextTowards(HALF_ONE))
+        assertEquals(-HALF_ONE, (-HALF_ONE).nextTowards(-HALF_ONE))
+
+        assertEquals(Half(1025.0f), Half(1024.0f).nextTowards(Half(32768.0f)))
+        assertEquals(Half(1023.5f), Half(1024.0f).nextTowards(Half(-32768.0f)))
+
+        assertEquals(Half(0.50048830f), Half(0.5f).nextTowards(Half(32768.0f)))
+        assertEquals(Half(0.49975586f), Half(0.5f).nextTowards(Half(-32768.0f)))
     }
 
     @Test
@@ -549,8 +560,8 @@ class HalfTest {
 
     @Test
     fun multiplication() {
-        assertTrue((Half(2.0f) * Half.NaN).isNaN())
-        assertTrue((Half.NaN * Half(2.0f)).isNaN())
+        assertTrue((HALF_TWO * Half.NaN).isNaN())
+        assertTrue((Half.NaN * HALF_TWO).isNaN())
         assertTrue((Half.POSITIVE_INFINITY * Half.NaN).isNaN())
         assertTrue((Half.NaN * Half.POSITIVE_INFINITY).isNaN())
         assertTrue((Half.NEGATIVE_INFINITY * Half.NaN).isNaN())
@@ -560,21 +571,21 @@ class HalfTest {
         assertTrue((Half.NEGATIVE_ZERO * Half.NaN).isNaN())
         assertTrue((Half.NaN * Half.NEGATIVE_ZERO).isNaN())
 
-        assertTrue((Half(2.0f) * Half.POSITIVE_INFINITY).isInfinite())
-        assertTrue((Half.POSITIVE_INFINITY * Half(2.0f)).isInfinite())
+        assertTrue((HALF_TWO * Half.POSITIVE_INFINITY).isInfinite())
+        assertTrue((Half.POSITIVE_INFINITY * HALF_TWO).isInfinite())
 
-        assertTrue((Half(2.0f) * Half.NEGATIVE_INFINITY).isInfinite())
-        assertTrue((Half.NEGATIVE_INFINITY * Half(2.0f)).isInfinite())
+        assertTrue((HALF_TWO * Half.NEGATIVE_INFINITY).isInfinite())
+        assertTrue((Half.NEGATIVE_INFINITY * HALF_TWO).isInfinite())
 
-        assertTrue((Half(2.0f) * Half.POSITIVE_ZERO).isZero())
-        assertTrue((Half.POSITIVE_ZERO * Half(2.0f)).isZero())
+        assertTrue((HALF_TWO * Half.POSITIVE_ZERO).isZero())
+        assertTrue((Half.POSITIVE_ZERO * HALF_TWO).isZero())
 
-        assertTrue((Half(2.0f) * Half.NEGATIVE_ZERO).isZero())
-        assertTrue((Half.NEGATIVE_ZERO * Half(2.0f)).isZero())
+        assertTrue((HALF_TWO * Half.NEGATIVE_ZERO).isZero())
+        assertTrue((Half.NEGATIVE_ZERO * HALF_TWO).isZero())
 
         // Overflow
-        assertEquals(Half.POSITIVE_INFINITY, Half(2.0f) * Half.MAX_VALUE)
-        assertEquals(Half.POSITIVE_INFINITY, Half.MAX_VALUE * Half(2.0f))
+        assertEquals(Half.POSITIVE_INFINITY, HALF_TWO * Half.MAX_VALUE)
+        assertEquals(Half.POSITIVE_INFINITY, Half.MAX_VALUE * HALF_TWO)
         assertEquals(Half.NEGATIVE_INFINITY, Half(-2.0f) * Half.MAX_VALUE)
         assertEquals(Half.NEGATIVE_INFINITY, Half.MAX_VALUE * Half(-2.0f))
 
@@ -582,7 +593,7 @@ class HalfTest {
         assertEquals(Half.POSITIVE_ZERO, Half.MIN_VALUE * Half.MIN_NORMAL)
         assertEquals(Half.NEGATIVE_ZERO, Half.MIN_VALUE * -Half.MIN_NORMAL)
 
-        assertEquals(Half(8.0f), Half(2.0f) * Half(4.0f))
+        assertEquals(Half(8.0f), HALF_TWO * Half(4.0f))
         assertEquals(Half(2.88f), Half(1.2f) * Half(2.4f))
         assertEquals(Half(-2.88f), Half(1.2f) * Half(-2.4f))
         assertEquals(Half(-2.88f), Half(-1.2f) * Half(2.4f))
@@ -597,8 +608,8 @@ class HalfTest {
 
     @Test
     fun division() {
-        assertTrue((Half(2.0f) / Half.NaN).isNaN())
-        assertTrue((Half.NaN / Half(2.0f)).isNaN())
+        assertTrue((HALF_TWO / Half.NaN).isNaN())
+        assertTrue((Half.NaN / HALF_TWO).isNaN())
         assertTrue((Half.POSITIVE_INFINITY / Half.NaN).isNaN())
         assertTrue((Half.NaN / Half.POSITIVE_INFINITY).isNaN())
         assertTrue((Half.NEGATIVE_INFINITY / Half.NaN).isNaN())
@@ -608,17 +619,17 @@ class HalfTest {
         assertTrue((Half.NEGATIVE_ZERO / Half.NaN).isNaN())
         assertTrue((Half.NaN / Half.NEGATIVE_ZERO).isNaN())
 
-        assertTrue((Half(2.0f) / Half.POSITIVE_INFINITY).isZero())
-        assertTrue((Half.POSITIVE_INFINITY / Half(2.0f)).isInfinite())
+        assertTrue((HALF_TWO / Half.POSITIVE_INFINITY).isZero())
+        assertTrue((Half.POSITIVE_INFINITY / HALF_TWO).isInfinite())
 
-        assertTrue((Half(2.0f) / Half.NEGATIVE_INFINITY).isZero())
-        assertTrue((Half.NEGATIVE_INFINITY / Half(2.0f)).isInfinite())
+        assertTrue((HALF_TWO / Half.NEGATIVE_INFINITY).isZero())
+        assertTrue((Half.NEGATIVE_INFINITY / HALF_TWO).isInfinite())
 
-        assertTrue((Half(2.0f) / Half.POSITIVE_ZERO).isInfinite())
-        assertTrue((Half.POSITIVE_ZERO / Half(2.0f)).isZero())
+        assertTrue((HALF_TWO / Half.POSITIVE_ZERO).isInfinite())
+        assertTrue((Half.POSITIVE_ZERO / HALF_TWO).isZero())
 
-        assertTrue((Half(2.0f) / Half.NEGATIVE_ZERO).isInfinite())
-        assertTrue((Half.NEGATIVE_ZERO / Half(2.0f)).isZero())
+        assertTrue((HALF_TWO / Half.NEGATIVE_ZERO).isInfinite())
+        assertTrue((Half.NEGATIVE_ZERO / HALF_TWO).isZero())
 
         // Underflow
         assertEquals(Half.POSITIVE_ZERO, Half.MIN_VALUE / Half.MAX_VALUE)
@@ -628,7 +639,7 @@ class HalfTest {
         assertEquals(Half.POSITIVE_INFINITY, Half.MAX_VALUE / Half.MIN_VALUE)
         assertEquals(Half.NEGATIVE_INFINITY, (-Half.MAX_VALUE) / Half.MIN_VALUE)
 
-        assertEquals(Half(0.5f), Half(2.0f) / Half(4.0f))
+        assertEquals(Half(0.5f), HALF_TWO / Half(4.0f))
         assertEquals(Half(0.5f), Half(1.2f) / Half(2.4f))
         assertEquals(Half(-0.5f), Half(1.2f) / Half(-2.4f))
         assertEquals(Half(-0.5f), Half(-1.2f) / Half(2.4f))
@@ -637,10 +648,86 @@ class HalfTest {
         assertEquals(Half(16_000.0f), Half(48_000.0f) / Half(3.0f))
         assertEquals(Half(-16_000.0f), Half(48_000.0f) / Half(-3.0f))
 
-        assertEquals(Half(2.0861626e-5f), Half(1.0f) / Half(48_000.0f))
-        assertEquals(Half(-2.0861626e-5), Half(1.0f) / Half(-48_000.0f))
+        assertEquals(Half(2.0861626e-5f), HALF_ONE / Half(48_000.0f))
+        assertEquals(Half(-2.0861626e-5), HALF_ONE / Half(-48_000.0f))
 
         assertEquals(Half(75.0f), Half(0.03f) / Half(0.0004f))
         assertEquals(Half(-75.0f), Half(0.03f) / Half(-0.0004f))
+    }
+
+    @Test
+    fun addition() {
+        assertTrue((Half.NaN + Half.NaN).isNaN())
+
+        assertTrue((Half.NaN + HALF_ONE).isNaN())
+        assertTrue((Half.NaN - HALF_ONE).isNaN())
+        assertTrue((HALF_ONE + Half.NaN).isNaN())
+        assertTrue((Half(-1.0f) + Half.NaN).isNaN())
+
+        assertTrue((Half.NaN + Half.POSITIVE_INFINITY).isNaN())
+        assertTrue((Half.POSITIVE_INFINITY + Half.NaN).isNaN())
+        assertTrue((Half.NaN + Half.NEGATIVE_INFINITY).isNaN())
+        assertTrue((Half.NEGATIVE_INFINITY + Half.NaN).isNaN())
+
+        assertTrue((Half.NaN + Half.POSITIVE_ZERO).isNaN())
+        assertTrue((Half.POSITIVE_ZERO + Half.NaN).isNaN())
+        assertTrue((Half.NaN + Half.NEGATIVE_ZERO).isNaN())
+        assertTrue((Half.NEGATIVE_ZERO + Half.NaN).isNaN())
+
+        assertTrue((Half.POSITIVE_INFINITY + HALF_ONE).isInfinite())
+        assertTrue((Half.POSITIVE_INFINITY - HALF_ONE).isInfinite())
+        assertTrue((HALF_ONE + Half.POSITIVE_INFINITY).isInfinite())
+        assertTrue((HALF_ONE - Half.POSITIVE_INFINITY).isInfinite())
+        assertTrue((Half.POSITIVE_INFINITY + Half.POSITIVE_INFINITY).isInfinite())
+        assertTrue((Half.POSITIVE_INFINITY - Half.POSITIVE_INFINITY).isNaN())
+
+        assertTrue((Half.NEGATIVE_INFINITY - HALF_ONE).isInfinite())
+        assertTrue((Half.NEGATIVE_INFINITY + HALF_ONE).isInfinite())
+        assertTrue((HALF_ONE + Half.NEGATIVE_INFINITY).isInfinite())
+        assertTrue((HALF_ONE - Half.NEGATIVE_INFINITY).isInfinite())
+        assertTrue((Half.NEGATIVE_INFINITY + Half.NEGATIVE_INFINITY).isInfinite())
+        assertTrue((Half.NEGATIVE_INFINITY - Half.NEGATIVE_INFINITY).isNaN())
+
+        assertEquals(Half(3.0f), HALF_ONE + HALF_TWO)
+
+        // Overflow
+        assertEquals(Half.POSITIVE_INFINITY, Half(32768.0f) + Half(32768.0f))
+        // Underflow
+        assertEquals(Half.NEGATIVE_INFINITY, Half(-32768.0f) - Half(32768.0f))
+
+        for (i in 0x0..0xffff) {
+            val v1 = Half(i.toUShort())
+            if (v1.isFinite()) {
+                assertTrue((v1 - v1).isZero())
+                assertEquals(v1 * HALF_TWO, v1 + v1)
+            }
+        }
+    }
+
+    @Test
+    fun ulp() {
+        assertTrue(Half.NaN.ulp.isNaN())
+
+        assertTrue(Half.POSITIVE_INFINITY.ulp.isInfinite())
+        assertTrue(Half.NEGATIVE_INFINITY.ulp.isInfinite())
+
+        assertTrue((Half.MAX_VALUE + Half.MAX_VALUE.ulp).isInfinite())
+
+        assertEquals(Half.MIN_VALUE, Half.POSITIVE_ZERO.ulp)
+        assertEquals(Half.MIN_VALUE, Half.NEGATIVE_ZERO.ulp)
+
+        assertEquals(HALF_ONE, Half(1024.0f).ulp)
+        assertEquals(HALF_ONE, Half(-1024.0f).ulp)
+    }
+
+    @Test
+    fun sqrt() {
+        for (i in 0x0..0xffff) {
+            val v1 = Half(i.toUShort())
+            if (v1.isFinite()) {
+                val v2 = sqrt(v1)
+                assertTrue(v1 - (v2 * v2) <= HALF_TWO * v1.ulp)
+            }
+        }
     }
 }

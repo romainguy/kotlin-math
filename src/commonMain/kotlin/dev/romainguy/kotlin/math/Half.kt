@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Operators +, *, / based on http://half.sourceforge.net/ by Christian Rau
+// and licensed under MIT
+
 @file:Suppress("NOTHING_TO_INLINE")
 
 package dev.romainguy.kotlin.math
@@ -344,7 +347,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
         get() = when {
             isNaN() -> NaN
             isInfinite() -> POSITIVE_INFINITY
-            // 0x7bff == MAX_VALUE
+            // 0x7bff == MAX_VALUE, return 2^4
             v.toInt() and FP16_ABS == 0x7bff -> Half(0x4c00.toUShort())
             else -> {
                 val d = absoluteValue
@@ -465,7 +468,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
     fun nextUp(): Half = when {
         isNaN() || v == POSITIVE_INFINITY.v -> this
         isZero() -> MIN_VALUE
-        else -> fromBits(toBits() + if (v.toInt() and FP16_SIGN_MASK == 0) 1 else -1)
+        else -> Half((toBits() + if (v.toInt() and FP16_SIGN_MASK == 0) 1 else -1).toUShort())
     }
 
     /**
@@ -474,7 +477,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
     fun nextDown(): Half = when {
         isNaN() || v == NEGATIVE_INFINITY.v -> this
         isZero() -> -MIN_VALUE
-        else -> fromBits(toBits() + if (v.toInt() and FP16_SIGN_MASK == 0) -1 else 1)
+        else -> Half((toBits() + if (v.toInt() and FP16_SIGN_MASK == 0) -1 else 1).toUShort())
     }
 
     /**
@@ -519,7 +522,73 @@ value class Half(private val v: UShort) : Comparable<Half> {
     operator fun unaryPlus() = Half(v)
 
     operator fun plus(other: Half): Half {
-        TODO("Not yet implemented")
+        val xbits = toBits()
+        val ybits = other.toBits()
+
+        val sub = ((xbits xor ybits) and FP16_SIGN_MASK) != 0
+
+        var ax = xbits and FP16_ABS
+        var ay = ybits and FP16_ABS
+
+        // Handle NaNs and infinities
+        if (ax >= FP16_EXPONENT_MAX || ay >= FP16_EXPONENT_MAX) {
+            return Half((
+                if (ax > FP16_EXPONENT_MAX || ay > FP16_EXPONENT_MAX) quiet(ax, ay)
+                else if (ay != FP16_EXPONENT_MAX) xbits
+                else if (sub && ax == FP16_EXPONENT_MAX) FP16_QUIET_NAN
+                else ybits
+            ).toUShort())
+        }
+
+        // Handle zero operands, including signs
+        if (ax == 0) return if (ay != 0) other else Half((xbits and ybits).toUShort())
+        if (ay == 0) return this
+
+        // Compute the sign of the result
+        val s = (if (sub && ay > ax) ybits else xbits) and FP16_SIGN_MASK
+
+        if (ay > ax) {
+            val t = ax
+            ax = ay
+            ay = t
+        }
+
+        var e = (ax shr 10) + if (ax <= FP16_SIGNIFICAND_MASK) 1 else 0
+        val d = e - (ay shr 10) - if (ay <= FP16_SIGNIFICAND_MASK) 1 else 0
+
+        var mx = ((ax and FP16_SIGNIFICAND_MASK) or
+            ((if (ax > FP16_SIGNIFICAND_MASK) 1 else 0) shl 10)) shl 3
+        var my: Int
+
+        if (d < 13) {
+            my = ((ay and FP16_SIGNIFICAND_MASK) or
+                ((if (ay > FP16_SIGNIFICAND_MASK) 1 else 0) shl 10)) shl 3
+            my = (my shr d) or (if ((my and ((1 shl d) - 1)) != 0) 1 else 0)
+        } else {
+            my = 1
+        }
+
+        if (sub) {
+            mx -= my
+            if (mx == 0) return POSITIVE_ZERO
+            while (mx < 0x2000 && e > 1) {
+                mx = mx shl 1
+                e--
+            }
+        } else {
+            mx += my
+            val i = mx shr 14
+            e += i
+            if (e > 30) return Half((s or FP16_EXPONENT_MAX).toUShort())
+            mx = (mx shr i) or (mx and i)
+        }
+
+        // Guard and sticky bits
+        val v = s +((e - 1) shl 10) + (mx shr 3)
+        val G = (mx shr 2) and 1
+        val S = if (mx and 0x3 != 0) 1 else 0
+
+        return Half((v + (G and (S or v))).toUShort())
     }
 
     operator fun minus(other: Half) = this + (-other)
@@ -704,7 +773,50 @@ value class Half(private val v: UShort) : Comparable<Half> {
     }
 }
 
-fun sqrt(x: Half): Half = TODO("Not implemented yet")
+fun sqrt(x: Half): Half {
+    val bits = x.toBits()
+    var a = bits and FP16_ABS
+    var e = 15
+
+    if (a == 0 || a >= FP16_EXPONENT_MAX) {
+        return Half((when {
+            a > FP16_EXPONENT_MAX -> quiet(bits)
+            bits > FP16_SIGN_MASK -> FP16_QUIET_NAN
+            else -> bits
+        }).toUShort())
+    }
+
+    while (a < 0x400) {
+        a = a shl 1
+        e--
+    }
+
+    // Bring back 1.
+    var r = ((a and FP16_SIGNIFICAND_MASK) or 0x400).toUInt() shl 10
+    e += a shr 10
+    val i = e and 1
+    r = r shl i
+    e = (e - i) / 2
+
+    var m = 0U
+    var b = 1U shl 20
+    while (b != 0U) {
+        if (r < m + b) {
+            m = m shr 1
+        } else {
+            r -= m + b
+            m = (m shr 1) + b
+        }
+        b = b shr 2
+    }
+
+    // Guard and sticky bits
+    val v = (e shl 10).toUInt() + (m and 0x3ffU)
+    val G = if (r > m) 1U else 0U
+    val S = if (r != 0U) 1U else 0U
+
+    return Half((v + (G and (S or v))).toUShort())
+}
 
 /**
  * Returns the absolute value of the specified half-precision float.
