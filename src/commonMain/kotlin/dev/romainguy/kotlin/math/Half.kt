@@ -137,24 +137,10 @@ fun Half(value: String) = Half(floatToHalf(value.toFloat()))
  */
 fun String.toHalf() = Half(floatToHalf(toFloat()))
 
-private const val FP16_SIGN_SHIFT       = 15
-private const val FP16_SIGN_MASK        = 0x8000
-private const val FP16_EXPONENT_SHIFT   = 10
-private const val FP16_EXPONENT_MASK    = 0x1f
-private const val FP16_SIGNIFICAND_MASK = 0x3ff
-private const val FP16_EXPONENT_BIAS    = 15
-private const val FP16_ABS              = 0x7fff
-private const val FP16_EXPONENT_MAX     = 0x7c00
-private const val FP16_NAN              = 0x7e00
-private const val FP16_QUIET_NAN        = 0x7fff
-private const val FP32_SIGN_SHIFT       = 31
-private const val FP32_EXPONENT_SHIFT   = 23
-private const val FP32_EXPONENT_MASK    = 0xff
-private const val FP32_SIGNIFICAND_MASK = 0x7fffff
-private const val FP32_EXPONENT_BIAS    = 127
-private const val FP32_QNAN_MASK        = 0x400000
-private const val FP32_DENORMAL_MAGIC   = 126 shl 23
-private       val FP32_DENORMAL_FLOAT   = Float.fromBits(FP32_DENORMAL_MAGIC)
+/**
+ * Returns the half-precision float value represented by the specified [Rational].
+ */
+fun Rational.toHalf() = toFloat().toHalf()
 
 /**
  * The [Half] class is a wrapper and a utility class to manipulate half-precision 16-bit
@@ -478,7 +464,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
      */
     fun nextUp(): Half = when {
         isNaN() || v == POSITIVE_INFINITY.v -> this
-        v == POSITIVE_ZERO.v -> MIN_VALUE
+        isZero() -> MIN_VALUE
         else -> fromBits(toBits() + if (v.toInt() and FP16_SIGN_MASK == 0) 1 else -1)
     }
 
@@ -487,7 +473,7 @@ value class Half(private val v: UShort) : Comparable<Half> {
      */
     fun nextDown(): Half = when {
         isNaN() || v == NEGATIVE_INFINITY.v -> this
-        v == POSITIVE_ZERO.v -> -MIN_VALUE
+        isZero() -> -MIN_VALUE
         else -> fromBits(toBits() + if (v.toInt() and FP16_SIGN_MASK == 0) -1 else 1)
     }
 
@@ -577,16 +563,60 @@ value class Half(private val v: UShort) : Comparable<Half> {
         val i = m shr 21
         e += (ax shr 10) + (ay shr 10) + i.toInt()
 
-        // Overflow (round-to-nearest)
+        // Overflow and underflow
         if (e > 29) return Half((s or FP16_EXPONENT_MAX).toUShort())
-        // Underflow (round-to-nearest)
         else if (e < -11) return Half(s.toUShort())
 
         return fixedToHalf(s, e, m shr i.toInt(), m and i, 20)
     }
 
     operator fun div(other: Half): Half {
-        TODO("Not yet implemented")
+        val xbits = toBits()
+        val ybits = other.toBits()
+
+        val s = (xbits xor ybits) and FP16_SIGN_MASK
+        var e = 14
+
+        var ax = xbits and FP16_ABS
+        var ay = ybits and FP16_ABS
+
+        // Handle NaNs and infinities
+        if (ax >= FP16_EXPONENT_MAX || ay >= FP16_EXPONENT_MAX) {
+            return Half((when {
+                ax > FP16_EXPONENT_MAX || ay > FP16_EXPONENT_MAX -> quiet(ax, ay)
+                ax == ay -> FP16_QUIET_NAN
+                else -> s or (if (ax == FP16_EXPONENT_MAX) FP16_EXPONENT_MAX else 0)
+            }).toUShort())
+        }
+
+        // Divisions by 0, return NaN or infinity
+        if (ax == 0) return Half((if (ay == 0) FP16_QUIET_NAN else s).toUShort())
+        if (ay == 0) return Half((s or FP16_EXPONENT_MAX).toUShort())
+
+        while (ax < 0x400) {
+            ax = ax shl 1
+            e--
+        }
+        while (ay < 0x400) {
+            ay = ay shl 1
+            e++
+        }
+
+        // Prepare for division in uint32 by adding back the leading 1.
+        var mx = ((ax and FP16_SIGNIFICAND_MASK) or 0x400).toUInt()
+        var my = ((ay and FP16_SIGNIFICAND_MASK) or 0x400).toUInt()
+
+        val i = if (mx < my) 1 else 0
+        e += (ax shr 10) - (ay shr 10) - i
+
+        // Overflow and underflow
+        if (e > 29) return Half((s or FP16_EXPONENT_MAX).toUShort())
+        else if (e < -11) return Half(s.toUShort())
+
+        mx = mx shl (12 + i)
+        my = my shl 1
+
+        return fixedToHalf(s, e, mx / my, if (mx % my != 0U) 1U else 0U, 11)
     }
 
     operator fun inc() = this + Half(0x3c00.toUShort())
@@ -876,6 +906,27 @@ fun truncate(x: Half): Half {
     return Half(result.toUShort())
 }
 
+// No user-serviceable parts starting from here
+
+private const val FP16_SIGN_SHIFT       = 15
+private const val FP16_SIGN_MASK        = 0x8000
+private const val FP16_EXPONENT_SHIFT   = 10
+private const val FP16_EXPONENT_MASK    = 0x1f
+private const val FP16_SIGNIFICAND_MASK = 0x3ff
+private const val FP16_EXPONENT_BIAS    = 15
+private const val FP16_ABS              = 0x7fff
+private const val FP16_EXPONENT_MAX     = 0x7c00
+private const val FP16_NAN              = 0x7e00
+private const val FP16_QUIET_NAN        = 0x7fff
+private const val FP32_SIGN_SHIFT       = 31
+private const val FP32_EXPONENT_SHIFT   = 23
+private const val FP32_EXPONENT_MASK    = 0xff
+private const val FP32_SIGNIFICAND_MASK = 0x7fffff
+private const val FP32_EXPONENT_BIAS    = 127
+private const val FP32_QNAN_MASK        = 0x400000
+private const val FP32_DENORMAL_MAGIC   = 126 shl 23
+private       val FP32_DENORMAL_FLOAT   = Float.fromBits(FP32_DENORMAL_MAGIC)
+
 private fun floatToHalf(f: Float): UShort {
     val bits: Int = f.toBits()
     val s = bits ushr FP32_SIGN_SHIFT
@@ -959,7 +1010,7 @@ private fun fixedToHalf(sign: Int, e: Int, m: UInt, s: UInt, fraction: Int): Hal
         G = (m shr (fraction - 11 - e)) and 1U
         S = s or (if ((m and ((1U shl (fraction - 11 - e)) - 1.toUInt())) != 0U) 1 else 0).toUInt()
     } else {
-        v = sign.toUInt() + (e.toUInt() shl (fraction - 10)) + (m shr (fraction - 10))
+        v = sign.toUInt() + (e.toUInt() shl 10) + (m shr (fraction - 10))
         G = (m shr (fraction - 11)) and 1U
         S = s or (if ((m and ((1U shl (fraction - 11)) - 1.toUInt())) != 0U) 1 else 0).toUInt()
     }
