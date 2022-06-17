@@ -704,6 +704,8 @@ value class Half(private val v: UShort) : Comparable<Half> {
     }
 }
 
+fun sqrt(x: Half): Half = TODO("Not implemented yet")
+
 /**
  * Returns the absolute value of the specified half-precision float.
  * Special values are handled in the following ways:

@@ -48,6 +48,9 @@ Vector types:
 - `Float2`, vector of 2 floats
 - `Float3`, vector of 3 floats
 - `Float4`, vector of 4 floats
+- `Half2`, vector of 2 half-precision floats
+- `Half3`, vector of 3 half-precision floats
+- `Half4`, vector of 4 half-precision floats
 - `Bool2`, vector of 2 booleans
 - `Bool3`, vector of 3 booleans
 - `Bool4`, vector of 4 booleans
