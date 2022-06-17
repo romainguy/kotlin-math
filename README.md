@@ -56,6 +56,10 @@ Matrix types:
 - `Mat3`, 3x3 float matrix
 - `Mat4`, 4x4 float matrix
 
+Other types:
+- `Quaternion`, unit quaternions to represent orientation
+- `Ray`, simple representation of a 3D ray (origin plus direction)
+
 ## Vector types
 
 ### Accessing components
@@ -191,7 +195,7 @@ You can also use the invoke operator to access elements in row-major mode with
 v = myMat4(2, 3) // equivalent to myMat4[2, 1]
 ```
 
-## Rotation types
+## Quaternions and rotations
 
 Construct a Euler angles rotation matrix using per-axis angles in degrees:
 
@@ -225,7 +229,7 @@ This library provides simple support for rational numbers to avoid numerical imp
 current implementation is limited to 32 bits of storage for the numerator and the denominator.
 The current implementation is also not written for speed.
 
-```
+```kotlin
 val a = Rational(2, 5)   // Represents 2/5
 val b = Rational(127)    // Integers can be represented exactly
 val c = Rational(0.25f)  // Floats and doubles will be converted to a rational representation
