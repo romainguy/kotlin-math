@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.konan.target.HostManager
 import java.net.URL
 
 plugins {
-    kotlin("multiplatform") version "1.6.21"
+    kotlin("multiplatform") version "1.7.0"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("org.jetbrains.dokka") version "1.6.0"
     id("maven-publish")
@@ -24,6 +24,7 @@ repositories {
 kotlin {
     targets {
         jvm()
+
         js(BOTH) {
             compilations.all {
                 kotlinOptions {
@@ -35,15 +36,13 @@ kotlin {
             browser()
             nodejs()
         }
+
         if (HostManager.hostIsMac) {
             macosX64()
             macosArm64()
             iosX64()
             iosArm64()
             iosSimulatorArm64()
-            watchosArm64()
-            watchosX86()
-            watchosSimulatorArm64()
         }
 
         if (HostManager.hostIsMingw || HostManager.hostIsMac) {
@@ -54,7 +53,6 @@ kotlin {
 
         if (HostManager.hostIsLinux || HostManager.hostIsMac) {
             linuxX64()
-            linuxArm32Hfp()
         }
     }
 
