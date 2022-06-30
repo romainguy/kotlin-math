@@ -385,6 +385,117 @@ data class Mat4(
     }
 }
 
+inline fun compare(a: Mat2, b: Float, eps: Float? = null): Mat2 {
+    return Mat2(
+        compare(a.x, b, eps),
+        compare(a.y, b, eps)
+    )
+}
+inline fun compare(a: Mat2, b: Mat2, eps: Float? = null): Mat2 {
+    return Mat2(
+        compare(a.x, b.x, eps),
+        compare(a.y, b.y, eps)
+    )
+}
+inline fun equal(a: Mat2, b: Float, eps: Float? = null): Bool2 {
+    return Bool2(all(equal(a.x, b, eps)), all(equal(a.y, b, eps)))
+}
+inline fun equal(a: Mat2, b: Mat2, eps: Float? = null): Bool2 {
+    return Bool2(all(equal(a.x, b.x, eps)), all(equal(a.y, b.y, eps)))
+}
+inline fun notEqual(a: Mat2, b: Float, eps: Float? = null): Bool2 {
+    return Bool2(all(notEqual(a.x, b, eps)), all(notEqual(a.y, b, eps)))
+}
+inline fun notEqual(a: Mat2, b: Mat2, eps: Float? = null): Bool2 {
+    return Bool2(all(notEqual(a.x, b.x, eps)), all(notEqual(a.y, b.x, eps)))
+}
+inline fun equals(a: Mat2, b: Float, eps: Float? = null) = all(equal(a, b, eps))
+inline fun equals(a: Mat2, b: Mat2, eps: Float? = null) = all(equal(a, b, eps))
+
+inline fun compare(a: Mat3, b: Float, eps: Float? = null): Mat3 {
+    return Mat3(
+        compare(a.x, b, eps),
+        compare(a.y, b, eps),
+        compare(a.z, b, eps)
+    )
+}
+inline fun compare(a: Mat3, b: Mat3, eps: Float? = null): Mat3 {
+    return Mat3(
+        compare(a.x, b.x, eps),
+        compare(a.y, b.y, eps),
+        compare(a.z, b.z, eps)
+    )
+}
+inline fun equal(a: Mat3, b: Float, eps: Float? = null): Bool3 {
+    return Bool3(all(equal(a.x, b, eps)), all(equal(a.y, b, eps)), all(equal(a.z, b, eps)))
+}
+inline fun equal(a: Mat3, b: Mat3, eps: Float? = null): Bool3 {
+    return Bool3(all(equal(a.x, b.x, eps)), all(equal(a.y, b.y, eps)), all(equal(a.z, b.z, eps)))
+}
+inline fun notEqual(a: Mat3, b: Float, eps: Float? = null): Bool3 {
+    return Bool3(all(notEqual(a.x, b, eps)), all(notEqual(a.y, b, eps)), all(notEqual(a.z, b, eps)))
+}
+inline fun notEqual(a: Mat3, b: Mat3, eps: Float? = null): Bool3 {
+    return Bool3(
+        all(notEqual(a.x, b.x, eps)),
+        all(notEqual(a.y, b.x, eps)),
+        all(notEqual(a.z, b.z, eps))
+    )
+}
+inline fun equals(a: Mat3, b: Float, eps: Float? = null) = all(equal(a, b, eps))
+inline fun equals(a: Mat3, b: Mat3, eps: Float? = null) = all(equal(a, b, eps))
+
+inline fun compare(a: Mat4, b: Float, eps: Float? = null): Mat4 {
+    return Mat4(
+        compare(a.x, b, eps),
+        compare(a.y, b, eps),
+        compare(a.z, b, eps),
+        compare(a.w, b, eps)
+    )
+}
+inline fun compare(a: Mat4, b: Mat4, eps: Float? = null): Mat4 {
+    return Mat4(
+        compare(a.x, b.x, eps),
+        compare(a.y, b.y, eps),
+        compare(a.z, b.z, eps),
+        compare(a.w, b.w, eps)
+    )
+}
+inline fun equal(a: Mat4, b: Float, eps: Float? = null): Bool4 {
+    return Bool4(
+        all(equal(a.x, b, eps)),
+        all(equal(a.y, b, eps)),
+        all(equal(a.z, b, eps)),
+        all(equal(a.w, b, eps))
+    )
+}
+inline fun equal(a: Mat4, b: Mat4, eps: Float? = null): Bool4 {
+    return Bool4(
+        all(equal(a.x, b.x, eps)),
+        all(equal(a.y, b.y, eps)),
+        all(equal(a.z, b.z, eps)),
+        all(equal(a.w, b.w, eps))
+    )
+}
+inline fun notEqual(a: Mat4, b: Float, eps: Float? = null): Bool4 {
+    return Bool4(
+        all(notEqual(a.x, b, eps)),
+        all(notEqual(a.y, b, eps)),
+        all(notEqual(a.z, b, eps)),
+        all(notEqual(a.w, b, eps))
+    )
+}
+inline fun notEqual(a: Mat4, b: Mat4, eps: Float? = null): Bool4 {
+    return Bool4(
+        all(notEqual(a.x, b.x, eps)),
+        all(notEqual(a.y, b.x, eps)),
+        all(notEqual(a.z, b.z, eps)),
+        all(notEqual(a.w, b.w, eps))
+    )
+}
+inline fun equals(a: Mat4, b: Float, eps: Float? = null) = all(equal(a, b, eps))
+inline fun equals(a: Mat4, b: Mat4, eps: Float? = null) = all(equal(a, b, eps))
+
 fun transpose(m: Mat2) = Mat2(
         Float2(m.x.x, m.y.x),
         Float2(m.x.y, m.y.y)
