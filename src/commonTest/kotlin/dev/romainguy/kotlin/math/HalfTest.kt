@@ -293,19 +293,19 @@ class HalfTest {
 
     @Test
     fun conversions() {
-        assertEquals(12, Half(12.57f).toByte())
-        assertEquals(12, Half(12.57f).toShort())
-        assertEquals(12, Half(12.57f).toInt())
-        assertEquals(12, Half(12.57f).toLong())
-        assertEquals(12.57f, Half(12.57f).toFloat(), 1e-3f)
-        assertEquals(12.57, Half(12.57f).toDouble(), 1e-3)
+        assertEquals(12, 12.57.h.toByte())
+        assertEquals(12, 12.57.h.toShort())
+        assertEquals(12, 12.57.h.toInt())
+        assertEquals(12, 12.57.h.toLong())
+        assertEquals(12.57f, 12.57.h.toFloat(), 1e-3f)
+        assertEquals(12.57, 12.57.h.toDouble(), 1e-3)
 
-        assertEquals(-12, Half(-12.57f).toByte())
-        assertEquals(-12, Half(-12.57f).toShort())
-        assertEquals(-12, Half(-12.57f).toInt())
-        assertEquals(-12, Half(-12.57f).toLong())
-        assertEquals(-12.57f, Half(-12.57f).toFloat(), 1e-3f)
-        assertEquals(-12.57, Half(-12.57f).toDouble(), 1e-3)
+        assertEquals(-12, -12.57.h.toByte())
+        assertEquals(-12, -12.57.h.toShort())
+        assertEquals(-12, -12.57.h.toInt())
+        assertEquals(-12, -12.57.h.toLong())
+        assertEquals(-12.57f, -12.57.h.toFloat(), 1e-3f)
+        assertEquals(-12.57, -12.57.h.toDouble(), 1e-3)
 
         assertEquals(0, Half.POSITIVE_ZERO.toByte())
         assertEquals(0, Half.POSITIVE_ZERO.toShort())
@@ -354,8 +354,8 @@ class HalfTest {
         assertEquals(Half.MIN_VALUE, min(Half.MIN_VALUE, Half.MIN_NORMAL))
         assertEquals(Half.POSITIVE_ZERO, min(Half.MIN_VALUE, Half.POSITIVE_ZERO))
         assertEquals(Half.POSITIVE_ZERO, min(Half.MIN_NORMAL, Half.POSITIVE_ZERO))
-        assertEquals(Half(-3.456f), min(Half(-3.456f), Half(-3.453f)))
-        assertEquals(Half(3.453f), min(Half(3.456f), Half(3.453f)))
+        assertEquals((-3.456).h, min((-3.456).h, (-3.453).h))
+        assertEquals(3.453.h, min(3.456.h, 3.453.h))
     }
 
     @Test
@@ -369,8 +369,8 @@ class HalfTest {
         assertEquals(Half.MIN_NORMAL, max(Half.MIN_VALUE, Half.MIN_NORMAL))
         assertEquals(Half.MIN_VALUE, max(Half.MIN_VALUE, Half.POSITIVE_ZERO))
         assertEquals(Half.MIN_NORMAL, max(Half.MIN_NORMAL, Half.POSITIVE_ZERO))
-        assertEquals(Half(-3.453f), max(Half(-3.456f), Half(-3.453f)))
-        assertEquals(Half(3.456f), max(Half(3.456f), Half(3.453f)))
+        assertEquals((-3.453).h, max((-3.456).h, (-3.453).h))
+        assertEquals(3.456.h, max(3.456.h, 3.453.h))
     }
 
     @Test
@@ -381,14 +381,14 @@ class HalfTest {
         assertEquals(Half.NEGATIVE_ZERO, truncate(Half.NEGATIVE_ZERO))
         assertEquals(Half.NaN, truncate(Half.NaN))
         assertEquals(Half.LOWEST_VALUE, truncate(Half.LOWEST_VALUE))
-        assertEquals(Half.POSITIVE_ZERO, truncate(Half(0.2f)))
-        assertEquals(Half.NEGATIVE_ZERO, truncate(Half(-0.2f)))
-        assertEquals(0.0f, truncate(Half(0.7f)).toFloat(), 1e-6f)
-        assertEquals(-0.0f, truncate(Half(-0.7f)).toFloat(), 1e-6f)
-        assertEquals(124.0f, truncate(Half(124.7f)).toFloat(), 1e-6f)
-        assertEquals(-124.0f, truncate(Half(-124.7f)).toFloat(), 1e-6f)
-        assertEquals(124.0f, truncate(Half(124.2f)).toFloat(), 1e-6f)
-        assertEquals(-124.0f, truncate(Half(-124.2f)).toFloat(), 1e-6f)
+        assertEquals(Half.POSITIVE_ZERO, truncate(0.2.h))
+        assertEquals(Half.NEGATIVE_ZERO, truncate((-0.2).h))
+        assertEquals(0.0f, truncate(0.7.h).toFloat(), 1e-6f)
+        assertEquals(-0.0f, truncate((-0.7).h).toFloat(), 1e-6f)
+        assertEquals(124.0f, truncate(124.7.h).toFloat(), 1e-6f)
+        assertEquals(-124.0f, truncate((-124.7).h).toFloat(), 1e-6f)
+        assertEquals(124.0f, truncate(124.2.h).toFloat(), 1e-6f)
+        assertEquals(-124.0f, truncate((-124.2).h).toFloat(), 1e-6f)
     }
 
     @Test
@@ -402,20 +402,20 @@ class HalfTest {
         assertEquals(Half.POSITIVE_ZERO, round(Half.MIN_VALUE))
         assertEquals(Half.POSITIVE_ZERO, round(Half(0x200.toUShort())))
         assertEquals(Half.POSITIVE_ZERO, round(Half(0x3ff.toUShort())))
-        assertEquals(Half.POSITIVE_ZERO, round(Half(0.2f)))
-        assertEquals(Half.NEGATIVE_ZERO, round(Half(-0.2f)))
-        assertEquals(1.0f, round(Half(0.7f)).toFloat(), 1e-6f)
-        assertEquals(-1.0f, round(Half(-0.7f)).toFloat(), 1e-6f)
-        assertEquals(1.0f, round(Half(0.5f)).toFloat(), 1e-6f)
-        assertEquals(-1.0f, round(Half(-0.5f)).toFloat(), 1e-6f)
-        assertEquals(2.0f, round(Half(1.5f)).toFloat(), 1e-6f)
-        assertEquals(-2.0f, round(Half(-1.5f)).toFloat(), 1e-6f)
-        assertEquals(1023.0f, round(Half(1022.5f)).toFloat(), 1e-6f)
-        assertEquals(-1023.0f, round(Half(-1022.5f)).toFloat(), 1e-6f)
-        assertEquals(125.0f, round(Half(124.7f)).toFloat(), 1e-6f)
-        assertEquals(-125.0f, round(Half(-124.7f)).toFloat(), 1e-6f)
-        assertEquals(124.0f, round(Half(124.2f)).toFloat(), 1e-6f)
-        assertEquals(-124.0f, round(Half(-124.2f)).toFloat(), 1e-6f)
+        assertEquals(Half.POSITIVE_ZERO, round(0.2.h))
+        assertEquals(Half.NEGATIVE_ZERO, round((-0.2).h))
+        assertEquals(1.0f, round(0.7.h).toFloat(), 1e-6f)
+        assertEquals(-1.0f, round((-0.7).h).toFloat(), 1e-6f)
+        assertEquals(1.0f, round(0.5.h).toFloat(), 1e-6f)
+        assertEquals(-1.0f, round((-0.5).h).toFloat(), 1e-6f)
+        assertEquals(2.0f, round(1.5.h).toFloat(), 1e-6f)
+        assertEquals(-2.0f, round((-1.5).h).toFloat(), 1e-6f)
+        assertEquals(1023.0f, round(1022.5.h).toFloat(), 1e-6f)
+        assertEquals(-1023.0f, round((-1022.5).h).toFloat(), 1e-6f)
+        assertEquals(125.0f, round(124.7.h).toFloat(), 1e-6f)
+        assertEquals(-125.0f, round((-124.7).h).toFloat(), 1e-6f)
+        assertEquals(124.0f, round(124.2.h).toFloat(), 1e-6f)
+        assertEquals(-124.0f, round((-124.2).h).toFloat(), 1e-6f)
         // round for NaN values
         // These tests check whether the current round implementation achieves
         // bit level compatibility with the hardware implementation (ARM64).
@@ -435,14 +435,14 @@ class HalfTest {
         assertEquals(Half.LOWEST_VALUE, floor(Half.LOWEST_VALUE))
         assertEquals(Half.POSITIVE_ZERO, floor(Half.MIN_NORMAL))
         assertEquals(Half.POSITIVE_ZERO, floor(Half(0x3ff.toUShort())))
-        assertEquals(Half.POSITIVE_ZERO, floor(Half(0.2f)))
-        assertEquals(-1.0f, floor(Half(-0.2f)).toFloat(), 1e-6f)
-        assertEquals(-1.0f, floor(Half(-0.7f)).toFloat(), 1e-6f)
-        assertEquals(Half.POSITIVE_ZERO, floor(Half(0.7f)))
-        assertEquals(124.0f, floor(Half(124.7f)).toFloat(), 1e-6f)
-        assertEquals(-125.0f, floor(Half(-124.7f)).toFloat(), 1e-6f)
-        assertEquals(124.0f, floor(Half(124.2f)).toFloat(), 1e-6f)
-        assertEquals(-125.0f, floor(Half(-124.2f)).toFloat(), 1e-6f)
+        assertEquals(Half.POSITIVE_ZERO, floor(0.2.h))
+        assertEquals(-1.0f, floor((-0.2).h).toFloat(), 1e-6f)
+        assertEquals(-1.0f, floor((-0.7).h).toFloat(), 1e-6f)
+        assertEquals(Half.POSITIVE_ZERO, floor(0.7.h))
+        assertEquals(124.0f, floor(124.7.h).toFloat(), 1e-6f)
+        assertEquals(-125.0f, floor((-124.7).h).toFloat(), 1e-6f)
+        assertEquals(124.0f, floor(124.2.h).toFloat(), 1e-6f)
+        assertEquals(-125.0f, floor((-124.2).h).toFloat(), 1e-6f)
         // floor for NaN values
         assertEquals(0x7e01, floor(Half(0x7c01.toUShort())).toBits())
         assertEquals(0x7f00, floor(Half(0x7d00.toUShort())).toBits())
@@ -460,14 +460,14 @@ class HalfTest {
         assertEquals(Half.LOWEST_VALUE, ceil(Half.LOWEST_VALUE))
         assertEquals(1.0f, ceil(Half.MIN_NORMAL).toFloat(), 1e-6f)
         assertEquals(1.0f, ceil(Half(0x3ff.toUShort())).toFloat(), 1e-6f)
-        assertEquals(1.0f, ceil(Half(0.2f)).toFloat(), 1e-6f)
-        assertEquals(Half.NEGATIVE_ZERO, ceil(Half(-0.2f)))
-        assertEquals(1.0f, ceil(Half(0.7f)).toFloat(), 1e-6f)
-        assertEquals(Half.NEGATIVE_ZERO, ceil(Half(-0.7f)))
-        assertEquals(125.0f, ceil(Half(124.7f)).toFloat(), 1e-6f)
-        assertEquals(-124.0f, ceil(Half(-124.7f)).toFloat(), 1e-6f)
-        assertEquals(125.0f, ceil(Half(124.2f)).toFloat(), 1e-6f)
-        assertEquals(-124.0f, ceil(Half(-124.2f)).toFloat(), 1e-6f)
+        assertEquals(1.0f, ceil(0.2.h).toFloat(), 1e-6f)
+        assertEquals(Half.NEGATIVE_ZERO, ceil((-0.2).h))
+        assertEquals(1.0f, ceil(0.7.h).toFloat(), 1e-6f)
+        assertEquals(Half.NEGATIVE_ZERO, ceil((-0.7).h))
+        assertEquals(125.0f, ceil(124.7.h).toFloat(), 1e-6f)
+        assertEquals(-124.0f, ceil((-124.7).h).toFloat(), 1e-6f)
+        assertEquals(125.0f, ceil(124.2.h).toFloat(), 1e-6f)
+        assertEquals(-124.0f, ceil((-124.2).h).toFloat(), 1e-6f)
         // ceil for NaN values
         // These tests check whether the current ceil implementation achieves
         // bit level compatibility with the hardware implementation (ARM64).
@@ -505,11 +505,11 @@ class HalfTest {
 
     @Test
     fun next() {
-        assertEquals(Half(1025.0f), Half(1024.0f).nextUp())
-        assertEquals(Half(1023.5f), Half(1024.0f).nextDown())
+        assertEquals(1025.0.h, 1024.0.h.nextUp())
+        assertEquals(1023.5.h, 1024.0.h.nextDown())
 
-        assertEquals(Half(0.50048830f), Half(0.5f).nextUp())
-        assertEquals(Half(0.49975586f), Half(0.5f).nextDown())
+        assertEquals(0.50048830.h, 0.5.h.nextUp())
+        assertEquals(0.49975586.h, 0.5.h.nextDown())
 
         assertTrue(Half.NaN.nextUp().isNaN())
         assertTrue(Half.NaN.nextDown().isNaN())
@@ -531,11 +531,11 @@ class HalfTest {
         assertEquals(HALF_ONE, HALF_ONE.nextTowards(HALF_ONE))
         assertEquals(-HALF_ONE, (-HALF_ONE).nextTowards(-HALF_ONE))
 
-        assertEquals(Half(1025.0f), Half(1024.0f).nextTowards(Half(32768.0f)))
-        assertEquals(Half(1023.5f), Half(1024.0f).nextTowards(Half(-32768.0f)))
+        assertEquals(1025.0.h, 1024.0.h.nextTowards(32768.0.h))
+        assertEquals(1023.5.h, 1024.0.h.nextTowards((-32768.0).h))
 
-        assertEquals(Half(0.50048830f), Half(0.5f).nextTowards(Half(32768.0f)))
-        assertEquals(Half(0.49975586f), Half(0.5f).nextTowards(Half(-32768.0f)))
+        assertEquals(0.50048830.h, 0.5.h.nextTowards(32768.0.h))
+        assertEquals(0.49975586.h, 0.5.h.nextTowards((-32768.0).h))
     }
 
     @Test
@@ -586,24 +586,24 @@ class HalfTest {
         // Overflow
         assertEquals(Half.POSITIVE_INFINITY, HALF_TWO * Half.MAX_VALUE)
         assertEquals(Half.POSITIVE_INFINITY, Half.MAX_VALUE * HALF_TWO)
-        assertEquals(Half.NEGATIVE_INFINITY, Half(-2.0f) * Half.MAX_VALUE)
-        assertEquals(Half.NEGATIVE_INFINITY, Half.MAX_VALUE * Half(-2.0f))
+        assertEquals(Half.NEGATIVE_INFINITY, (-2.0).h * Half.MAX_VALUE)
+        assertEquals(Half.NEGATIVE_INFINITY, Half.MAX_VALUE * (-2.0).h)
 
         // Underflow
         assertEquals(Half.POSITIVE_ZERO, Half.MIN_VALUE * Half.MIN_NORMAL)
         assertEquals(Half.NEGATIVE_ZERO, Half.MIN_VALUE * -Half.MIN_NORMAL)
 
-        assertEquals(Half(8.0f), HALF_TWO * Half(4.0f))
-        assertEquals(Half(2.88f), Half(1.2f) * Half(2.4f))
-        assertEquals(Half(-2.88f), Half(1.2f) * Half(-2.4f))
-        assertEquals(Half(-2.88f), Half(-1.2f) * Half(2.4f))
-        assertEquals(Half(2.88f), Half(-1.2f) * Half(-2.4f))
+        assertEquals(8.0.h, HALF_TWO * 4.0.h)
+        assertEquals(2.88.h, 1.2.h * 2.4.h)
+        assertEquals((-2.88).h, 1.2.h * (-2.4).h)
+        assertEquals((-2.88).h, (-1.2).h * 2.4.h)
+        assertEquals(2.88.h, (-1.2).h * (-2.4).h)
 
-        assertEquals(Half(48_000.0f), Half(3.0f) * Half(16_000.0f))
-        assertEquals(Half(-48_000.0f), Half(3.0f) * Half(-16_000.0f))
+        assertEquals(48_000.0.h, 3.0.h * 16_000.0.h)
+        assertEquals((-48_000.0).h, 3.0.h * (-16_000.0).h)
 
-        assertEquals(Half(0.000012f), Half(0.03f) * Half(0.0004f))
-        assertEquals(Half(-0.000012f), Half(0.03f) * Half(-0.0004f))
+        assertEquals(0.000012.h, 0.03.h * 0.0004.h)
+        assertEquals((-0.000012).h, 0.03.h * (-0.0004).h)
     }
 
     @Test
@@ -639,20 +639,20 @@ class HalfTest {
         assertEquals(Half.POSITIVE_INFINITY, Half.MAX_VALUE / Half.MIN_VALUE)
         assertEquals(Half.NEGATIVE_INFINITY, (-Half.MAX_VALUE) / Half.MIN_VALUE)
 
-        assertEquals(Half(0.5f), HALF_TWO / Half(4.0f))
-        assertEquals(Half(0.5f), Half(1.2f) / Half(2.4f))
-        assertEquals(Half(-0.5f), Half(1.2f) / Half(-2.4f))
-        assertEquals(Half(-0.5f), Half(-1.2f) / Half(2.4f))
-        assertEquals(Half(0.5f), Half(-1.2f) / Half(-2.4f))
+        assertEquals(0.5.h, HALF_TWO / 4.0.h)
+        assertEquals(0.5.h, 1.2.h / 2.4.h)
+        assertEquals((-0.5).h, 1.2.h / (-2.4).h)
+        assertEquals((-0.5).h, (-1.2).h / 2.4.h)
+        assertEquals(0.5.h, (-1.2).h / (-2.4).h)
 
-        assertEquals(Half(16_000.0f), Half(48_000.0f) / Half(3.0f))
-        assertEquals(Half(-16_000.0f), Half(48_000.0f) / Half(-3.0f))
+        assertEquals(16_000.0.h, 48_000.0.h / 3.0.h)
+        assertEquals((-16_000.0).h, 48_000.0.h / (-3.0).h)
 
-        assertEquals(Half(2.0861626e-5f), HALF_ONE / Half(48_000.0f))
-        assertEquals(Half(-2.0861626e-5), HALF_ONE / Half(-48_000.0f))
+        assertEquals(Half(2.0861626e-5f), HALF_ONE / 48_000.0.h)
+        assertEquals(Half(-2.0861626e-5), HALF_ONE / (-48_000.0).h)
 
-        assertEquals(Half(75.0f), Half(0.03f) / Half(0.0004f))
-        assertEquals(Half(-75.0f), Half(0.03f) / Half(-0.0004f))
+        assertEquals(75.0.h, 0.03.h / 0.0004.h)
+        assertEquals((-75.0).h, 0.03.h / (-0.0004).h)
     }
 
     @Test
@@ -662,7 +662,7 @@ class HalfTest {
         assertTrue((Half.NaN + HALF_ONE).isNaN())
         assertTrue((Half.NaN - HALF_ONE).isNaN())
         assertTrue((HALF_ONE + Half.NaN).isNaN())
-        assertTrue((Half(-1.0f) + Half.NaN).isNaN())
+        assertTrue(((-1.0).h + Half.NaN).isNaN())
 
         assertTrue((Half.NaN + Half.POSITIVE_INFINITY).isNaN())
         assertTrue((Half.POSITIVE_INFINITY + Half.NaN).isNaN())
@@ -688,12 +688,12 @@ class HalfTest {
         assertTrue((Half.NEGATIVE_INFINITY + Half.NEGATIVE_INFINITY).isInfinite())
         assertTrue((Half.NEGATIVE_INFINITY - Half.NEGATIVE_INFINITY).isNaN())
 
-        assertEquals(Half(3.0f), HALF_ONE + HALF_TWO)
+        assertEquals(3.0.h, HALF_ONE + HALF_TWO)
 
         // Overflow
-        assertEquals(Half.POSITIVE_INFINITY, Half(32768.0f) + Half(32768.0f))
+        assertEquals(Half.POSITIVE_INFINITY, 32768.0.h + 32768.0.h)
         // Underflow
-        assertEquals(Half.NEGATIVE_INFINITY, Half(-32768.0f) - Half(32768.0f))
+        assertEquals(Half.NEGATIVE_INFINITY, (-32768.0).h - 32768.0.h)
 
         for (i in 0x0..0xffff) {
             val v1 = Half(i.toUShort())
@@ -716,8 +716,8 @@ class HalfTest {
         assertEquals(Half.MIN_VALUE, Half.POSITIVE_ZERO.ulp)
         assertEquals(Half.MIN_VALUE, Half.NEGATIVE_ZERO.ulp)
 
-        assertEquals(HALF_ONE, Half(1024.0f).ulp)
-        assertEquals(HALF_ONE, Half(-1024.0f).ulp)
+        assertEquals(HALF_ONE, 1024.0.h.ulp)
+        assertEquals(HALF_ONE, (-1024.0).h.ulp)
     }
 
     @Test
