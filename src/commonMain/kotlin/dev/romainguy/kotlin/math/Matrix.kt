@@ -88,12 +88,12 @@ data class Mat2(
 
     operator fun times(m: Mat2) = Mat2(
             Float2(
-                    x.x * m.x.x + y.x * m.x.y,
-                    x.y * m.x.x + y.y * m.x.y,
+                x.x * m.x.x + x.y * m.y.x,
+                x.x * m.x.y + x.y * m.y.y
             ),
             Float2(
-                    x.x * m.y.x + y.x * m.y.y,
-                    x.y * m.y.x + y.y * m.y.y,
+                y.x * m.x.x + y.y * m.y.x,
+                y.x * m.x.y + y.y * m.y.y
             )
     )
 
