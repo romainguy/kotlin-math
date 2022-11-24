@@ -472,14 +472,14 @@ class MatrixTest {
     fun ortho() {
         assertArrayEquals(
             Mat4(
-                Float4(2.0f, 0.0f, 0.0f, 0.0f),
+                Float4(1.0f, 0.0f, 0.0f, 0.0f),
                 Float4(0.0f, 2.0f, 0.0f, 0.0f),
                 Float4(0.0f, 0.0f, -2.0f, 0.0f),
-                Float4(-3.0f, -7.0f, -11.0f, 1.0f),
+                Float4(-2.0f, -7.0f, -11.0f, 1.0f),
             ).toFloatArray(),
             ortho(
                 l = 1f,
-                r = 2f,
+                r = 3f,
                 b = 3f,
                 t = 4f,
                 n = 5f,
