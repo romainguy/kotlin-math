@@ -23,6 +23,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 import kotlin.math.acos
+import kotlin.math.absoluteValue
 
 enum class VectorComponent {
     X, Y, Z, W,
@@ -125,11 +126,23 @@ data class Float2(var x: Float = 0.0f, var y: Float = 0.0f) {
     inline operator fun minus(v: Float) = Float2(x - v, y - v)
     inline operator fun times(v: Float) = Float2(x * v, y * v)
     inline operator fun div(v: Float) = Float2(x / v, y / v)
+    inline fun compareTo(v: Float, delta: Float = 0.0f) = Float2(
+        x.compareTo(v, delta),
+        y.compareTo(v, delta)
+    )
+
+    inline fun equals(v: Float, delta: Float = 0.0f) = x.equals(v, delta) && y.equals(v, delta)
 
     inline operator fun plus(v: Float2) = Float2(x + v.x, y + v.y)
     inline operator fun minus(v: Float2) = Float2(x - v.x, y - v.y)
     inline operator fun times(v: Float2) = Float2(x * v.x, y * v.y)
     inline operator fun div(v: Float2) = Float2(x / v.x, y / v.y)
+    inline fun compareTo(v: Float2, delta: Float = 0.0f) = Float2(
+        x.compareTo(v.x, delta),
+        y.compareTo(v.y, delta)
+    )
+
+    inline fun equals(v: Float2, delta: Float = 0.0f) = x.equals(v.x, delta) && y.equals(v.y, delta)
 
     inline fun transform(block: (Float) -> Float): Float2 {
         x = block(x)
@@ -292,6 +305,12 @@ data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f)
     inline operator fun minus(v: Float) = Float3(x - v, y - v, z - v)
     inline operator fun times(v: Float) = Float3(x * v, y * v, z * v)
     inline operator fun div(v: Float) = Float3(x / v, y / v, z / v)
+    inline fun compareTo(v: Float, delta: Float = 0.0f) = Float3(
+        xy.compareTo(v, delta),
+        z.compareTo(v, delta)
+    )
+
+    inline fun equals(v: Float, delta: Float = 0.0f) = xy.equals(v, delta) && z.equals(v, delta)
 
     inline operator fun plus(v: Float2) = Float3(x + v.x, y + v.y, z)
     inline operator fun minus(v: Float2) = Float3(x - v.x, y - v.y, z)
@@ -302,6 +321,13 @@ data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f)
     inline operator fun minus(v: Float3) = Float3(x - v.x, y - v.y, z - v.z)
     inline operator fun times(v: Float3) = Float3(x * v.x, y * v.y, z * v.z)
     inline operator fun div(v: Float3) = Float3(x / v.x, y / v.y, z / v.z)
+    inline fun compareTo(v: Float3, delta: Float = 0.0f) = Float3(
+        xy.compareTo(v.xy, delta),
+        z.compareTo(v.z, delta)
+    )
+
+    inline fun equals(v: Float3, delta: Float = 0.0f) =
+        xy.equals(v.xy, delta) && z.equals(v.z, delta)
 
     inline fun transform(block: (Float) -> Float): Float3 {
         x = block(x)
@@ -535,6 +561,12 @@ data class Float4(
     inline operator fun minus(v: Float) = Float4(x - v, y - v, z - v, w - v)
     inline operator fun times(v: Float) = Float4(x * v, y * v, z * v, w * v)
     inline operator fun div(v: Float) = Float4(x / v, y / v, z / v, w / v)
+    inline fun compareTo(v: Float, delta: Float = 0.0f) = Float4(
+        xyz.compareTo(v, delta),
+        w.compareTo(v, delta)
+    )
+
+    inline fun equals(v: Float, delta: Float = 0.0f) = xyz.equals(v, delta) && w.equals(v, delta)
 
     inline operator fun plus(v: Float2) = Float4(x + v.x, y + v.y, z, w)
     inline operator fun minus(v: Float2) = Float4(x - v.x, y - v.y, z, w)
@@ -550,6 +582,13 @@ data class Float4(
     inline operator fun minus(v: Float4) = Float4(x - v.x, y - v.y, z - v.z, w - v.w)
     inline operator fun times(v: Float4) = Float4(x * v.x, y * v.y, z * v.z, w * v.w)
     inline operator fun div(v: Float4) = Float4(x / v.x, y / v.y, z / v.z, w / v.w)
+    inline fun compareTo(v: Float4, delta: Float = 0.0f) = Float4(
+        xyz.compareTo(v.xyz, delta),
+        w.compareTo(v.w, delta)
+    )
+
+    inline fun equals(v: Float4, delta: Float = 0.0f) =
+        xyz.equals(v.xyz, delta) && w.equals(v.w, delta)
 
     inline fun transform(block: (Float) -> Float): Float4 {
         x = block(x)
@@ -567,23 +606,12 @@ inline operator fun Float.minus(v: Float2) = Float2(this - v.x, this - v.y)
 inline operator fun Float.times(v: Float2) = Float2(this * v.x, this * v.y)
 inline operator fun Float.div(v: Float2) = Float2(this / v.x, this / v.y)
 
-inline fun compare(a: Float, b: Float, eps: Float? = null): Float = when {
-    equals(a, b, eps) -> 0.0f
-    a < b -> -1.0f
-    else -> 1.0f
-}
-inline fun lessThan(a: Float, b: Float, eps: Float? = null) = compare(a, b, eps) < 0
-inline fun lessThanEqual(a: Float, b: Float, eps: Float? = null) = compare(a, b, eps) <= 0
-inline fun greaterThan(a: Float, b: Float, eps: Float? = null) = compare(a, b, eps) > 0
-inline fun greaterThanEqual(a: Float, b: Float, eps: Float? = null) = compare(a, b, eps) >= 0
-inline fun equals(a: Float, b: Float, eps: Float?): Boolean {
-    return if (eps != null) {
-        abs(a - b) < eps
-    } else {
-        a == b
-    }
+inline fun Float.compareTo(v: Float, delta: Float): Float = when {
+    equals(v, delta) -> 0.0f
+    else -> compareTo(v).toFloat()
 }
 
+inline fun Float.equals(v: Float, delta: Float) = (this - v).absoluteValue < delta
 inline fun abs(v: Float2) = Float2(abs(v.x), abs(v.y))
 inline fun length(v: Float2) = sqrt(v.x * v.x + v.y * v.y)
 inline fun length2(v: Float2) = v.x * v.x + v.y * v.y
@@ -641,50 +669,33 @@ inline fun max(a: Float2, b: Float2) = Float2(max(a.x, b.x), max(a.y, b.y))
 
 inline fun transform(v: Float2, block: (Float) -> Float) = v.copy().transform(block)
 
-inline fun compare(a: Float2, b: Float, eps: Float? = null): Float2 {
-    return Float2(compare(a.x, b, eps), compare(a.y, b, eps))
-}
-inline fun compare(a: Float2, b: Float2, eps: Float? = null): Float2 {
-    return Float2(compare(a.x, b.x, eps), compare(a.y, b.x, eps))
-}
-inline fun lessThan(a: Float2, b: Float, eps: Float? = null): Bool2 {
-    return Bool2(lessThan(a.x, b, eps), lessThan(a.y, b, eps))
-}
-inline fun lessThan(a: Float2, b: Float2, eps: Float? = null): Bool2 {
-    return Bool2(lessThan(a.x, b.x, eps), lessThan(a.y, b.y, eps))
-}
-inline fun lessThanEqual(a: Float2, b: Float, eps: Float? = null): Bool2 {
-    return Bool2(lessThanEqual(a.x, b, eps), lessThanEqual(a.y, b, eps))
-}
-inline fun lessThanEqual(a: Float2, b: Float2, eps: Float? = null): Bool2 {
-    return Bool2(lessThanEqual(a.x, b.y, eps), lessThanEqual(a.y, b.y, eps))
-}
-inline fun greaterThan(a: Float2, b: Float, eps: Float? = null): Bool2 {
-    return Bool2(greaterThan(a.x, b, eps), greaterThan(a.y, b, eps))
-}
-inline fun greaterThan(a: Float2, b: Float2, eps: Float? = null): Bool2 {
-    return Bool2(greaterThan(a.x, b.x, eps), greaterThan(a.y, b.y, eps))
-}
-inline fun greaterThanEqual(a: Float2, b: Float, eps: Float? = null): Bool2 {
-    return Bool2(greaterThanEqual(a.x, b, eps), greaterThanEqual(a.y, b, eps))
-}
-inline fun greaterThanEqual(a: Float2, b: Float2, eps: Float? = null): Bool2 {
-    return Bool2(greaterThanEqual(a.x, b.x, eps), greaterThanEqual(a.y, b.y, eps))
-}
-inline fun equal(a: Float2, b: Float, eps: Float? = null): Bool2 {
-    return Bool2(equals(a.x, b, eps), equals(a.y, b, eps))
-}
-inline fun equal(a: Float2, b: Float2, eps: Float? = null): Bool2 {
-    return Bool2(equals(a.x, b.x, eps), equals(a.y, b.y, eps))
-}
-inline fun notEqual(a: Float2, b: Float, eps: Float? = null): Bool2 {
-    return Bool2(!equals(a.x, b, eps), !equals(a.y, b, eps))
-}
-inline fun notEqual(a: Float2, b: Float2, eps: Float? = null): Bool2 {
-    return Bool2(!equals(a.x, b.x, eps), !equals(a.y, b.y, eps))
-}
-inline fun equals(a: Float2, b: Float, eps: Float? = null) = all(equal(a, b, eps))
-inline fun equals(a: Float2, b: Float2, eps: Float? = null) = all(equal(a, b, eps))
+inline fun lessThan(a: Float2, b: Float) = Bool2(a.x < b, a.y < b)
+inline fun lessThan(a: Float2, b: Float2) = Bool2(a.x < b.x, a.y < b.y)
+inline fun lessThanEqual(a: Float2, b: Float) = Bool2(a.x <= b, a.y <= b)
+inline fun lessThanEqual(a: Float2, b: Float2) = Bool2(a.x <= b.x, a.y <= b.y)
+inline fun greaterThan(a: Float2, b: Float) = Bool2(a.x > b, a.y > b)
+inline fun greaterThan(a: Float2, b: Float2) = Bool2(a.x > b.y, a.y > b.y)
+inline fun greaterThanEqual(a: Float2, b: Float) = Bool2(a.x >= b, a.y >= b)
+inline fun greaterThanEqual(a: Float2, b: Float2) = Bool2(a.x >= b.x, a.y >= b.y)
+inline fun equal(a: Float2, b: Float, delta: Float = 0.0f) = Bool2(
+    a.x.equals(b, delta),
+    a.y.equals(b, delta)
+)
+
+inline fun equal(a: Float2, b: Float2, delta: Float = 0.0f) = Bool2(
+    a.x.equals(b.x, delta),
+    a.y.equals(b.y, delta)
+)
+
+inline fun notEqual(a: Float2, b: Float, delta: Float = 0.0f) = Bool2(
+    !a.x.equals(b, delta),
+    !a.y.equals(b, delta)
+)
+
+inline fun notEqual(a: Float2, b: Float2, delta: Float = 0.0f) = Bool2(
+    !a.x.equals(b.x, delta),
+    !a.y.equals(b.y, delta)
+)
 
 inline infix fun Float2.lt(b: Float) = Bool2(x < b, y < b)
 inline infix fun Float2.lt(b: Float2) = Bool2(x < b.x, y < b.y)
@@ -774,50 +785,33 @@ inline fun max(a: Float3, b: Float3) = Float3(max(a.x, b.x), max(a.y, b.y), max(
 
 inline fun transform(v: Float3, block: (Float) -> Float) = v.copy().transform(block)
 
-inline fun compare(a: Float3, b: Float, eps: Float? = null): Float3 {
-    return Float3(compare(a.xy, b, eps), compare(a.z, b, eps))
-}
-inline fun compare(a: Float3, b: Float3, eps: Float? = null): Float3 {
-    return Float3(compare(a.xy, b.xy, eps), compare(a.z, b.z, eps))
-}
-inline fun lessThan(a: Float3, b: Float, eps: Float? = null): Bool3 {
-    return Bool3(lessThan(a.xy, b, eps), lessThan(a.z, b, eps))
-}
-inline fun lessThan(a: Float3, b: Float3, eps: Float? = null): Bool3 {
-    return Bool3(lessThan(a.xy, b.xy, eps), lessThan(a.z, b.z, eps))
-}
-inline fun lessThanEqual(a: Float3, b: Float, eps: Float? = null): Bool3 {
-    return Bool3(lessThanEqual(a.xy, b, eps), lessThanEqual(a.z, b, eps))
-}
-inline fun lessThanEqual(a: Float3, b: Float3, eps: Float? = null): Bool3 {
-    return Bool3(lessThanEqual(a.xy, b.xy, eps), lessThanEqual(a.z, b.z, eps))
-}
-inline fun greaterThan(a: Float3, b: Float, eps: Float? = null): Bool3 {
-    return Bool3(greaterThan(a.xy, b, eps), greaterThan(a.z, b, eps))
-}
-inline fun greaterThan(a: Float3, b: Float3, eps: Float? = null): Bool3 {
-    return Bool3(greaterThan(a.xy, b.xy, eps), greaterThan(a.z, b.z, eps))
-}
-inline fun greaterThanEqual(a: Float3, b: Float, eps: Float? = null): Bool3 {
-    return Bool3(greaterThanEqual(a.xy, b, eps), greaterThanEqual(a.z, b, eps))
-}
-inline fun greaterThanEqual(a: Float3, b: Float3, eps: Float? = null): Bool3 {
-    return Bool3(greaterThanEqual(a.xy, b.xy, eps), greaterThanEqual(a.z, b.z, eps))
-}
-inline fun equal(a: Float3, b: Float, eps: Float? = null): Bool3 {
-    return Bool3(equal(a.xy, b, eps), equals(a.z, b, eps))
-}
-inline fun equal(a: Float3, b: Float3, eps: Float? = null): Bool3 {
-    return Bool3(equal(a.xy, b.xy, eps), equals(a.z, b.z, eps))
-}
-inline fun notEqual(a: Float3, b: Float, eps: Float? = null): Bool3 {
-    return Bool3(notEqual(a.xy, b, eps), !equals(a.z, b, eps))
-}
-inline fun notEqual(a: Float3, b: Float3, eps: Float? = null): Bool3 {
-    return Bool3(notEqual(a.xy, b.xy, eps), !equals(a.z, b.z, eps))
-}
-inline fun equals(a: Float3, b: Float, eps: Float? = null) = all(equal(a, b, eps))
-inline fun equals(a: Float3, b: Float3, eps: Float? = null) = all(equal(a, b, eps))
+inline fun lessThan(a: Float3, b: Float) = Bool3(a.x < b, a.y < b, a.z < b)
+inline fun lessThan(a: Float3, b: Float3) = Bool3(a.x < b.x, a.y < b.y, a.z < b.z)
+inline fun lessThanEqual(a: Float3, b: Float) = Bool3(a.x <= b, a.y <= b, a.z <= b)
+inline fun lessThanEqual(a: Float3, b: Float3) = Bool3(a.x <= b.x, a.y <= b.y, a.z <= b.z)
+inline fun greaterThan(a: Float3, b: Float) = Bool3(a.x > b, a.y > b, a.z > b)
+inline fun greaterThan(a: Float3, b: Float3) = Bool3(a.x > b.y, a.y > b.y, a.z > b.z)
+inline fun greaterThanEqual(a: Float3, b: Float) = Bool3(a.x >= b, a.y >= b, a.z >= b)
+inline fun greaterThanEqual(a: Float3, b: Float3) = Bool3(a.x >= b.x, a.y >= b.y, a.z >= b.z)
+inline fun equal(a: Float3, b: Float, delta: Float = 0.0f) = Bool3(
+    equal(a.xy, b, delta),
+    a.z.equals(b, delta)
+)
+
+inline fun equal(a: Float3, b: Float3, delta: Float = 0.0f) = Bool3(
+    equal(a.xy, b.xy, delta),
+    a.z.equals(b.z, delta)
+)
+
+inline fun notEqual(a: Float3, b: Float, delta: Float = 0.0f) = Bool3(
+    notEqual(a.xy, b, delta),
+    !a.z.equals(b, delta)
+)
+
+inline fun notEqual(a: Float3, b: Float3, delta: Float = 0.0f) = Bool3(
+    notEqual(a.xy, b.xy, delta),
+    !a.z.equals(b.z, delta)
+)
 
 inline infix fun Float3.lt(b: Float) = Bool3(x < b, y < b, z < b)
 inline infix fun Float3.lt(b: Float3) = Bool3(x < b.x, y < b.y, z < b.z)
@@ -896,50 +890,37 @@ inline fun max(a: Float4, b: Float4): Float4 {
 
 inline fun transform(v: Float4, block: (Float) -> Float) = v.copy().transform(block)
 
-inline fun compare(a: Float4, b: Float, eps: Float? = null): Float4 {
-    return Float4(compare(a.xyz, b, eps), compare(a.w, b, eps))
-}
-inline fun compare(a: Float4, b: Float4, eps: Float? = null): Float4 {
-    return Float4(compare(a.xyz, b.xyz, eps), compare(a.z, b.z, eps))
-}
-inline fun lessThan(a: Float4, b: Float, eps: Float? = null): Bool4 {
-    return Bool4(lessThan(a.xyz, b, eps), lessThan(a.w, b, eps))
-}
-inline fun lessThan(a: Float4, b: Float4, eps: Float? = null): Bool4 {
-    return Bool4(lessThan(a.xyz, b.xyz, eps), lessThan(a.z, b.z, eps))
-}
-inline fun lessThanEqual(a: Float4, b: Float, eps: Float? = null): Bool4 {
-    return Bool4(lessThanEqual(a.xyz, b, eps), lessThanEqual(a.w, b, eps))
-}
-inline fun lessThanEqual(a: Float4, b: Float4, eps: Float? = null): Bool4 {
-    return Bool4(lessThanEqual(a.xyz, b.xyz, eps), lessThanEqual(a.w, b.w, eps))
-}
-inline fun greaterThan(a: Float4, b: Float, eps: Float? = null): Bool4 {
-    return Bool4(greaterThan(a.xyz, b, eps), greaterThan(a.w, b, eps))
-}
-inline fun greaterThan(a: Float4, b: Float4, eps: Float? = null): Bool4 {
-    return Bool4(greaterThan(a.xyz, b.xyz, eps), greaterThan(a.w, b.w, eps))
-}
-inline fun greaterThanEqual(a: Float4, b: Float, eps: Float? = null): Bool4 {
-    return Bool4(greaterThanEqual(a.xyz, b, eps), greaterThanEqual(a.w, b, eps))
-}
-inline fun greaterThanEqual(a: Float4, b: Float4, eps: Float? = null): Bool4 {
-    return Bool4(greaterThanEqual(a.xyz, b.xyz, eps), greaterThanEqual(a.w, b.w, eps))
-}
-inline fun equal(a: Float4, b: Float, eps: Float? = null): Bool4 {
-    return Bool4(equal(a.xyz, b, eps), equals(a.w, b, eps))
-}
-inline fun equal(a: Float4, b: Float4, eps: Float? = null): Bool4 {
-    return Bool4(equal(a.xyz, b.xyz, eps), equals(a.w, b.w, eps))
-}
-inline fun notEqual(a: Float4, b: Float, eps: Float? = null): Bool4 {
-    return Bool4(notEqual(a.xyz, b, eps), !equals(a.w, b, eps))
-}
-inline fun notEqual(a: Float4, b: Float4, eps: Float? = null): Bool4 {
-    return Bool4(notEqual(a.xyz, b.xyz, eps), !equals(a.w, b.w, eps))
-}
-inline fun equals(a: Float4, b: Float, eps: Float? = null) = all(equal(a, b, eps))
-inline fun equals(a: Float4, b: Float4, eps: Float? = null) = all(equal(a, b, eps))
+inline fun lessThan(a: Float4, b: Float) = Bool4(a.x < b, a.y < b, a.z < b, a.w < b)
+inline fun lessThan(a: Float4, b: Float4) = Bool4(a.x < b.x, a.y < b.y, a.z < b.z, a.w < b.w)
+inline fun lessThanEqual(a: Float4, b: Float) = Bool4(a.x <= b, a.y <= b, a.z <= b, a.w <= b)
+inline fun lessThanEqual(a: Float4, b: Float4) =
+    Bool4(a.x <= b.x, a.y <= b.y, a.z <= b.z, a.w <= b.w)
+
+inline fun greaterThan(a: Float4, b: Float) = Bool4(a.x > b, a.y > b, a.z > b, a.w > b)
+inline fun greaterThan(a: Float4, b: Float4) = Bool4(a.x > b.y, a.y > b.y, a.z > b.z, a.w > b.w)
+inline fun greaterThanEqual(a: Float4, b: Float) = Bool4(a.x >= b, a.y >= b, a.z >= b, a.w >= b)
+inline fun greaterThanEqual(a: Float4, b: Float4) =
+    Bool4(a.x >= b.x, a.y >= b.y, a.z >= b.z, a.w >= b.w)
+
+inline fun equal(a: Float4, b: Float, delta: Float = 0.0f) = Bool4(
+    equal(a.xyz, b, delta),
+    a.w.equals(b, delta)
+)
+
+inline fun equal(a: Float4, b: Float4, delta: Float = 0.0f) = Bool4(
+    equal(a.xyz, b.xyz, delta),
+    a.w.equals(b.w, delta)
+)
+
+inline fun notEqual(a: Float4, b: Float, delta: Float = 0.0f) = Bool4(
+    notEqual(a.xyz, b, delta),
+    !a.w.equals(b, delta)
+)
+
+inline fun notEqual(a: Float4, b: Float4, delta: Float = 0.0f) = Bool4(
+    notEqual(a.xyz, b.xyz, delta),
+    !a.w.equals(b.w, delta)
+)
 
 inline infix fun Float4.lt(b: Float) = Bool4(x < b, y < b, z < b, a < b)
 inline infix fun Float4.lt(b: Float4) = Bool4(x < b.x, y < b.y, z < b.z, w < b.w)
