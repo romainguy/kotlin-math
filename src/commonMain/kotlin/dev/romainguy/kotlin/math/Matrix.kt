@@ -894,9 +894,13 @@ fun perspective(fov: Float, ratio: Float, near: Float, far: Float): Mat4 {
 }
 
 fun ortho(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float) = Mat4(
-        Float4(x = 2.0f / (r - 1.0f)),
-        Float4(y = 2.0f / (t - b)),
-        Float4(z = -2.0f / (f - n)),
-        Float4(-(r + l) / (r - l), -(t + b) / (t - b), -(f + n) / (f - n), 1.0f)
+    Float4(x = 2.0f / (r - l)),
+    Float4(y = 2.0f / (t - b)),
+    Float4(z = -2.0f / (f - n)),
+    Float4(
+        -(r + l) / (r - l),
+        -(t + b) / (t - b),
+        -(f + n) / (f - n),
+        1.0f
+    )
 )
-

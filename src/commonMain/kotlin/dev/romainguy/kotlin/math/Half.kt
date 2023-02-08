@@ -17,8 +17,6 @@
 // Operators +, *, / based on http://half.sourceforge.net/ by Christian Rau
 // and licensed under MIT
 
-@file:Suppress("NOTHING_TO_INLINE")
-
 package dev.romainguy.kotlin.math
 
 import dev.romainguy.kotlin.math.Half.Companion.POSITIVE_INFINITY
@@ -67,6 +65,27 @@ fun Half(value: Double) = Half(floatToHalf(value.toFloat()))
 fun Double.toHalf() = Half(floatToHalf(toFloat()))
 
 /**
+ * Converts this double-precision float value into a half-precision float value.
+ * The following special cases are handled:
+ *
+ *  - If the input is NaN (see [Double.isNaN]), the returned value is [Half.NaN]
+ *  - If the input is [Double.POSITIVE_INFINITY] or [Double.NEGATIVE_INFINITY],
+ *  the returned value is respectively [Half.POSITIVE_INFINITY] or [Half.NEGATIVE_INFINITY]
+ *  - If the input is 0 (positive or negative), the returned value is [Half.POSITIVE_ZERO]
+ *  or [Half.NEGATIVE_ZERO]
+ *  - If the input is less than [Half.MIN_VALUE], the returned value is flushed to
+ *  [Half.POSITIVE_ZERO] or [Half.NEGATIVE_ZERO]
+ *  - If the input is less than [Half.MIN_NORMAL], the returned value is a denormal
+ *  half-precision float
+ *  - Otherwise, the returned value is rounded to the nearest representable
+ *  half-precision float value
+ *
+ * @return A half-precision float value
+ */
+val Double.h: Half
+    get() = Half(floatToHalf(toFloat()))
+
+/**
  * Converts the specified single-precision float value into a
  * half-precision float value. The following special cases are handled:
  *
@@ -106,6 +125,27 @@ fun Half(value: Float) = Half(floatToHalf(value))
  * @return A half-precision float value
  */
 fun Float.toHalf() = Half(floatToHalf(this))
+
+/**
+ * Converts this single-precision float value into a half-precision float value.
+ * The following special cases are handled:
+ *
+ *  - If the input is NaN (see [Float.isNaN]), the returned value is [Half.NaN]
+ *  - If the input is [Float.POSITIVE_INFINITY] or [Float.NEGATIVE_INFINITY],
+ *  the returned value is respectively [Half.POSITIVE_INFINITY] or [Half.NEGATIVE_INFINITY]
+ *  - If the input is 0 (positive or negative), the returned value is [Half.POSITIVE_ZERO]
+ *  or [Half.NEGATIVE_ZERO]
+ *  - If the input is less than [Half.MIN_VALUE], the returned value is flushed to
+ *  [Half.POSITIVE_ZERO] or [Half.NEGATIVE_ZERO]
+ *  - If the input is less than [Half.MIN_NORMAL], the returned value is a denormal
+ *  half-precision float
+ *  - Otherwise, the returned value is rounded to the nearest representable
+ *  half-precision float value
+ *
+ * @return A half-precision float value
+ */
+val Float.h: Half
+    get() = Half(floatToHalf(this))
 
 /**
  * Returns the half-precision float value represented by the specified string.

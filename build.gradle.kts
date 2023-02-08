@@ -4,9 +4,9 @@ import org.jetbrains.kotlin.konan.target.HostManager
 import java.net.URL
 
 plugins {
-    kotlin("multiplatform") version "1.7.0"
+    kotlin("multiplatform") version "1.7.21"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-    id("org.jetbrains.dokka") version "1.6.0"
+    id("org.jetbrains.dokka") version "1.7.20"
     id("maven-publish")
     id("signing")
 }
