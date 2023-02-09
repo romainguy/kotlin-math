@@ -115,6 +115,21 @@ class MatrixTest {
     }
 
     @Test
+    fun equalMat3() {
+        assertEquals(
+            Mat3(
+                Float3(0.01f, 0.011f, 0.009f),
+                Float3(0.011f, 0.012f, 0.009f),
+                Float3(0.0123f, 0.0112f, 0.0132f)
+            ).equals(
+                0.01555f,
+                0.01f
+            ),
+            true
+        )
+    }
+
+    @Test
     fun transposeMat3() {
         assertEquals(
             Mat3(
@@ -538,8 +553,8 @@ class MatrixTest {
         // Use it to display Mat4.toString() instead of FloatArray
         internal fun assertMatEquals(expected: Mat4, actual: Mat4, delta: Float = ABSOLUTE_TOLERANCE) {
             assertTrue(
-                    expected.toFloatArray().zip(actual.toFloatArray()).all { (a, b) -> (a - b).absoluteValue < delta },
-                    "\nExpected:\n${expected}\nbut got:\n${actual}"
+                expected.equals(actual, delta),
+                "\nExpected:\n${expected}\nbut got:\n${actual}"
             )
         }
 

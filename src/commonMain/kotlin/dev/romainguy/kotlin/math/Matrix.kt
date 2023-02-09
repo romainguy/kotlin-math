@@ -85,6 +85,12 @@ data class Mat2(
     operator fun minus(v: Float) = Mat2(x - v, y - v)
     operator fun times(v: Float) = Mat2(x * v, y * v)
     operator fun div(v: Float) = Mat2(x / v, y / v)
+    inline fun compareTo(v: Float, delta: Float = 0.0f) = Mat2(
+        x.compareTo(v, delta),
+        y.compareTo(v, delta)
+    )
+
+    inline fun equals(v: Float, delta: Float = 0.0f) = x.equals(v, delta) && y.equals(v, delta)
 
     operator fun times(m: Mat2) = Mat2(
             Float2(
@@ -97,11 +103,17 @@ data class Mat2(
             )
     )
 
+    inline fun compareTo(m: Mat2, delta: Float = 0.0f) = Mat2(
+        x.compareTo(m.x, delta),
+        y.compareTo(m.y, delta)
+    )
+
+    inline fun equals(m: Mat2, delta: Float = 0.0f) = x.equals(m.x, delta) && y.equals(m.y, delta)
+
     operator fun times(v: Float2) = Float2(
             x.x * v.x + y.x * v.y,
             x.y * v.x + y.y * v.y,
     )
-
 
     fun toFloatArray() = floatArrayOf(
             x.x, y.x,
@@ -114,7 +126,6 @@ data class Mat2(
             |${x.y} ${y.y}|
             """.trimIndent()
     }
-
 }
 
 data class Mat3(
@@ -170,6 +181,14 @@ data class Mat3(
     operator fun minus(v: Float) = Mat3(x - v, y - v, z - v)
     operator fun times(v: Float) = Mat3(x * v, y * v, z * v)
     operator fun div(v: Float) = Mat3(x / v, y / v, z / v)
+    inline fun compareTo(v: Float, delta: Float = 0.0f) = Mat3(
+        x.compareTo(v, delta),
+        y.compareTo(v, delta),
+        z.compareTo(v, delta)
+    )
+
+    inline fun equals(v: Float, delta: Float = 0.0f) =
+        x.equals(v, delta) && y.equals(v, delta) && z.equals(v, delta)
 
     operator fun times(m: Mat3) = Mat3(
             Float3(
@@ -188,6 +207,15 @@ data class Mat3(
                     x.z * m.z.x + y.z * m.z.y + z.z * m.z.z,
             )
     )
+
+    inline fun compareTo(m: Mat3, delta: Float = 0.0f) = Mat3(
+        x.compareTo(m.x, delta),
+        y.compareTo(m.y, delta),
+        z.compareTo(m.z, delta)
+    )
+
+    inline fun equals(m: Mat3, delta: Float = 0.0f) =
+        x.equals(m.x, delta) && y.equals(m.y, delta) && z.equals(m.z, delta)
 
     operator fun times(v: Float3) = Float3(
             x.x * v.x + y.x * v.y + z.x * v.z,
@@ -311,6 +339,15 @@ data class Mat4(
     operator fun minus(v: Float) = Mat4(x - v, y - v, z - v, w - v)
     operator fun times(v: Float) = Mat4(x * v, y * v, z * v, w * v)
     operator fun div(v: Float) = Mat4(x / v, y / v, z / v, w / v)
+    inline fun compareTo(v: Float, delta: Float = 0.0f) = Mat4(
+        x.compareTo(v, delta),
+        y.compareTo(v, delta),
+        z.compareTo(v, delta),
+        w.compareTo(v, delta)
+    )
+
+    inline fun equals(v: Float, delta: Float = 0.0f) =
+        x.equals(v, delta) && y.equals(v, delta) && z.equals(v, delta) && w.equals(v, delta)
 
     operator fun times(m: Mat4) = Mat4(
             Float4(
@@ -338,6 +375,16 @@ data class Mat4(
                     x.w * m.w.x + y.w * m.w.y + z.w * m.w.z + w.w * m.w.w,
             )
     )
+
+    inline fun compareTo(m: Mat4, delta: Float = 0.0f) = Mat4(
+        x.compareTo(m.x, delta),
+        y.compareTo(m.y, delta),
+        z.compareTo(m.z, delta),
+        w.compareTo(m.w, delta)
+    )
+
+    inline fun equals(m: Mat4, delta: Float = 0.0f) =
+        x.equals(m.x, delta) && y.equals(m.y, delta) && z.equals(m.z, delta) && w.equals(m.w, delta)
 
     operator fun times(v: Float4) = Float4(
             x.x * v.x + y.x * v.y + z.x * v.z+ w.x * v.w,
@@ -384,6 +431,78 @@ data class Mat4(
             """.trimIndent()
     }
 }
+
+inline fun equal(a: Mat2, b: Float, delta: Float = 0.0f) = Bool2(
+    a.x.equals(b, delta),
+    a.y.equals(b, delta)
+)
+
+inline fun equal(a: Mat2, b: Mat2, delta: Float = 0.0f) = Bool2(
+    a.x.equals(b.x, delta),
+    a.y.equals(b.y, delta)
+)
+
+inline fun notEqual(a: Mat2, b: Float, delta: Float = 0.0f) = Bool2(
+    !a.x.equals(b, delta),
+    !a.y.equals(b, delta)
+)
+
+inline fun notEqual(a: Mat2, b: Mat2, delta: Float = 0.0f) = Bool2(
+    !a.x.equals(b.x, delta),
+    !a.y.equals(b.y, delta)
+)
+
+inline fun equal(a: Mat3, b: Float, delta: Float = 0.0f) = Bool3(
+    a.x.equals(b, delta),
+    a.y.equals(b, delta),
+    a.z.equals(b, delta)
+)
+
+inline fun equal(a: Mat3, b: Mat3, delta: Float = 0.0f) = Bool3(
+    a.x.equals(b.x, delta),
+    a.y.equals(b.y, delta),
+    a.z.equals(b.z, delta)
+)
+
+inline fun notEqual(a: Mat3, b: Float, delta: Float = 0.0f) = Bool3(
+    !a.x.equals(b, delta),
+    !a.y.equals(b, delta),
+    !a.z.equals(b, delta)
+)
+
+inline fun notEqual(a: Mat3, b: Mat3, delta: Float = 0.0f) = Bool3(
+    !a.x.equals(b.x, delta),
+    !a.y.equals(b.y, delta),
+    !a.z.equals(b.z, delta)
+)
+
+inline fun equal(a: Mat4, b: Float, delta: Float = 0.0f) = Bool4(
+    a.x.equals(b, delta),
+    a.y.equals(b, delta),
+    a.z.equals(b, delta),
+    a.w.equals(b, delta)
+)
+
+inline fun equal(a: Mat4, b: Mat4, delta: Float = 0.0f) = Bool4(
+    a.x.equals(b.x, delta),
+    a.y.equals(b.y, delta),
+    a.z.equals(b.z, delta),
+    a.w.equals(b.w, delta)
+)
+
+inline fun notEqual(a: Mat4, b: Float, delta: Float = 0.0f) = Bool4(
+    !a.x.equals(b, delta),
+    !a.y.equals(b, delta),
+    !a.z.equals(b, delta),
+    !a.w.equals(b, delta)
+)
+
+inline fun notEqual(a: Mat4, b: Mat4, delta: Float = 0.0f) = Bool4(
+    !a.x.equals(b.x, delta),
+    !a.y.equals(b.y, delta),
+    !a.z.equals(b.z, delta),
+    !a.w.equals(b.w, delta)
+)
 
 fun transpose(m: Mat2) = Mat2(
         Float2(m.x.x, m.y.x),

@@ -263,6 +263,8 @@ data class Quaternion(
     inline operator fun minus(v: Float) = Quaternion(x - v, y - v, z - v, w - v)
     inline operator fun times(v: Float) = Quaternion(x * v, y * v, z * v, w * v)
     inline operator fun div(v: Float) = Quaternion(x / v, y / v, z / v, w / v)
+    inline fun compareTo(v: Float, delta: Float = 0.0f) = xyzw.compareTo(v, delta)
+    inline fun equals(v: Float, delta: Float = 0.0f) = xyzw.equals(v, delta)
 
     inline operator fun times(v: Float3) = (this * Quaternion(v, 0.0f) * inverse(this)).xyz
 
@@ -273,6 +275,9 @@ data class Quaternion(
             w * q.y - x * q.z + y * q.w + z * q.x,
             w * q.z + x * q.y - y * q.x + z * q.w,
             w * q.w - x * q.x - y * q.y - z * q.z)
+
+    inline fun compareTo(v: Float4, delta: Float = 0.0f) = xyzw.compareTo(v.xyzw, delta)
+    inline fun equals(v: Float4, delta: Float = 0.0f) = xyzw.equals(v.xyzw, delta)
 
     inline fun transform(block: (Float) -> Float): Quaternion {
         x = block(x)
@@ -293,6 +298,32 @@ inline operator fun Float.plus(q: Quaternion) = Quaternion(this + q.x, this + q.
 inline operator fun Float.minus(q: Quaternion) = Quaternion(this - q.x, this - q.y, this - q.z, this - q.w)
 inline operator fun Float.times(q: Quaternion) = Quaternion(this * q.x, this * q.y, this * q.z, this * q.w)
 inline operator fun Float.div(q: Quaternion) = Quaternion(this / q.x, this / q.y, this / q.z, this / q.w)
+
+inline fun lessThan(a: Quaternion, b: Float) = lessThan(a.xyzw, b)
+inline fun lessThan(a: Quaternion, b: Quaternion) = lessThan(a.xyzw, b.xyzw)
+inline fun lessThanEqual(a: Quaternion, b: Float) = lessThanEqual(a.xyzw, b)
+inline fun lessThanEqual(a: Quaternion, b: Quaternion) = lessThanEqual(a.xyzw, b.xyzw)
+inline fun greaterThan(a: Quaternion, b: Float) = greaterThan(a.xyzw, b)
+inline fun greaterThan(a: Quaternion, b: Quaternion) = greaterThan(a.xyzw, b.xyzw)
+inline fun greaterThanEqual(a: Quaternion, b: Float) = greaterThanEqual(a.xyzw, b)
+inline fun greaterThanEqual(a: Quaternion, b: Quaternion) = greaterThanEqual(a.xyzw, b.xyzw)
+inline fun equal(a: Quaternion, b: Float) = equal(a.xyzw, b)
+inline fun equal(a: Quaternion, b: Quaternion) = equal(a.xyzw, b.xyzw)
+inline fun notEqual(a: Quaternion, b: Float) = notEqual(a.xyzw, b)
+inline fun notEqual(a: Quaternion, b: Quaternion) = notEqual(a.xyzw, b.xyzw)
+
+inline infix fun Quaternion.lt(b: Float) = xyzw.lt(b)
+inline infix fun Quaternion.lt(b: Float4) = xyzw.lt(b.xyzw)
+inline infix fun Quaternion.lte(b: Float) = xyzw.lte(b)
+inline infix fun Quaternion.lte(b: Float4) = xyzw.lte(b.xyzw)
+inline infix fun Quaternion.gt(b: Float) = xyzw.gt(b)
+inline infix fun Quaternion.gt(b: Float4) = xyzw.gt(b.xyzw)
+inline infix fun Quaternion.gte(b: Float) = xyzw.gte(b)
+inline infix fun Quaternion.gte(b: Float4) = xyzw.gte(b.xyzw)
+inline infix fun Quaternion.eq(b: Float) = xyzw.eq(b)
+inline infix fun Quaternion.eq(b: Float4) = xyzw.eq(b.xyzw)
+inline infix fun Quaternion.neq(b: Float) = xyzw.neq(b)
+inline infix fun Quaternion.neq(b: Float4) = xyzw.neq(b.xyzw)
 
 inline fun abs(q: Quaternion) = Quaternion(abs(q.x), abs(q.y), abs(q.z), abs(q.w))
 inline fun length(q: Quaternion) = sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w)
