@@ -302,6 +302,9 @@ data class Quaternion(
         w.equals(v.w, delta)
     )
 
+    inline fun compareTo(v: Float4, delta: Float = 0.0f) = xyzw.compareTo(v.xyzw, delta)
+    inline fun equals(v: Float4, delta: Float = 0.0f) = xyzw.equals(v.xyzw, delta)
+
     inline fun transform(block: (Float) -> Float): Quaternion {
         x = block(x)
         y = block(y)
