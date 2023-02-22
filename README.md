@@ -1,6 +1,6 @@
 # kotlin-math
 
-[![kotlin-math](https://maven-badges-generator.herokuapp.com/maven-central/dev.romainguy/kotlin-math/badge.svg?subject=kotlin-math)](https://maven-badges-generator.herokuapp.com/maven-central/dev.romainguy/kotlin-math)
+[![kotlin-math](https://maven-badges.herokuapp.com/maven-central/dev.romainguy/kotlin-math/badge.svg?subject=kotlin-math)](https://maven-badges-generator.herokuapp.com/maven-central/dev.romainguy/kotlin-math)
 
 Set of Kotlin APIs to make graphics math easier to write. These APIs are mostly
 modeled after GLSL (OpenGL Shading Language) to make porting code to and from
