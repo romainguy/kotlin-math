@@ -130,6 +130,38 @@ data class Quaternion(
                 )
             }
         }
+
+        /**
+         * Create a Quaternion representing the shortest rotation from one vector to another.
+         *
+         * Both vectors are assumed to be unit length.
+         *
+         * @param from the initial vector
+         * @param to the destination vector
+         */
+        fun fromRotation(from: Float3, to: Float3): Quaternion {
+            // This implementation might still be improvable: https://stackoverflow.com/a/11741520
+            val dotProduct = dot(from, to)
+            // Handle the case of parallel vectors (both in the same direction or pointing in
+            // opposite directions)
+            return when {
+                dotProduct < -0.9999999f -> {
+                    val crossProd = cross(Float3(x = 1.0f), from)
+                    fromAxisAngle(
+                        axis = normalize(
+                            when {
+                                length(crossProd) < 0.0000001f -> cross(Float3(y = 1.0f), from)
+                                else -> crossProd
+                            }
+                        ),
+                        angle = 180.0f
+                    )
+                }
+
+                dotProduct > 0.9999999f -> Quaternion()
+                else -> normalize(Quaternion(cross(from, to), w = 1.0f + dotProduct))
+            }
+        }
     }
 
     inline var xyz: Float3
