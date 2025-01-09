@@ -43,6 +43,9 @@ kotlin {
             iosX64()
             iosArm64()
             iosSimulatorArm64()
+            watchosX64()
+            watchosArm64()
+            watchosSimulatorArm64()
         }
 
         if (HostManager.hostIsMingw || HostManager.hostIsMac) {
