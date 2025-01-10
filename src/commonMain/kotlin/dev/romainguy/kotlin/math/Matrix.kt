@@ -18,6 +18,7 @@
 
 package dev.romainguy.kotlin.math
 
+import kotlinx.serialization.Serializable
 import kotlin.math.*
 
 enum class MatrixColumn {
@@ -36,6 +37,7 @@ enum class RotationsOrder(
     ZYX(VectorComponent.Z, VectorComponent.Y, VectorComponent.X);
 }
 
+@Serializable
 data class Mat2(
         var x: Float2 = Float2(x = 1.0f),
         var y: Float2 = Float2(y = 1.0f)) {
@@ -128,6 +130,7 @@ data class Mat2(
     }
 }
 
+@Serializable
 data class Mat3(
         var x: Float3 = Float3(x = 1.0f),
         var y: Float3 = Float3(y = 1.0f),
@@ -238,6 +241,7 @@ data class Mat3(
     }
 }
 
+@Serializable
 data class Mat4(
         var x: Float4 = Float4(x = 1.0f),
         var y: Float4 = Float4(y = 1.0f),

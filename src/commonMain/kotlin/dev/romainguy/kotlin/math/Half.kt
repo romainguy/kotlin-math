@@ -21,6 +21,7 @@ package dev.romainguy.kotlin.math
 
 import dev.romainguy.kotlin.math.Half.Companion.POSITIVE_INFINITY
 import dev.romainguy.kotlin.math.Half.Companion.POSITIVE_ZERO
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 /**
@@ -251,6 +252,7 @@ fun Rational.toHalf() = toFloat().toHalf()
  * This table shows that numbers higher than 1024 lose all fractional precision.
  */
 @JvmInline
+@Serializable
 value class Half(private val v: UShort) : Comparable<Half> {
     companion object {
         /**

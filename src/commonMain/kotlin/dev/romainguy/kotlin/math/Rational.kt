@@ -18,6 +18,7 @@
 
 package dev.romainguy.kotlin.math
 
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.abs
 import kotlin.math.sign
@@ -31,6 +32,7 @@ fun Rational(value: Int) = Rational(pack(value, 1))
 fun Rational(numerator: Int, denominator: Int) = Rational(pack(numerator, denominator))
 
 @JvmInline
+@Serializable
 value class Rational(private val r: Long) : Comparable<Rational> {
     companion object {
         val NaN = Rational(0, 0)
