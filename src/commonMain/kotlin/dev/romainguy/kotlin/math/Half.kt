@@ -17,6 +17,8 @@
 // Operators +, *, / based on http://half.sourceforge.net/ by Christian Rau
 // and licensed under MIT
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package dev.romainguy.kotlin.math
 
 import dev.romainguy.kotlin.math.Half.Companion.POSITIVE_INFINITY
