@@ -20,11 +20,11 @@ package dev.romainguy.kotlin.math
 
 import kotlin.math.pow
 
-const val PI          = 3.1415927f
-const val HALF_PI     = PI * 0.5f
-const val TWO_PI      = PI * 2.0f
-const val FOUR_PI     = PI * 4.0f
-const val INV_PI      = 1.0f / PI
+const val FPI          = 3.1415927f
+const val HALF_PI     = FPI * 0.5f
+const val TWO_PI      = FPI * 2.0f
+const val FOUR_PI     = FPI * 4.0f
+const val INV_PI      = 1.0f / FPI
 const val INV_TWO_PI  = INV_PI * 0.5f
 const val INV_FOUR_PI = INV_PI * 0.25f
 
@@ -45,7 +45,7 @@ inline fun mix(a: Half, b: Half, x: Half) = a * (HALF_ONE - x) + b * x
 
 inline fun degrees(v: Float) = v * (180.0f * INV_PI)
 
-inline fun radians(v: Float) = v * (PI / 180.0f)
+inline fun radians(v: Float) = v * (FPI / 180.0f)
 
 inline fun fract(v: Float) = v % 1
 
