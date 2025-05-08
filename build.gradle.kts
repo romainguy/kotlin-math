@@ -1,14 +1,13 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.konan.target.HostManager
 
 import java.net.URL
 
 plugins {
-    kotlin("multiplatform") version "1.7.21"
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-    id("org.jetbrains.dokka") version "1.7.20"
-    id("maven-publish")
-    id("signing")
+    kotlin("multiplatform") version "2.1.20"
+    id("org.jetbrains.dokka") version "2.0.0"
+    id("com.vanniktech.maven.publish") version "0.31.0"
 }
 
 val GROUP: String by project
@@ -25,14 +24,7 @@ kotlin {
     targets {
         jvm()
 
-        js(BOTH) {
-            compilations.all {
-                kotlinOptions {
-                    sourceMap = true
-                    moduleKind = "umd"
-                    metaInfo = true
-                }
-            }
+        js {
             browser()
             nodejs()
         }
@@ -105,4 +97,7 @@ val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
     from(dokkaHtml.outputDirectory)
 }
 
-apply(from = "publish.gradle")
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+}
