@@ -18,34 +18,30 @@ repositories {
 }
 
 kotlin {
-    targets {
-        jvm()
+    jvm()
 
-        js {
-            browser()
-            nodejs()
-        }
+    js {
+        browser()
+        nodejs()
+    }
 
-        if (HostManager.hostIsMac) {
-            macosX64()
-            macosArm64()
-            iosX64()
-            iosArm64()
-            iosSimulatorArm64()
-            watchosX64()
-            watchosArm64()
-            watchosSimulatorArm64()
-        }
+    // Tier 1
+    macosArm64()
+    iosArm64()
+    iosSimulatorArm64()
 
-        if (HostManager.hostIsMingw || HostManager.hostIsMac) {
-            mingwX64 {
-                binaries.findTest(DEBUG)!!.linkerOpts = mutableListOf("-Wl,--subsystem,windows")
-            }
-        }
+    // Tier 2
+    linuxX64()
+    macosX64()
+    iosX64()
+    watchosArm64()
+    watchosSimulatorArm64()
+    watchosX64()
 
-        if (HostManager.hostIsLinux || HostManager.hostIsMac) {
-            linuxX64()
-        }
+    // Tier 3
+    androidNativeArm64()
+    mingwX64 {
+        binaries.findTest(DEBUG)!!.linkerOpts = mutableListOf("-Wl,--subsystem,windows")
     }
 
     sourceSets {
