@@ -1,0 +1,5 @@
+[versions]
+kotlinx-serialization = "1.8.1"
+
+[libraries]
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }

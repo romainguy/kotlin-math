@@ -18,7 +18,9 @@
 
 package dev.romainguy.kotlin.math
 
+import kotlinx.serialization.Serializable
 import kotlin.math.*
+
 enum class QuaternionComponent {
     X, Y, Z, W
 }
@@ -28,6 +30,7 @@ enum class QuaternionComponent {
  * The Quaternion will be normalized during construction
  * Default: Identity
  */
+@Serializable
 data class Quaternion(
         var x: Float = 0.0f,
         var y: Float = 0.0f,

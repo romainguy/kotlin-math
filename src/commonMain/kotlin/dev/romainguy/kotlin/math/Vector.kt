@@ -18,12 +18,13 @@
 
 package dev.romainguy.kotlin.math
 
+import kotlinx.serialization.Serializable
 import kotlin.math.abs
+import kotlin.math.absoluteValue
+import kotlin.math.acos
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
-import kotlin.math.acos
-import kotlin.math.absoluteValue
 
 enum class VectorComponent {
     X, Y, Z, W,
@@ -31,6 +32,7 @@ enum class VectorComponent {
     S, T, P, Q
 }
 
+@Serializable
 data class Float2(var x: Float = 0.0f, var y: Float = 0.0f) {
     constructor(v: Float) : this(v, v)
     constructor(v: Float2) : this(v.x, v.y)
@@ -153,6 +155,7 @@ data class Float2(var x: Float = 0.0f, var y: Float = 0.0f) {
     fun toFloatArray() = floatArrayOf(x, y)
 }
 
+@Serializable
 data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f) {
     constructor(v: Float) : this(v, v, v)
     constructor(v: Float2, z: Float = 0.0f) : this(v.x, v.y, z)
@@ -342,6 +345,7 @@ data class Float3(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f)
     fun toFloatArray() = floatArrayOf(x, y, z)
 }
 
+@Serializable
 data class Float4(
         var x: Float = 0.0f,
         var y: Float = 0.0f,
@@ -958,6 +962,7 @@ inline infix fun Float4.neq(b: Float4) = Bool4(x != b.x, y != b.y, z != b.z, w !
 inline fun any(v: Bool4) = v.x || v.y || v.z || v.w
 inline fun all(v: Bool4) = v.x && v.y && v.z && v.w
 
+@Serializable
 data class Bool2(var x: Boolean = false, var y: Boolean = false) {
     constructor(v: Bool2) : this(v.x, v.y)
 
@@ -1045,6 +1050,7 @@ data class Bool2(var x: Boolean = false, var y: Boolean = false) {
     }
 }
 
+@Serializable
 data class Bool3(var x: Boolean = false, var y: Boolean = false, var z: Boolean = false) {
     constructor(v: Bool2, z: Boolean = false) : this(v.x, v.y, z)
     constructor(v: Bool3) : this(v.x, v.y, v.z)
@@ -1189,6 +1195,7 @@ data class Bool3(var x: Boolean = false, var y: Boolean = false, var z: Boolean 
     }
 }
 
+@Serializable
 data class Bool4(
         var x: Boolean = false,
         var y: Boolean = false,
@@ -1403,6 +1410,7 @@ data class Bool4(
     }
 }
 
+@Serializable
 data class Half2(var x: Half = Half.POSITIVE_ZERO, var y: Half = Half.POSITIVE_ZERO) {
     constructor(v: Half) : this(v, v)
     constructor(v: Half2) : this(v.x, v.y)
@@ -1513,6 +1521,7 @@ data class Half2(var x: Half = Half.POSITIVE_ZERO, var y: Half = Half.POSITIVE_Z
     fun toFloatArray() = floatArrayOf(x.toFloat(), y.toFloat())
 }
 
+@Serializable
 data class Half3(
     var x: Half = Half.POSITIVE_ZERO,
     var y: Half = Half.POSITIVE_ZERO,
@@ -1690,6 +1699,7 @@ data class Half3(
     fun toFloatArray() = floatArrayOf(x.toFloat(), y.toFloat(), z.toFloat())
 }
 
+@Serializable
 data class Half4(
     var x: Half = Half.POSITIVE_ZERO,
     var y: Half = Half.POSITIVE_ZERO,
