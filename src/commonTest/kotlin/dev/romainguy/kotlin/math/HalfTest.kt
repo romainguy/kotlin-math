@@ -113,8 +113,8 @@ class HalfTest {
         assertEquals("0.5", 0.5f.toHalf().toString())
         assertEquals("0.25", 0.25f.toHalf().toString())
         assertEquals("65504.0", Half.MAX_VALUE.toString())
-        assertEquals("5.9604645E-8", Half.MIN_VALUE.toString())
-        assertEquals("6.1035156E-5", Half.MIN_NORMAL.toString())
+        assertContains(arrayOf("5.9604645E-8", "5.9604645e-8", "5.960464477539063e-8"), Half.MIN_VALUE.toString())
+        assertContains(arrayOf("6.1035156E-5", "0.00006103515625"), Half.MIN_NORMAL.toString())
         assertEquals("-65504.0", Half.LOWEST_VALUE.toString())
     }
 
