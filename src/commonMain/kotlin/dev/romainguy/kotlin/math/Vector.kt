@@ -734,9 +734,7 @@ inline fun dot(a: Float3, b: Float3) = a.x * b.x + a.y * b.y + a.z * b.z
 inline fun cross(a: Float3, b: Float3): Float3 {
     return Float3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
 }
-inline infix fun Float3.x(v: Float3): Float3 {
-    return Float3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
-}
+inline infix fun Float3.x(v: Float3): Float3  = cross(this, v)
 fun normalize(v: Float3): Float3 {
     val l = 1.0f / length(v)
     return Float3(v.x * l, v.y * l, v.z * l)
@@ -1986,9 +1984,7 @@ inline fun dot(a: Half3, b: Half3) = a.x * b.x + a.y * b.y + a.z * b.z
 inline fun cross(a: Half3, b: Half3): Half3 {
     return Half3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
 }
-inline infix fun Half3.x(v: Half3): Half3 {
-    return Half3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
-}
+inline infix fun Half3.x(v: Half3): Half3  = cross(this, v)
 fun normalize(v: Half3): Half3 {
     val l = HALF_ONE / length(v)
     return Half3(v.x * l, v.y * l, v.z * l)
