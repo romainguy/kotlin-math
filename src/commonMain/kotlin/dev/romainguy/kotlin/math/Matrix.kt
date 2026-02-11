@@ -115,9 +115,20 @@ data class Mat2(
             x.y * v.x + y.y * v.y,
     )
 
+    /**
+     * This matrix as a [FloatArray] in row-major order
+     */
     fun toFloatArray() = floatArrayOf(
             x.x, y.x,
             x.y, y.y
+    )
+
+    /**
+     * This matrix as a [FloatArray] in column-major order
+     */
+    fun toFloatArrayColumn() = floatArrayOf(
+        x.x, x.y,
+        y.x, y.y
     )
 
     override fun toString(): String {
@@ -223,10 +234,22 @@ data class Mat3(
             x.z * v.x + y.z * v.y + z.z * v.z,
     )
 
+    /**
+     * This matrix as a [FloatArray] in row-major order
+     */
     fun toFloatArray() = floatArrayOf(
             x.x, y.x, z.x,
             x.y, y.y, z.y,
             x.z, y.z, z.z
+    )
+
+    /**
+     * This matrix as a [FloatArray] in column-major order
+     */
+    fun toFloatArrayColumn() = floatArrayOf(
+        x.x, x.y, x.z,
+        y.x, y.y, y.z,
+        z.x, z.y, z.z
     )
 
     override fun toString(): String {
@@ -415,11 +438,24 @@ data class Mat4(
      */
     fun toQuaternion() = quaternion(this)
 
+    /**
+     * This matrix as a [FloatArray] in row-major order
+     */
     fun toFloatArray() = floatArrayOf(
             x.x, y.x, z.x, w.x,
             x.y, y.y, z.y, w.y,
             x.z, y.z, z.z, w.z,
             x.w, y.w, z.w, w.w
+    )
+
+    /**
+     * This matrix as a [FloatArray] in column-major order
+     */
+    fun toFloatArrayColumn() = floatArrayOf(
+        x.x, x.y, x.z, x.w,
+        y.x, y.y, y.z, y.w,
+        z.x, z.y, z.z, z.w,
+        w.x, w.y, w.z, w.w
     )
 
     override fun toString(): String {

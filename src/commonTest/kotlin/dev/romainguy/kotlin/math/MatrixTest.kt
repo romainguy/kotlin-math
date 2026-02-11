@@ -241,6 +241,24 @@ class MatrixTest {
     }
 
     @Test
+    fun floatArrayColumn() {
+        assertArrayEquals(
+            floatArrayOf(
+                1f, 2f, 3f, 4f,
+                4f, 5f, 6f, 7f,
+                8f, 9f, 10f, 11f,
+                12f, 13f, 14f, 15f
+            ),
+            Mat4(
+                Float4(1f, 2f, 3f, 4f),
+                Float4(4f, 5f, 6f, 7f),
+                Float4(8f, 9f, 10f, 11f),
+                Float4(12f, 13f, 14f, 15f)
+            ).toFloatArrayColumn()
+        )
+    }
+
+    @Test
     fun inverseNonInvertibleMat4() {
         val expected = Mat4(
             Float4(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NaN, Float.NaN),
