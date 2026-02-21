@@ -20,10 +20,20 @@ package dev.romainguy.kotlin.math
 
 import kotlin.math.*
 
+/**
+ * Enumeration of matrix columns.
+ */
 enum class MatrixColumn {
     X, Y, Z, W
 }
 
+/**
+ * Enumeration of rotation orders for Euler angles.
+ *
+ * @property yaw The component used for the first rotation (yaw).
+ * @property pitch The component used for the second rotation (pitch).
+ * @property roll The component used for the third rotation (roll).
+ */
 enum class RotationsOrder(
         val yaw: VectorComponent,
         val pitch: VectorComponent,
@@ -36,12 +46,29 @@ enum class RotationsOrder(
     ZYX(VectorComponent.Z, VectorComponent.Y, VectorComponent.X);
 }
 
+/**
+ * A 2x2 matrix of single-precision floats.
+ * The matrix is represented in column-major order.
+ *
+ * @constructor Creates a new matrix with the specified columns.
+ * @property x The first column of the matrix.
+ * @property y The second column of the matrix.
+ */
 data class Mat2(
         var x: Float2 = Float2(x = 1.0f),
         var y: Float2 = Float2(y = 1.0f)) {
+    /**
+     * Creates a new matrix from the specified matrix [m].
+     */
     constructor(m: Mat2) : this(m.x.copy(), m.y.copy())
 
     companion object {
+        /**
+         * Creates a [Mat2] from a list of floats in row-major order.
+         *
+         * @param a A variable number of floats (at least 4).
+         * @return A [Mat2] initialized with the provided values.
+         */
         fun of(vararg a: Float): Mat2 {
             require(a.size >= 4)
             return Mat2(
@@ -50,48 +77,115 @@ data class Mat2(
             )
         }
 
+        /**
+         * Returns an identity [Mat2].
+         */
         fun identity() = Mat2()
     }
 
+    /**
+     * Returns the column at the specified [column] index (0 or 1).
+     */
     operator fun get(column: Int) = when (column) {
         0 -> x
         1 -> y
         else -> throw IllegalArgumentException("column must be in 0..1")
     }
+
+    /**
+     * Returns the value at the specified [column] and [row].
+     */
     operator fun get(column: Int, row: Int) = get(column)[row]
 
+    /**
+     * Returns the column at the specified [column] ([MatrixColumn.X] or [MatrixColumn.Y]).
+     */
     operator fun get(column: MatrixColumn) = when (column) {
         MatrixColumn.X -> x
         MatrixColumn.Y -> y
         else -> throw IllegalArgumentException("column must be X or Y")
     }
+
+    /**
+     * Returns the value at the specified [column] and [row].
+     */
     operator fun get(column: MatrixColumn, row: Int) = get(column)[row]
 
+    /**
+     * Returns the value at the specified [row] and [column] (1-based).
+     */
     operator fun invoke(row: Int, column: Int) = get(column - 1)[row - 1]
+
+    /**
+     * Sets the value at the specified [row] and [column] (1-based).
+     */
     operator fun invoke(row: Int, column: Int, v: Float) = set(column - 1, row - 1, v)
 
+    /**
+     * Sets the column at the specified [column] index.
+     */
     operator fun set(column: Int, v: Float2) {
         this[column].xy = v
     }
+
+    /**
+     * Sets the value at the specified [column] and [row].
+     */
     operator fun set(column: Int, row: Int, v: Float) {
         this[column][row] = v
     }
 
+    /**
+     * Negates all components of this matrix.
+     */
     operator fun unaryMinus() = Mat2(-x, -y)
+
+    /**
+     * Increments all components of this matrix.
+     */
     operator fun inc() = Mat2(x++, y++)
+
+    /**
+     * Decrements all components of this matrix.
+     */
     operator fun dec() = Mat2(x--, y--)
 
+    /**
+     * Adds a scalar to all components of this matrix.
+     */
     operator fun plus(v: Float) = Mat2(x + v, y + v)
+
+    /**
+     * Subtracts a scalar from all components of this matrix.
+     */
     operator fun minus(v: Float) = Mat2(x - v, y - v)
+
+    /**
+     * Multiplies all components of this matrix by a scalar.
+     */
     operator fun times(v: Float) = Mat2(x * v, y * v)
+
+    /**
+     * Divides all components of this matrix by a scalar.
+     */
     operator fun div(v: Float) = Mat2(x / v, y / v)
+
+    /**
+     * Compares this matrix to a scalar.
+     */
     inline fun compareTo(v: Float, delta: Float = 0.0f) = Mat2(
         x.compareTo(v, delta),
         y.compareTo(v, delta)
     )
 
+    /**
+     * Returns true if all components are equal to the scalar.
+     */
     inline fun equals(v: Float, delta: Float = 0.0f) = x.equals(v, delta) && y.equals(v, delta)
 
+    /**
+     * Multiplies this matrix by another matrix.
+     */
     operator fun times(m: Mat2) = Mat2(
             Float2(
                     x.x * m.x.x + y.x * m.x.y,
@@ -103,13 +197,22 @@ data class Mat2(
             )
     )
 
+    /**
+     * Compares two matrices.
+     */
     inline fun compareTo(m: Mat2, delta: Float = 0.0f) = Mat2(
         x.compareTo(m.x, delta),
         y.compareTo(m.y, delta)
     )
 
+    /**
+     * Returns true if two matrices are equal.
+     */
     inline fun equals(m: Mat2, delta: Float = 0.0f) = x.equals(m.x, delta) && y.equals(m.y, delta)
 
+    /**
+     * Multiplies this matrix by a vector.
+     */
     operator fun times(v: Float2) = Float2(
             x.x * v.x + y.x * v.y,
             x.y * v.x + y.y * v.y,
@@ -139,13 +242,31 @@ data class Mat2(
     }
 }
 
+/**
+ * A 3x3 matrix of single-precision floats.
+ * The matrix is represented in column-major order.
+ *
+ * @constructor Creates a new matrix with the specified columns.
+ * @property x The first column of the matrix.
+ * @property y The second column of the matrix.
+ * @property z The third column of the matrix.
+ */
 data class Mat3(
         var x: Float3 = Float3(x = 1.0f),
         var y: Float3 = Float3(y = 1.0f),
         var z: Float3 = Float3(z = 1.0f)) {
+    /**
+     * Creates a new matrix from the specified matrix [m].
+     */
     constructor(m: Mat3) : this(m.x.copy(), m.y.copy(), m.z.copy())
 
     companion object {
+        /**
+         * Creates a [Mat3] from a list of floats in row-major order.
+         *
+         * @param a A variable number of floats (at least 9).
+         * @return A [Mat3] initialized with the provided values.
+         */
         fun of(vararg a: Float): Mat3 {
             require(a.size >= 9)
             return Mat3(
@@ -155,52 +276,119 @@ data class Mat3(
             )
         }
 
+        /**
+         * Returns an identity [Mat3].
+         */
         fun identity() = Mat3()
     }
 
+    /**
+     * Returns the column at the specified [column] index (0, 1 or 2).
+     */
     operator fun get(column: Int) = when (column) {
         0 -> x
         1 -> y
         2 -> z
         else -> throw IllegalArgumentException("column must be in 0..2")
     }
+
+    /**
+     * Returns the value at the specified [column] and [row].
+     */
     operator fun get(column: Int, row: Int) = get(column)[row]
 
+    /**
+     * Returns the column at the specified [column] ([MatrixColumn.X], [MatrixColumn.Y] or [MatrixColumn.Z]).
+     */
     operator fun get(column: MatrixColumn) = when (column) {
         MatrixColumn.X -> x
         MatrixColumn.Y -> y
         MatrixColumn.Z -> z
         else -> throw IllegalArgumentException("column must be X, Y or Z")
     }
+
+    /**
+     * Returns the value at the specified [column] and [row].
+     */
     operator fun get(column: MatrixColumn, row: Int) = get(column)[row]
 
+    /**
+     * Returns the value at the specified [row] and [column] (1-based).
+     */
     operator fun invoke(row: Int, column: Int) = get(column - 1)[row - 1]
+
+    /**
+     * Sets the value at the specified [row] and [column] (1-based).
+     */
     operator fun invoke(row: Int, column: Int, v: Float) = set(column - 1, row - 1, v)
 
+    /**
+     * Sets the column at the specified [column] index.
+     */
     operator fun set(column: Int, v: Float3) {
         this[column].xyz = v
     }
+
+    /**
+     * Sets the value at the specified [column] and [row].
+     */
     operator fun set(column: Int, row: Int, v: Float) {
         this[column][row] = v
     }
 
+    /**
+     * Negates all components of this matrix.
+     */
     operator fun unaryMinus() = Mat3(-x, -y, -z)
+
+    /**
+     * Increments all components of this matrix.
+     */
     operator fun inc() = Mat3(x++, y++, z++)
+
+    /**
+     * Decrements all components of this matrix.
+     */
     operator fun dec() = Mat3(x--, y--, z--)
 
+    /**
+     * Adds a scalar to all components of this matrix.
+     */
     operator fun plus(v: Float) = Mat3(x + v, y + v, z + v)
+
+    /**
+     * Subtracts a scalar from all components of this matrix.
+     */
     operator fun minus(v: Float) = Mat3(x - v, y - v, z - v)
+
+    /**
+     * Multiplies all components of this matrix by a scalar.
+     */
     operator fun times(v: Float) = Mat3(x * v, y * v, z * v)
+
+    /**
+     * Divides all components of this matrix by a scalar.
+     */
     operator fun div(v: Float) = Mat3(x / v, y / v, z / v)
+
+    /**
+     * Compares this matrix to a scalar.
+     */
     inline fun compareTo(v: Float, delta: Float = 0.0f) = Mat3(
         x.compareTo(v, delta),
         y.compareTo(v, delta),
         z.compareTo(v, delta)
     )
 
+    /**
+     * Returns true if all components are equal to the scalar.
+     */
     inline fun equals(v: Float, delta: Float = 0.0f) =
         x.equals(v, delta) && y.equals(v, delta) && z.equals(v, delta)
 
+    /**
+     * Multiplies this matrix by another matrix.
+     */
     operator fun times(m: Mat3) = Mat3(
             Float3(
                     x.x * m.x.x + y.x * m.x.y + z.x * m.x.z,
@@ -219,15 +407,24 @@ data class Mat3(
             )
     )
 
+    /**
+     * Compares two matrices.
+     */
     inline fun compareTo(m: Mat3, delta: Float = 0.0f) = Mat3(
         x.compareTo(m.x, delta),
         y.compareTo(m.y, delta),
         z.compareTo(m.z, delta)
     )
 
+    /**
+     * Returns true if two matrices are equal.
+     */
     inline fun equals(m: Mat3, delta: Float = 0.0f) =
         x.equals(m.x, delta) && y.equals(m.y, delta) && z.equals(m.z, delta)
 
+    /**
+     * Multiplies this matrix by a vector.
+     */
     operator fun times(v: Float3) = Float3(
             x.x * v.x + y.x * v.y + z.x * v.z,
             x.y * v.x + y.y * v.y + z.y * v.z,
@@ -261,17 +458,45 @@ data class Mat3(
     }
 }
 
+/**
+ * A 4x4 matrix of single-precision floats.
+ * The matrix is represented in column-major order.
+ *
+ * @constructor Creates a new matrix with the specified columns.
+ * @property x The first column of the matrix.
+ * @property y The second column of the matrix.
+ * @property z The third column of the matrix.
+ * @property w The fourth column of the matrix.
+ */
 data class Mat4(
         var x: Float4 = Float4(x = 1.0f),
         var y: Float4 = Float4(y = 1.0f),
         var z: Float4 = Float4(z = 1.0f),
         var w: Float4 = Float4(w = 1.0f)) {
+    /**
+     * Creates a [Mat4] from three basis vectors and a position vector.
+     *
+     * @param right The right-facing (X) basis vector.
+     * @param up The up-facing (Y) basis vector.
+     * @param forward The forward-facing (Z) basis vector.
+     * @param position The translation component of the matrix.
+     */
     constructor(right: Float3, up: Float3, forward: Float3, position: Float3 = Float3()) :
             this(Float4(right), Float4(up), Float4(forward), Float4(position, 1.0f))
+
+    /**
+     * Creates a new matrix from the specified matrix [m].
+     */
     constructor(m: Mat4) : this(m.x.copy(), m.y.copy(), m.z.copy(), m.w.copy())
 
     companion object {
 
+        /**
+         * Creates a [Mat4] from a list of floats in row-major order.
+         *
+         * @param a A variable number of floats (at least 16).
+         * @return A [Mat4] initialized with the provided values.
+         */
         fun of(vararg a: Float): Mat4 {
             require(a.size >= 16)
             return Mat4(
@@ -282,34 +507,63 @@ data class Mat4(
             )
         }
 
+        /**
+         * Returns an identity [Mat4].
+         */
         fun identity() = Mat4()
     }
 
+    /**
+     * The right-facing basis vector (XYZ part of column X).
+     */
     inline var right: Float3
         get() = x.xyz
         set(value) {
             x.xyz = value
         }
+
+    /**
+     * The up-facing basis vector (XYZ part of column Y).
+     */
     inline var up: Float3
         get() = y.xyz
         set(value) {
             y.xyz = value
         }
+
+    /**
+     * The forward-facing basis vector (XYZ part of column Z).
+     */
     inline var forward: Float3
         get() = z.xyz
         set(value) {
             z.xyz = value
         }
+
+    /**
+     * The translation component of the matrix (XYZ part of column W).
+     */
     inline var position: Float3
         get() = w.xyz
         set(value) {
             w.xyz = value
         }
 
+    /**
+     * The scaling component of the matrix.
+     */
     inline val scale: Float3
         get() = Float3(length(x.xyz), length(y.xyz), length(z.xyz))
+
+    /**
+     * The translation component of the matrix.
+     */
     inline val translation: Float3
         get() = w.xyz
+
+    /**
+     * The rotation of the matrix as Euler angles (in degrees).
+     */
     val rotation: Float3
         get() {
             val x = normalize(right)
@@ -324,9 +578,15 @@ data class Mat4(
             }
         }
 
+    /**
+     * The upper-left 3x3 portion of this matrix.
+     */
     inline val upperLeft: Mat3
         get() = Mat3(x.xyz, y.xyz, z.xyz)
 
+    /**
+     * Returns the column at the specified [column] index (0, 1, 2 or 3).
+     */
     operator fun get(column: Int) = when (column) {
         0 -> x
         1 -> y
@@ -334,34 +594,89 @@ data class Mat4(
         3 -> w
         else -> throw IllegalArgumentException("column must be in 0..3")
     }
+
+    /**
+     * Returns the value at the specified [column] and [row].
+     */
     operator fun get(column: Int, row: Int) = get(column)[row]
 
+    /**
+     * Returns the column at the specified [column] ([MatrixColumn.X], [MatrixColumn.Y], [MatrixColumn.Z] or [MatrixColumn.W]).
+     */
     operator fun get(column: MatrixColumn) = when (column) {
         MatrixColumn.X -> x
         MatrixColumn.Y -> y
         MatrixColumn.Z -> z
         MatrixColumn.W -> w
     }
+
+    /**
+     * Returns the value at the specified [column] and [row].
+     */
     operator fun get(column: MatrixColumn, row: Int) = get(column)[row]
 
+    /**
+     * Returns the value at the specified [row] and [column] (1-based).
+     */
     operator fun invoke(row: Int, column: Int) = get(column - 1)[row - 1]
+
+    /**
+     * Sets the value at the specified [row] and [column] (1-based).
+     */
     operator fun invoke(row: Int, column: Int, v: Float) = set(column - 1, row - 1, v)
 
+    /**
+     * Sets the column at the specified [column] index.
+     */
     operator fun set(column: Int, v: Float4) {
         this[column].xyzw = v
     }
+
+    /**
+     * Sets the value at the specified [column] and [row].
+     */
     operator fun set(column: Int, row: Int, v: Float) {
         this[column][row] = v
     }
 
+    /**
+     * Negates all components of this matrix.
+     */
     operator fun unaryMinus() = Mat4(-x, -y, -z, -w)
+
+    /**
+     * Increments all components of this matrix.
+     */
     operator fun inc() = Mat4(x++, y++, z++, w++)
+
+    /**
+     * Decrements all components of this matrix.
+     */
     operator fun dec() = Mat4(x--, y--, z--, w--)
 
+    /**
+     * Adds a scalar to all components of this matrix.
+     */
     operator fun plus(v: Float) = Mat4(x + v, y + v, z + v, w + v)
+
+    /**
+     * Subtracts a scalar from all components of this matrix.
+     */
     operator fun minus(v: Float) = Mat4(x - v, y - v, z - v, w - v)
+
+    /**
+     * Multiplies all components of this matrix by a scalar.
+     */
     operator fun times(v: Float) = Mat4(x * v, y * v, z * v, w * v)
+
+    /**
+     * Divides all components of this matrix by a scalar.
+     */
     operator fun div(v: Float) = Mat4(x / v, y / v, z / v, w / v)
+
+    /**
+     * Compares this matrix to a scalar.
+     */
     inline fun compareTo(v: Float, delta: Float = 0.0f) = Mat4(
         x.compareTo(v, delta),
         y.compareTo(v, delta),
@@ -369,9 +684,15 @@ data class Mat4(
         w.compareTo(v, delta)
     )
 
+    /**
+     * Returns true if all components are equal to the scalar.
+     */
     inline fun equals(v: Float, delta: Float = 0.0f) =
         x.equals(v, delta) && y.equals(v, delta) && z.equals(v, delta) && w.equals(v, delta)
 
+    /**
+     * Multiplies this matrix by another matrix.
+     */
     operator fun times(m: Mat4) = Mat4(
             Float4(
                     x.x * m.x.x + y.x * m.x.y + z.x * m.x.z + w.x * m.x.w,
@@ -399,6 +720,9 @@ data class Mat4(
             )
     )
 
+    /**
+     * Compares two matrices.
+     */
     inline fun compareTo(m: Mat4, delta: Float = 0.0f) = Mat4(
         x.compareTo(m.x, delta),
         y.compareTo(m.y, delta),
@@ -406,9 +730,15 @@ data class Mat4(
         w.compareTo(m.w, delta)
     )
 
+    /**
+     * Returns true if two matrices are equal.
+     */
     inline fun equals(m: Mat4, delta: Float = 0.0f) =
         x.equals(m.x, delta) && y.equals(m.y, delta) && z.equals(m.z, delta) && w.equals(m.w, delta)
 
+    /**
+     * Multiplies this matrix by a vector.
+     */
     operator fun times(v: Float4) = Float4(
             x.x * v.x + y.x * v.y + z.x * v.z+ w.x * v.w,
             x.y * v.x + y.y * v.y + z.y * v.z+ w.y * v.w,
@@ -468,50 +798,77 @@ data class Mat4(
     }
 }
 
+/**
+ * Returns a [Bool2] indicating if each component of [a] is equal to [b] within [delta].
+ */
 inline fun equal(a: Mat2, b: Float, delta: Float = 0.0f) = Bool2(
     a.x.equals(b, delta),
     a.y.equals(b, delta)
 )
 
+/**
+ * Returns a [Bool2] indicating if each component of [a] is equal to the corresponding component of [b] within [delta].
+ */
 inline fun equal(a: Mat2, b: Mat2, delta: Float = 0.0f) = Bool2(
     a.x.equals(b.x, delta),
     a.y.equals(b.y, delta)
 )
 
+/**
+ * Returns a [Bool2] indicating if each component of [a] is not equal to [b] within [delta].
+ */
 inline fun notEqual(a: Mat2, b: Float, delta: Float = 0.0f) = Bool2(
     !a.x.equals(b, delta),
     !a.y.equals(b, delta)
 )
 
+/**
+ * Returns a [Bool2] indicating if each component of [a] is not equal to the corresponding component of [b] within [delta].
+ */
 inline fun notEqual(a: Mat2, b: Mat2, delta: Float = 0.0f) = Bool2(
     !a.x.equals(b.x, delta),
     !a.y.equals(b.y, delta)
 )
 
+/**
+ * Returns a [Bool3] indicating if each component of [a] is equal to [b] within [delta].
+ */
 inline fun equal(a: Mat3, b: Float, delta: Float = 0.0f) = Bool3(
     a.x.equals(b, delta),
     a.y.equals(b, delta),
     a.z.equals(b, delta)
 )
 
+/**
+ * Returns a [Bool3] indicating if each component of [a] is equal to the corresponding component of [b] within [delta].
+ */
 inline fun equal(a: Mat3, b: Mat3, delta: Float = 0.0f) = Bool3(
     a.x.equals(b.x, delta),
     a.y.equals(b.y, delta),
     a.z.equals(b.z, delta)
 )
 
+/**
+ * Returns a [Bool3] indicating if each component of [a] is not equal to [b] within [delta].
+ */
 inline fun notEqual(a: Mat3, b: Float, delta: Float = 0.0f) = Bool3(
     !a.x.equals(b, delta),
     !a.y.equals(b, delta),
     !a.z.equals(b, delta)
 )
 
+/**
+ * Returns a [Bool3] indicating if each component of [a] is not equal to the corresponding component of [b] within [delta].
+ */
 inline fun notEqual(a: Mat3, b: Mat3, delta: Float = 0.0f) = Bool3(
     !a.x.equals(b.x, delta),
     !a.y.equals(b.y, delta),
     !a.z.equals(b.z, delta)
 )
 
+/**
+ * Returns a [Bool4] indicating if each component of [a] is equal to [b] within [delta].
+ */
 inline fun equal(a: Mat4, b: Float, delta: Float = 0.0f) = Bool4(
     a.x.equals(b, delta),
     a.y.equals(b, delta),
@@ -519,6 +876,9 @@ inline fun equal(a: Mat4, b: Float, delta: Float = 0.0f) = Bool4(
     a.w.equals(b, delta)
 )
 
+/**
+ * Returns a [Bool4] indicating if each component of [a] is equal to the corresponding component of [b] within [delta].
+ */
 inline fun equal(a: Mat4, b: Mat4, delta: Float = 0.0f) = Bool4(
     a.x.equals(b.x, delta),
     a.y.equals(b.y, delta),
@@ -526,6 +886,9 @@ inline fun equal(a: Mat4, b: Mat4, delta: Float = 0.0f) = Bool4(
     a.w.equals(b.w, delta)
 )
 
+/**
+ * Returns a [Bool4] indicating if each component of [a] is not equal to [b] within [delta].
+ */
 inline fun notEqual(a: Mat4, b: Float, delta: Float = 0.0f) = Bool4(
     !a.x.equals(b, delta),
     !a.y.equals(b, delta),
@@ -533,6 +896,9 @@ inline fun notEqual(a: Mat4, b: Float, delta: Float = 0.0f) = Bool4(
     !a.w.equals(b, delta)
 )
 
+/**
+ * Returns a [Bool4] indicating if each component of [a] is not equal to the corresponding component of [b] within [delta].
+ */
 inline fun notEqual(a: Mat4, b: Mat4, delta: Float = 0.0f) = Bool4(
     !a.x.equals(b.x, delta),
     !a.y.equals(b.y, delta),
@@ -540,17 +906,26 @@ inline fun notEqual(a: Mat4, b: Mat4, delta: Float = 0.0f) = Bool4(
     !a.w.equals(b.w, delta)
 )
 
+/**
+ * Returns the transpose of the matrix [m].
+ */
 fun transpose(m: Mat2) = Mat2(
         Float2(m.x.x, m.y.x),
         Float2(m.x.y, m.y.y)
 )
 
+/**
+ * Returns the transpose of the matrix [m].
+ */
 fun transpose(m: Mat3) = Mat3(
         Float3(m.x.x, m.y.x, m.z.x),
         Float3(m.x.y, m.y.y, m.z.y),
         Float3(m.x.z, m.y.z, m.z.z)
 )
 
+/**
+ * Returns the inverse of the matrix [m].
+ */
 @Suppress("LocalVariableName")
 fun inverse(m: Mat3): Mat3 {
     val a = m.x.x
@@ -576,6 +951,9 @@ fun inverse(m: Mat3): Mat3 {
     )
 }
 
+/**
+ * Returns the transpose of the matrix [m].
+ */
 fun transpose(m: Mat4) = Mat4(
         Float4(m.x.x, m.y.x, m.z.x, m.w.x),
         Float4(m.x.y, m.y.y, m.z.y, m.w.y),
@@ -583,6 +961,9 @@ fun transpose(m: Mat4) = Mat4(
         Float4(m.x.w, m.y.w, m.z.w, m.w.w)
 )
 
+/**
+ * Returns the inverse of the matrix [m].
+ */
 fun inverse(m: Mat4): Mat4 {
     val result = Mat4()
 
@@ -651,12 +1032,29 @@ fun inverse(m: Mat4): Mat4 {
     return result / determinant
 }
 
+/**
+ * Returns a scaling matrix.
+ */
 fun scale(s: Float3) = Mat4(Float4(x = s.x), Float4(y = s.y), Float4(z = s.z))
+
+/**
+ * Returns a scaling matrix from the scale of the given matrix [m].
+ */
 fun scale(m: Mat4) = scale(m.scale)
 
+/**
+ * Returns a translation matrix.
+ */
 fun translation(t: Float3) = Mat4(w = Float4(t, 1.0f))
+
+/**
+ * Returns a translation matrix from the translation of the given matrix [m].
+ */
 fun translation(m: Mat4) = translation(m.translation)
 
+/**
+ * Returns a rotation matrix from the rotation of the given matrix [m].
+ */
 fun rotation(m: Mat4) = Mat4(normalize(m.right), normalize(m.up), normalize(m.forward))
 
 /**
@@ -735,6 +1133,13 @@ fun rotation(yaw: Float = 0.0f, pitch: Float = 0.0f, roll: Float = 0.0f, order: 
     }
 }
 
+/**
+ * Construct a rotation matrix from an [axis] and an [angle] in degrees.
+ *
+ * @param axis The rotation axis (should be normalized).
+ * @param angle The rotation angle in degrees.
+ * @return The rotation matrix.
+ */
 fun rotation(axis: Float3, angle: Float): Mat4 {
     val x = axis.x
     val y = axis.y
@@ -908,12 +1313,29 @@ fun quaternion(m: Mat4): Quaternion {
     )
 }
 
+/**
+ * Returns a normal matrix from the given matrix [m].
+ */
 fun normal(m: Mat4) = scale(1.0f / Float3(length2(m.right), length2(m.up), length2(m.forward))) * m
 
+/**
+ * Returns a view matrix looking from [eye] towards [target].
+ *
+ * @param eye The position of the eye/camera.
+ * @param target The position to look at.
+ * @param up The up vector of the camera (default is Z-up).
+ */
 fun lookAt(eye: Float3, target: Float3, up: Float3 = Float3(z = 1.0f)): Mat4 {
     return lookTowards(eye, target - eye, up)
 }
 
+/**
+ * Returns a view matrix looking from [eye] in the direction [forward].
+ *
+ * @param eye The position of the eye/camera.
+ * @param forward The direction to look towards.
+ * @param up The up vector of the camera (default is Z-up).
+ */
 fun lookTowards(eye: Float3, forward: Float3, up: Float3 = Float3(z = 1.0f)): Mat4 {
     val f = normalize(forward)
     val r = normalize(f x up)
@@ -921,6 +1343,14 @@ fun lookTowards(eye: Float3, forward: Float3, up: Float3 = Float3(z = 1.0f)): Ma
     return Mat4(Float4(r), Float4(u), Float4(-f), Float4(eye, 1.0f))
 }
 
+/**
+ * Returns a perspective projection matrix.
+ *
+ * @param fov The vertical field of view in degrees.
+ * @param ratio The aspect ratio (width / height).
+ * @param near The distance to the near clipping plane.
+ * @param far The distance to the far clipping plane.
+ */
 fun perspective(fov: Float, ratio: Float, near: Float, far: Float): Mat4 {
     val t = 1.0f / tan(radians(fov) * 0.5f)
     val a = (far + near) / (far - near)
@@ -929,6 +1359,16 @@ fun perspective(fov: Float, ratio: Float, near: Float, far: Float): Mat4 {
     return Mat4(Float4(x = c), Float4(y = t), Float4(z = a, w = 1.0f), Float4(z = -b))
 }
 
+/**
+ * Returns an orthographic projection matrix.
+ *
+ * @param l The left clipping plane.
+ * @param r The right clipping plane.
+ * @param b The bottom clipping plane.
+ * @param t The top clipping plane.
+ * @param n The near clipping plane.
+ * @param f The far clipping plane.
+ */
 fun ortho(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float) = Mat4(
     Float4(x = 2.0f / (r - l)),
     Float4(y = 2.0f / (t - b)),

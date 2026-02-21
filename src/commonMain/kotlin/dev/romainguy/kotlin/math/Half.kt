@@ -251,6 +251,8 @@ fun Rational.toHalf() = toFloat().toHalf()
  * | 32,768           | 32                   |
  *
  * This table shows that numbers higher than 1024 lose all fractional precision.
+ *
+ * @constructor Creates a new half-precision float with the specified bits.
  */
 @JvmInline
 value class Half(private val v: UShort) : Comparable<Half> {
@@ -559,10 +561,19 @@ value class Half(private val v: UShort) : Comparable<Half> {
         else -> round(this).toLong()
     }
 
+    /**
+     * Negates this half-precision float value.
+     */
     operator fun unaryMinus() = Half((v.toInt() xor FP16_SIGN_MASK).toUShort())
 
+    /**
+     * Returns this half-precision float value.
+     */
     operator fun unaryPlus() = Half(v)
 
+    /**
+     * Adds another half-precision float value to this one.
+     */
     operator fun plus(other: Half): Half {
         val xbits = toBits()
         val ybits = other.toBits()
@@ -633,8 +644,14 @@ value class Half(private val v: UShort) : Comparable<Half> {
         return Half((v + (G and (S or v))).toUShort())
     }
 
+    /**
+     * Subtracts another half-precision float value from this one.
+     */
     operator fun minus(other: Half) = this + (-other)
 
+    /**
+     * Multiplies this half-precision float value by another.
+     */
     operator fun times(other: Half): Half {
         val xbits = toBits()
         val ybits = other.toBits()
@@ -681,6 +698,9 @@ value class Half(private val v: UShort) : Comparable<Half> {
         return fixedToHalf(s, e, m shr i.toInt(), m and i, 20)
     }
 
+    /**
+     * Divides this half-precision float value by another.
+     */
     operator fun div(other: Half): Half {
         val xbits = toBits()
         val ybits = other.toBits()
@@ -730,8 +750,14 @@ value class Half(private val v: UShort) : Comparable<Half> {
         return fixedToHalf(s, e, mx / my, if (mx % my != 0U) 1U else 0U, 11)
     }
 
+    /**
+     * Increments this half-precision float value by 1.0.
+     */
     operator fun inc() = this + Half(0x3c00.toUShort())
 
+    /**
+     * Decrements this half-precision float value by 1.0.
+     */
     operator fun dec() = this + Half(0xbc00.toUShort())
 
     override fun compareTo(other: Half): Int {

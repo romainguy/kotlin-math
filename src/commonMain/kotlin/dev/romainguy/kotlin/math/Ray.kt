@@ -18,6 +18,19 @@
 
 package dev.romainguy.kotlin.math
 
+/**
+ * Represents a ray in 3D space defined by an [origin] and a [direction] vector.
+ *
+ * @property origin The starting point of the ray.
+ * @property direction The direction vector of the ray.
+ */
 data class Ray(var origin: Float3 = Float3(), var direction: Float3)
 
+/**
+ * Returns a point along the ray [r] at the specified distance [t].
+ *
+ * @param r The ray to sample.
+ * @param t The distance along the ray's direction vector from its origin.
+ * @return A [Float3] representing the point at distance [t].
+ */
 fun pointAt(r: Ray, t: Float) = r.origin + r.direction * t
