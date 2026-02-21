@@ -22,64 +22,149 @@ import kotlin.jvm.JvmInline
 import kotlin.math.abs
 import kotlin.math.sign
 
+/**
+ * Creates a [Rational] from a double-precision float value.
+ */
 fun Rational(value: Double) = pack(value)
 
+/**
+ * Creates a [Rational] from a single-precision float value.
+ */
 fun Rational(value: Float) = pack(value.toDouble())
 
+/**
+ * Creates a [Rational] from an integer value.
+ */
 fun Rational(value: Int) = Rational(pack(value, 1))
 
+/**
+ * Creates a [Rational] from a [numerator] and a [denominator].
+ */
 fun Rational(numerator: Int, denominator: Int) = Rational(pack(numerator, denominator))
 
+/**
+ * [Rational] is an inline value class representing a rational number (a fraction).
+ * It is backed by a [Long] that packs both the numerator and denominator.
+ *
+ * It correctly handles special values such as NaN and Infinity.
+ *
+ * @constructor Creates a new rational with the specified packed value.
+ */
 @JvmInline
 value class Rational(private val r: Long) : Comparable<Rational> {
     companion object {
+        /**
+         * A constant for the Not-a-Number (NaN) rational value.
+         */
         val NaN = Rational(0, 0)
+
+        /**
+         * A constant for positive infinity.
+         */
         val POSITIVE_INFINITY = Rational(1, 0)
+
+        /**
+         * A constant for negative infinity.
+         */
         val NEGATIVE_INFINITY = Rational(-1, 0)
+
+        /**
+         * A constant for the value zero.
+         */
         val ZERO = Rational(0, 1)
     }
 
+    /**
+     * Returns the sign of this rational: -1 if negative, 1 otherwise.
+     */
     val sign: Int
         get() = if ((r ushr 32).toInt() < 0) -1 else 1
+
+    /**
+     * Returns the numerator of this rational.
+     */
     val numerator: Int
         get() = (r ushr 32).toInt()
+
+    /**
+     * Returns the denominator of this rational.
+     */
     val denominator: Int
         get() = (r and 0xFFFFFFFFL).toInt()
 
+    /**
+     * Component for destructuring to the numerator.
+     */
     fun component1() = numerator
 
+    /**
+     * Component for destructuring to the denominator.
+     */
     fun component2() = denominator
 
+    /**
+     * Returns true if this value is Not-a-Number (NaN).
+     */
     fun isNaN() = r == 0L
 
+    /**
+     * Returns true if this value is a finite number (the denominator is non-zero).
+     */
     fun isFinite() = denominator != 0
 
+    /**
+     * Returns true if this value is positive or negative infinity.
+     */
     fun isInfinite() = numerator != 0 && denominator == 0
 
+    /**
+     * Returns true if this value is zero.
+     */
     fun isZero() = numerator == 0 && denominator != 0
 
+    /**
+     * Converts this rational to a [Double].
+     */
     fun toDouble() = numerator.toDouble() / denominator.toDouble()
 
+    /**
+     * Converts this rational to a [Float].
+     */
     fun toFloat() = numerator.toFloat() / denominator.toFloat()
 
+    /**
+     * Converts this rational to an [Int] by dividing the numerator by the denominator.
+     */
     fun toInt() = when {
         isNaN() -> 0
         isInfinite() -> if (sign > 0) Int.MAX_VALUE else Int.MIN_VALUE
         else -> numerator / denominator
     }
 
+    /**
+     * Converts this rational to a [Long] by dividing the numerator by the denominator.
+     */
     fun toLong() = when {
         isNaN() -> 0L
         isInfinite() -> if (sign > 0) Long.MAX_VALUE else Long.MIN_VALUE
         else -> numerator.toLong() / denominator.toLong()
     }
 
+    /**
+     * Negates this rational.
+     */
     operator fun unaryMinus(): Rational {
       return Rational(-numerator, denominator)
     }
 
+    /**
+     * Returns this rational.
+     */
     operator fun unaryPlus() = Rational(r)
 
+    /**
+     * Adds another rational to this one.
+     */
     operator fun plus(other: Rational): Rational {
         if (r == 0L || other.r == 0L) return NaN
 
@@ -108,8 +193,14 @@ value class Rational(private val r: Long) : Comparable<Rational> {
         return Rational((n shl 32) or d)
     }
 
+    /**
+     * Subtracts another rational from this one.
+     */
     operator fun minus(other: Rational) = this + (-other)
 
+    /**
+     * Multiplies this rational by another.
+     */
     operator fun times(other: Rational): Rational {
         if (r == 0L || other.r == 0L) return NaN
 
@@ -135,6 +226,9 @@ value class Rational(private val r: Long) : Comparable<Rational> {
         return Rational((n shl 32) or d)
     }
 
+    /**
+     * Divides this rational by another.
+     */
     operator fun div(other: Rational): Rational {
         if (r == 0L || other.r == 0L) return NaN
 
@@ -161,6 +255,9 @@ value class Rational(private val r: Long) : Comparable<Rational> {
         return Rational((n shl 32) or d)
     }
 
+    /**
+     * Compares this rational to another.
+     */
     override fun compareTo(other: Rational): Int {
         if (r == other.r) return 0
         return when {
@@ -170,7 +267,7 @@ value class Rational(private val r: Long) : Comparable<Rational> {
             else -> {
                 val a = numerator.toLong() * other.denominator.toLong()
                 val b = other.numerator.toLong() * denominator.toLong()
-                return if (a > b) 1 else -1
+                if (a > b) 1 else -1
             }
         }
     }
@@ -236,9 +333,13 @@ private fun pack(numerator: Int, denominator: Int): Long {
     }
 
     if (d == 0) {
-        if (n > 0) n = 1        // +Inf
-        else if (n < 0) n = -1  // -Inf
-        else n = 0              // NaN
+        n = if (n > 0) {
+            1  // +Inf
+        } else if (n < 0) {
+            -1 // -Inf
+        } else {
+            0 // NaN
+        }
     } else if (n == 0) {
         d = 1                   // 0
     } else {

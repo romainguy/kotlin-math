@@ -5,12 +5,17 @@
 out/
 workspace.xml
 *.versionsBackup
+
 .gradle/
 build/
 !**/src/**/build
 !**/test/**/build
+!**/src/main/**/out/
+!**/src/test/**/out/
+
 *.iml
 .idea/artifacts/
+.idea/caches/
 .idea/libraries/
 .idea/modules
 .idea/modules.xml
@@ -19,6 +24,13 @@ build/
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/runConfigurations.xml
 .idea/.name
+.idea/AndroidProjectSystem.xml
 local.properties
 *.ser
 kotlin-js-store/
+
+### Kotlin ###
+.kotlin/
+
+### VS Code ###
+.vscode/
